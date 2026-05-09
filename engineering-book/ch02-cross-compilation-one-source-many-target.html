@@ -1,0 +1,718 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2. 크로스 컴파일 — 하나의 소스, 여러 타깃 - Rust 엔지니어링 실무 — cargo build를 넘어서</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-997ff77b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-04fe246c.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 엔지니어링 실무 — cargo build를 넘어서</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="cross-compilation-one-source-many-target"></a></p>
+<h1 id="크로스-컴파일--하나의-소스-여러-타깃-"><a class="header" href="#크로스-컴파일--하나의-소스-여러-타깃-">크로스 컴파일 — 하나의 소스, 여러 타깃 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong></p>
+<ul>
+<li>Rust 타깃 트리플이 어떻게 동작하고 <code>rustup</code>으로 어떻게 추가하는지</li>
+<li>컨테이너·클라우드 배포를 위한 musl 정적 바이너리 빌드</li>
+<li>네이티브 툴체인, <code>cross</code>, <code>cargo-zigbuild</code>로 ARM(aarch64) 크로스 컴파일</li>
+<li>멀티 아키텍처 CI를 위한 GitHub Actions 매트릭스 빌드 설정</li>
+</ul>
+<p><strong>교차 참고:</strong> <a href="ch01-build-scripts-buildrs-in-depth.html">빌드 스크립트</a> — 크로스 컴파일 시에도 build.rs는 HOST에서 실행됩니다 · <a href="ch07-release-profiles-and-binary-size.html">릴리스 프로파일</a> — 크로스 컴파일된 릴리스 바이너리의 LTO와 strip 설정 · <a href="ch10-windows-and-conditional-compilation.html">Windows</a> — Windows 크로스 컴파일과 <code>no_std</code> 타깃</p>
+</blockquote>
+<p>크로스 컴파일은 한 머신(<strong>호스트</strong>)에서 실행 파일을 빌드해 다른 머신(<strong>타깃</strong>)에서
+돌리는 것을 말합니다. 호스트는 x86_64 노트북이고 타깃은 ARM 서버, musl 기반 컨테이너,
+심지어 Windows 머신일 수도 있습니다. Rust는 <code>rustc</code>가 이미 크로스 컴파일러이기 때문에
+이를 비교적 잘 지원합니다 — 적절한 타깃 라이브러리와 호환 링커만 있으면 됩니다.</p>
+<p><a id="the-target-triple-anatomy"></a></p>
+<h3 id="타깃-트리플-구조"><a class="header" href="#타깃-트리플-구조">타깃 트리플 구조</a></h3>
+<p>모든 Rust 컴파일 타깃은 <strong>타깃 트리플</strong>(이름과 달리 네 부분인 경우가 많음)로 식별됩니다:</p>
+<pre><code class="language-text">&lt;arch&gt;-&lt;vendor&gt;-&lt;os&gt;-&lt;env&gt;
+
+예:
+  x86_64  - unknown - linux  - gnu      ← 표준 Linux (glibc)
+  x86_64  - unknown - linux  - musl     ← 정적 Linux (musl libc)
+  aarch64 - unknown - linux  - gnu      ← ARM 64비트 Linux
+  x86_64  - pc      - windows- msvc     ← MSVC용 Windows
+  aarch64 - apple   - darwin             ← Apple Silicon macOS
+  x86_64  - unknown - none              ← 베어 메탈 (OS 없음)
+</code></pre>
+<p>사용 가능한 타깃 전체 나열:</p>
+<pre><code class="language-bash"># rustc가 컴파일할 수 있는 모든 타깃 (~250개)
+rustc --print target-list | wc -l
+
+# 시스템에 설치된 타깃 표시
+rustup target list --installed
+
+# 현재 기본 타깃 표시
+rustc -vV | grep host
+</code></pre>
+<p><a id="installing-toolchains-with-rustup"></a></p>
+<h3 id="rustup으로-툴체인-설치"><a class="header" href="#rustup으로-툴체인-설치">rustup으로 툴체인 설치</a></h3>
+<pre><code class="language-bash"># 타깃 라이브러리 추가 (해당 타깃용 Rust std)
+rustup target add x86_64-unknown-linux-musl
+rustup target add aarch64-unknown-linux-gnu
+
+# 이제 크로스 컴파일 가능:
+cargo build --target x86_64-unknown-linux-musl
+cargo build --target aarch64-unknown-linux-gnu  # 링커 필요 — 아래 참고
+</code></pre>
+<p><strong><code>rustup target add</code>가 주는 것</strong>: 해당 타깃용으로 미리 컴파일된 <code>std</code>, <code>core</code>, <code>alloc</code>
+라이브러리입니다. C 링커나 C 라이브러리는 주지 <strong>않습니다</strong>. C 툴체인이 필요한
+타깃(대부분의 <code>gnu</code> 타깃)은 별도로 설치해야 합니다.</p>
+<pre><code class="language-bash"># Ubuntu/Debian — aarch64용 크로스 링커
+sudo apt install gcc-aarch64-linux-gnu
+
+# Ubuntu/Debian — 정적 빌드용 musl 툴체인
+sudo apt install musl-tools
+
+# Fedora
+sudo dnf install gcc-aarch64-linux-gnu
+</code></pre>
+<p><a id="cargoconfigtoml-per-target-configuration"></a></p>
+<h3 id="cargoconfigtoml--타깃별-설정"><a class="header" href="#cargoconfigtoml--타깃별-설정"><code>.cargo/config.toml</code> — 타깃별 설정</a></h3>
+<p>매번 <code>--target</code>을 넘기지 않고 프로젝트 루트 또는 홈의
+<code>.cargo/config.toml</code>에 기본값을 둘 수 있습니다:</p>
+<pre><code class="language-toml"># .cargo/config.toml
+
+# 이 프로젝트의 기본 타깃 (선택 — 생략하면 네이티브 기본 유지)
+# [build]
+# target = "x86_64-unknown-linux-musl"
+
+# aarch64 크로스 컴파일용 링커
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+rustflags = ["-C", "target-feature=+crc"]
+
+# musl 정적 빌드용 링커 (보통 시스템 gcc가 맞음)
+[target.x86_64-unknown-linux-musl]
+linker = "musl-gcc"
+rustflags = ["-C", "target-feature=+crc,+aes"]
+
+# ARM 32비트 (Raspberry Pi, 임베디드)
+[target.armv7-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+
+# 모든 타깃에 대한 환경 변수
+[env]
+# 예: 커스텀 sysroot
+# SYSROOT = "/opt/cross/sysroot"
+</code></pre>
+<p><strong>설정 파일 검색 순서</strong> (먼저 매칭된 것이 우선):</p>
+<ol>
+<li><code>&lt;project&gt;/.cargo/config.toml</code></li>
+<li><code>&lt;project&gt;/../.cargo/config.toml</code> (상위 디렉터리로 올라가며)</li>
+<li><code>$CARGO_HOME/config.toml</code> (보통 <code>~/.cargo/config.toml</code>)</li>
+</ol>
+<p><a id="static-binaries-with-musl"></a></p>
+<h3 id="musl로-정적-바이너리"><a class="header" href="#musl로-정적-바이너리">musl로 정적 바이너리</a></h3>
+<p>Alpine, scratch Docker 이미지 같은 최소 컨테이너에 배포하거나 glibc 버전을
+통제할 수 없을 때 musl로 빌드합니다:</p>
+<pre><code class="language-bash"># musl 타깃 설치
+rustup target add x86_64-unknown-linux-musl
+sudo apt install musl-tools  # musl-gcc 제공
+
+# 완전 정적 바이너리 빌드
+cargo build --release --target x86_64-unknown-linux-musl
+
+# 정적 링크인지 확인
+file target/x86_64-unknown-linux-musl/release/diag_tool
+# → ELF 64-bit LSB executable, x86-64, statically linked
+
+ldd target/x86_64-unknown-linux-musl/release/diag_tool
+# → not a dynamic executable
+</code></pre>
+<p><strong>정적 vs 동적 트레이드오프:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>측면</th><th>glibc (동적)</th><th>musl (정적)</th></tr>
+</thead>
+<tbody>
+<tr><td>바이너리 크기</td><td>더 작음 (공유 lib)</td><td>더 큼 (~5–15 MB 증가)</td></tr>
+<tr><td>이식성</td><td>맞는 glibc 버전 필요</td><td>Linux 어디서나 실행</td></tr>
+<tr><td>DNS 해석</td><td>전체 <code>nsswitch</code> 지원</td><td>기본 리졸버 (mDNS 없음)</td></tr>
+<tr><td>배포</td><td>sysroot 또는 컨테이너 필요</td><td>단일 바이너리, 의존성 없음</td></tr>
+<tr><td>성능</td><td>malloc이 약간 더 빠름</td><td>malloc이 약간 더 느림</td></tr>
+<tr><td><code>dlopen()</code> 지원</td><td>예</td><td>아니오</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>프로젝트 관점</strong>: 호스트 OS 버전을 보장할 수 없는 다양한 서버 하드웨어에
+배포할 때 정적 musl 빌드가 이상적입니다. 단일 바이너리 배포 모델이
+“내 머신에서만 된다“를 없앱니다.</p>
+</blockquote>
+<p><a id="cross-compiling-to-arm-aarch64"></a></p>
+<h3 id="armaarch64로-크로스-컴파일"><a class="header" href="#armaarch64로-크로스-컴파일">ARM(aarch64)로 크로스 컴파일</a></h3>
+<p>데이터센터에서 ARM 서버(AWS Graviton, Ampere Altra, Grace)가 점점 흔해지고 있습니다.
+x86_64 호스트에서 aarch64용 크로스 컴파일:</p>
+<pre><code class="language-bash"># 1단계: 타깃 + 크로스 링커 설치
+rustup target add aarch64-unknown-linux-gnu
+sudo apt install gcc-aarch64-linux-gnu
+
+# 2단계: .cargo/config.toml에 링커 설정 (위 참고)
+
+# 3단계: 빌드
+cargo build --release --target aarch64-unknown-linux-gnu
+
+# 4단계: 바이너리 확인
+file target/aarch64-unknown-linux-gnu/release/diag_tool
+# → ELF 64-bit LSB executable, ARM aarch64
+</code></pre>
+<p><strong>해당 아키텍처용 테스트 실행</strong>에는 다음 중 하나가 필요합니다:</p>
+<ul>
+<li>실제 ARM 머신</li>
+<li>QEMU 사용자 모드 에뮬레이션</li>
+</ul>
+<pre><code class="language-bash"># QEMU 사용자 모드 (x86_64에서 ARM 바이너리 실행)
+sudo apt install qemu-user qemu-user-static binfmt-support
+
+# 이제 cargo test가 크로스 컴파일된 테스트를 QEMU로 실행 가능
+cargo test --target aarch64-unknown-linux-gnu
+# (느림 — 테스트 바이너리마다 에뮬. 일상 개발보다 CI 검증용.)
+</code></pre>
+<p><code>.cargo/config.toml</code>에서 QEMU를 테스트 러너로 설정:</p>
+<pre><code class="language-toml">[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+runner = "qemu-aarch64-static -L /usr/aarch64-linux-gnu"
+</code></pre>
+<p><a id="the-cross-tool-docker-based-cross-compilation"></a></p>
+<h3 id="cross-도구--docker-기반-크로스-컴파일"><a class="header" href="#cross-도구--docker-기반-크로스-컴파일"><code>cross</code> 도구 — Docker 기반 크로스 컴파일</a></h3>
+<p><a href="https://github.com/cross-rs/cross"><code>cross</code></a>는 미리 구성된 Docker 이미지로
+설정 없이 크로스 컴파일할 수 있게 해줍니다:</p>
+<pre><code class="language-bash"># cross 설치 (crates.io — 안정 릴리스)
+cargo install cross
+# 또는 최신 기능용 git (덜 안정):
+# cargo install cross --git https://github.com/cross-rs/cross
+
+# 크로스 컴파일 — 툴체인 설정 불필요!
+cross build --release --target aarch64-unknown-linux-gnu
+cross build --release --target x86_64-unknown-linux-musl
+cross build --release --target armv7-unknown-linux-gnueabihf
+
+# 크로스 테스트 — Docker 이미지에 QEMU 포함
+cross test --target aarch64-unknown-linux-gnu
+</code></pre>
+<p><strong>동작 방식</strong>: <code>cross</code>는 <code>cargo</code>를 대체해 빌드를 올바른 크로스 컴파일 툴체인이
+미리 설치된 Docker 컨테이너 안에서 실행합니다. 소스는 컨테이너에 마운트되고
+출력은 일반 <code>target/</code> 디렉터리로 갑니다.</p>
+<p><strong><code>Cross.toml</code>로 Docker 이미지 커스터마이징:</strong></p>
+<pre><code class="language-toml"># Cross.toml
+[target.aarch64-unknown-linux-gnu]
+# 추가 시스템 라이브러리가 있는 커스텀 Docker 이미지
+image = "my-registry/cross-aarch64:latest"
+
+# 시스템 패키지 사전 설치
+pre-build = [
+    "dpkg --add-architecture arm64",
+    "apt-get update &amp;&amp; apt-get install -y libpci-dev:arm64"
+]
+
+[target.aarch64-unknown-linux-gnu.env]
+# 컨테이너로 환경 변수 전달
+passthrough = ["CI", "GITHUB_TOKEN"]
+</code></pre>
+<p><code>cross</code>는 Docker(또는 Podman)가 필요하지만 크로스 컴파일러, sysroot, QEMU를
+수동 설치할 필요를 없앱니다. CI에는 권장 접근입니다.</p>
+<p><a id="using-zig-as-a-cross-compilation-linker"></a></p>
+<h3 id="크로스-컴파일-링커로-zig-사용"><a class="header" href="#크로스-컴파일-링커로-zig-사용">크로스 컴파일 링커로 Zig 사용</a></h3>
+<p><a href="https://ziglang.org/">Zig</a>는 C 컴파일러와 크로스 컴파일 sysroot를
+단일 ~40 MB 다운로드에 ~40개 타깃까지 묶습니다. Rust의 크로스 링커로
+매우 편리합니다:</p>
+<pre><code class="language-bash"># Zig 설치 (단일 바이너리, 패키지 매니저 불필요)
+# https://ziglang.org/download/ 에서 다운로드
+# 또는 패키지 매니저:
+sudo snap install zig --classic --beta  # Ubuntu
+brew install zig                          # macOS
+
+# cargo-zigbuild 설치
+cargo install cargo-zigbuild
+</code></pre>
+<p><strong>Zig를 쓰는 이유?</strong> 핵심 이점은 <strong>glibc 버전 타깃팅</strong>입니다. Zig는 링크할
+glibc 버전을 정확히 지정해 오래된 Linux 배포판에서도 바이너리가 돌아가게 합니다:</p>
+<pre><code class="language-bash"># glibc 2.17 (CentOS 7 / RHEL 7 호환)
+cargo zigbuild --release --target x86_64-unknown-linux-gnu.2.17
+
+# glibc 2.28 (Ubuntu 18.04+) aarch64
+cargo zigbuild --release --target aarch64-unknown-linux-gnu.2.28
+
+# musl (완전 정적)
+cargo zigbuild --release --target x86_64-unknown-linux-musl
+</code></pre>
+<p><code>.2.17</code> 접미사는 Zig 확장 — Zig 링커에 glibc 2.17 심볼 버전을 쓰라고 알려
+결과 바이너리가 CentOS 7 이상에서 실행됩니다. Docker, sysroot 관리,
+크로스 컴파일러 설치가 필요 없습니다.</p>
+<p><strong>비교: cross vs cargo-zigbuild vs 수동:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>기능</th><th>수동</th><th>cross</th><th>cargo-zigbuild</th></tr>
+</thead>
+<tbody>
+<tr><td>설정 노력</td><td>높음 (타깃마다 툴체인)</td><td>낮음 (Docker 필요)</td><td>낮음 (단일 바이너리)</td></tr>
+<tr><td>Docker 필요</td><td>아니오</td><td>예</td><td>아니오</td></tr>
+<tr><td>glibc 버전 타깃팅</td><td>아니오 (호스트 glibc 사용)</td><td>아니오 (컨테이너 glibc)</td><td>예 (정확한 버전)</td></tr>
+<tr><td>테스트 실행</td><td>QEMU 필요</td><td>포함</td><td>QEMU 필요</td></tr>
+<tr><td>macOS → Linux</td><td>어려움</td><td>쉬움</td><td>쉬움</td></tr>
+<tr><td>Linux → macOS</td><td>매우 어려움</td><td>미지원</td><td>제한적</td></tr>
+<tr><td>바이너리 크기 오버헤드</td><td>없음</td><td>없음</td><td>없음</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="ci-pipeline-github-actions-matrix"></a></p>
+<h3 id="ci-파이프라인-github-actions-매트릭스"><a class="header" href="#ci-파이프라인-github-actions-매트릭스">CI 파이프라인: GitHub Actions 매트릭스</a></h3>
+<p>여러 타깃을 위한 프로덕션급 CI 워크플로:</p>
+<pre><code class="language-yaml"># .github/workflows/cross-build.yml
+name: Cross-Platform Build
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: linux-x86_64
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            name: linux-x86_64-static
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: linux-aarch64
+            use_cross: true
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            name: windows-x86_64
+
+    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.name }})
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install musl tools
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: sudo apt-get install -y musl-tools
+
+      - name: Install cross
+        if: matrix.use_cross
+        run: cargo install cross
+
+      - name: Build (native)
+        if: "!matrix.use_cross"
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Build (cross)
+        if: matrix.use_cross
+        run: cross build --release --target ${{ matrix.target }}
+
+      - name: Run tests
+        if: "!matrix.use_cross"
+        run: cargo test --target ${{ matrix.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: diag_tool-${{ matrix.name }}
+          path: target/${{ matrix.target }}/release/diag_tool*
+</code></pre>
+<p><a id="application-multi-architecture-server-builds"></a></p>
+<h3 id="적용-멀티-아키텍처-서버-빌드"><a class="header" href="#적용-멀티-아키텍처-서버-빌드">적용: 멀티 아키텍처 서버 빌드</a></h3>
+<p>바이너리에는 현재 크로스 컴파일 설정이 없습니다. 다양한 서버 함대에 배포하는
+하드웨어 진단 도구라면 권장 추가 사항:</p>
+<pre><code class="language-text">my_workspace/
+├── .cargo/
+│   └── config.toml          ← 타깃별 링커 설정
+├── Cross.toml                ← cross 도구 설정
+└── .github/workflows/
+    └── cross-build.yml       ← 3개 타깃 CI 매트릭스
+</code></pre>
+<p><strong>권장 <code>.cargo/config.toml</code>:</strong></p>
+<pre><code class="language-toml"># 프로젝트용 .cargo/config.toml
+
+# 릴리스 프로파일 최적화 (이미 Cargo.toml에 있음, 참고용)
+# [profile.release]
+# lto = true
+# codegen-units = 1
+# panic = "abort"
+# strip = true
+
+# ARM 서버용 aarch64 (Graviton, Ampere, Grace)
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+
+# 이식 가능한 정적 바이너리용 musl
+[target.x86_64-unknown-linux-musl]
+linker = "musl-gcc"
+</code></pre>
+<p><strong>권장 빌드 타깃:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>타깃</th><th>사용 사례</th><th>배포 대상</th></tr>
+</thead>
+<tbody>
+<tr><td><code>x86_64-unknown-linux-gnu</code></td><td>기본 네이티브 빌드</td><td>표준 x86 서버</td></tr>
+<tr><td><code>x86_64-unknown-linux-musl</code></td><td>정적 바이너리, 모든 배포판</td><td>컨테이너, 최소 호스트</td></tr>
+<tr><td><code>aarch64-unknown-linux-gnu</code></td><td>ARM 서버</td><td>Graviton, Ampere, Grace</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>핵심</strong>: 워크스페이스 루트 <code>Cargo.toml</code>의 <code>[profile.release]</code>에 이미
+<code>lto = true</code>, <code>codegen-units = 1</code>, <code>panic = "abort"</code>, <code>strip = true</code>가
+있어 크로스 컴파일 배포 바이너리에 이상적인 릴리스 프로파일입니다
+(전체 영향 표는 <a href="ch07-release-profiles-and-binary-size.html">릴리스 프로파일</a> 참고).
+musl과 함께면 런타임 의존성 없는 ~10 MB 정적 단일 바이너리가 나옵니다.</p>
+</blockquote>
+<p><a id="troubleshooting-cross-compilation"></a></p>
+<h3 id="크로스-컴파일-문제-해결"><a class="header" href="#크로스-컴파일-문제-해결">크로스 컴파일 문제 해결</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>증상</th><th>원인</th><th>조치</th></tr>
+</thead>
+<tbody>
+<tr><td><code>linker 'aarch64-linux-gnu-gcc' not found</code></td><td>크로스 링커 툴체인 없음</td><td><code>sudo apt install gcc-aarch64-linux-gnu</code></td></tr>
+<tr><td><code>cannot find -lssl</code> (musl 타깃)</td><td>시스템 OpenSSL이 glibc 링크</td><td><code>vendored</code> 피처: <code>openssl = { version = "0.10", features = ["vendored"] }</code></td></tr>
+<tr><td><code>build.rs</code>가 잘못된 바이너리 실행</td><td>build.rs는 HOST에서 실행, 타깃 아님</td><td>build.rs에서는 <code>CARGO_CFG_TARGET_OS</code> 확인, <code>cfg!(target_os)</code> 아님</td></tr>
+<tr><td>로컬에서는 테스트 통과, <code>cross</code>에서 실패</td><td>Docker 이미지에 테스트 픽스처 없음</td><td><code>Cross.toml</code>로 테스트 데이터 마운트: <code>[build.env] volumes = ["./TestArea:/TestArea"]</code></td></tr>
+<tr><td><code>undefined reference to __cxa_thread_atexit_impl</code></td><td>타깃 glibc가 오래됨</td><td><code>cargo-zigbuild</code>로 glibc 버전 명시: <code>--target x86_64-unknown-linux-gnu.2.17</code></td></tr>
+<tr><td>ARM에서 바이너리 세그폴트</td><td>잘못된 ARM 변형으로 컴파일</td><td>타깃 트리플이 하드웨어와 일치하는지 확인: 64비트 ARM은 <code>aarch64-unknown-linux-gnu</code></td></tr>
+<tr><td>런타임에 <code>GLIBC_2.XX not found</code></td><td>빌드 머신 glibc가 더 새로움</td><td>정적 빌드는 musl, 또는 <code>cargo-zigbuild</code>로 glibc 버전 고정</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="cross-compilation-decision-tree"></a></p>
+<h3 id="크로스-컴파일-의사결정-트리"><a class="header" href="#크로스-컴파일-의사결정-트리">크로스 컴파일 의사결정 트리</a></h3>
+<pre class="mermaid">flowchart TD
+    START["크로스 컴파일이 필요한가?"] --&gt; STATIC{"정적 바이너리?"}
+    
+    STATIC --&gt;|예| MUSL["musl 타깃\n--target x86_64-unknown-linux-musl"]
+    STATIC --&gt;|아니오| GLIBC{"오래된 glibc 필요?"}
+    
+    GLIBC --&gt;|예| ZIG["cargo-zigbuild\n--target x86_64-unknown-linux-gnu.2.17"]
+    GLIBC --&gt;|아니오| ARCH{"타깃 아키텍처?"}
+    
+    ARCH --&gt;|"같은 아키"| NATIVE["네이티브 툴체인\nrustup target add + 링커"]
+    ARCH --&gt;|"ARM/기타"| DOCKER{"Docker 사용 가능?"}
+    
+    DOCKER --&gt;|예| CROSS["cross build\nDocker 기반, 설정 없음"]
+    DOCKER --&gt;|아니오| MANUAL["수동 sysroot\napt install gcc-aarch64-linux-gnu"]
+    
+    style MUSL fill:#91e5a3,color:#000
+    style ZIG fill:#91e5a3,color:#000
+    style CROSS fill:#91e5a3,color:#000
+    style NATIVE fill:#e3f2fd,color:#000
+    style MANUAL fill:#ffd43b,color:#000
+</pre>
+
+<p><a id="exercises"></a></p>
+<h3 id="-연습문제"><a class="header" href="#-연습문제">🏋️ 연습문제</a></h3>
+<p><a id="exercise-1-static-musl-binary"></a></p>
+<h4 id="-연습문제-1-정적-musl-바이너리"><a class="header" href="#-연습문제-1-정적-musl-바이너리">🟢 연습문제 1: 정적 musl 바이너리</a></h4>
+<p>아무 Rust 바이너리나 <code>x86_64-unknown-linux-musl</code>로 빌드하세요. <code>file</code>과 <code>ldd</code>로
+정적으로 링크됐는지 확인하세요.</p>
+<details>
+<summary>해답</summary>
+<pre><code class="language-bash">rustup target add x86_64-unknown-linux-musl
+cargo new hello-static &amp;&amp; cd hello-static
+cargo build --release --target x86_64-unknown-linux-musl
+
+# 확인
+file target/x86_64-unknown-linux-musl/release/hello-static
+# 출력: ... statically linked ...
+
+ldd target/x86_64-unknown-linux-musl/release/hello-static
+# 출력: not a dynamic executable
+</code></pre>
+</details>
+<p><a id="exercise-2-github-actions-cross-build-matrix"></a></p>
+<h4 id="-연습문제-2-github-actions-크로스-빌드-매트릭스"><a class="header" href="#-연습문제-2-github-actions-크로스-빌드-매트릭스">🟡 연습문제 2: GitHub Actions 크로스 빌드 매트릭스</a></h4>
+<p><code>x86_64-unknown-linux-gnu</code>, <code>x86_64-unknown-linux-musl</code>, <code>aarch64-unknown-linux-gnu</code>
+세 타깃에 대해 Rust 프로젝트를 빌드하는 GitHub Actions 워크플로를 작성하세요.
+매트릭스 전략을 사용하세요.</p>
+<details>
+<summary>해답</summary>
+<pre><code class="language-yaml">name: Cross-build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - x86_64-unknown-linux-musl
+          - aarch64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Install cross
+        run: cargo install cross --locked
+      - name: Build
+        run: cross build --release --target ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/my-binary
+</code></pre>
+</details>
+<p><a id="key-takeaways"></a></p>
+<h3 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h3>
+<ul>
+<li>Rust의 <code>rustc</code>는 이미 크로스 컴파일러입니다 — 올바른 타깃과 링커만 있으면 됩니다</li>
+<li><strong>musl</strong>은 런타임 의존성 없는 완전 정적 바이너리를 만듭니다 — 컨테이너에 적합</li>
+<li>**<code>cargo-zigbuild</code>**는 엔터프라이즈 Linux 타깃의 “어느 glibc 버전인가” 문제를 해결합니다</li>
+<li>**<code>cross</code>**는 ARM 등 이색 타깃에 가장 쉬운 경로입니다 — Docker가 sysroot를 처리합니다</li>
+<li>배포 타깃과 맞는지 <code>file</code>과 <code>ldd</code>로 항상 검증하세요</li>
+</ul>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch01-build-scripts-buildrs-in-depth.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch03-benchmarking-measuring-what-matters.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch01-build-scripts-buildrs-in-depth.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch03-benchmarking-measuring-what-matters.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

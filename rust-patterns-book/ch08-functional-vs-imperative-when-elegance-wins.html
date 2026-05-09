@@ -1,0 +1,993 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>8. 함수형 vs 명령형: 우아함이 이길 때 - Rust 패턴과 엔지니어링 활용 가이드</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-414debd0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-34cb9765.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 패턴과 엔지니어링 활용 가이드</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="chapter-8-functional-vs-imperative-when-elegance-wins"></a></p>
+<h1 id="8장--함수형-vs-명령형-우아함이-이길-때그리고-지지-않을-때"><a class="header" href="#8장--함수형-vs-명령형-우아함이-이길-때그리고-지지-않을-때">8장 — 함수형 vs 명령형: 우아함이 이길 때(그리고 지지 않을 때)</a></h1>
+<blockquote>
+<p><strong>난이도:</strong> 🟡 중급 | <strong>시간:</strong> 2–3시간 | <strong>선행:</strong> <a href="ch07-closures-and-higher-order-functions.html">7장 — 클로저</a></p>
+</blockquote>
+<p>Rust는 함수형과 명령형 스타일을 진짜로 동등하게 씁니다. Haskell(함수형이 기본)이나 C(명령형이 기본)와 달리, Rust는 선택할 수 있고 <strong>무엇을 표현하느냐</strong>에 따라 맞는 쪽이 달라집니다. 이 장에서는 잘 고르는 판단력을 기릅니다.</p>
+<p><strong>핵심 원칙:</strong> 함수형은 <strong>데이터를 파이프라인으로 변환</strong>할 때 빛납니다. 명령형은 <strong>부수 효과로 상태 전이를 다룰 때</strong> 빛납니다. 실제 코드는 둘 다 섞여 있고, <strong>경계가 어디인지</strong> 아는 것이 기술입니다.</p>
+<hr>
+<p><a id="81-the-combinator-you-didnt-know-you-wanted"></a></p>
+<h2 id="81-몰랐던-컴비네이터"><a class="header" href="#81-몰랐던-컴비네이터">8.1 몰랐던 컴비네이터</a></h2>
+<p>많은 Rust 개발자가 이렇게 씁니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let value = if let Some(x) = maybe_config() {
+    x
+} else {
+    default_config()
+};
+process(value);
+<span class="boring">}</span></code></pre>
+<p>이렇게 쓸 수 있을 때입니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>process(maybe_config().unwrap_or_else(default_config));
+<span class="boring">}</span></code></pre>
+<p>또 흔한 패턴:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let display_name = if let Some(name) = user.nickname() {
+    name.to_uppercase()
+} else {
+    "ANONYMOUS".to_string()
+};
+<span class="boring">}</span></code></pre>
+<p>다음과 같습니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let display_name = user.nickname()
+    .map(|n| n.to_uppercase())
+    .unwrap_or_else(|| "ANONYMOUS".to_string());
+<span class="boring">}</span></code></pre>
+<p>함수형 버전은 짧을 뿐 아니라 <strong>무슨 일이 일어나는지</strong>(변환 후 기본값)를 말해 주고, 제어 흐름을 따라가며 두 갈래가 같은 곳으로 모인다는 걸 눈으로 확인할 필요가 없습니다. <code>if let</code> 버전은 두 갈래를 읽어야 같은 결론에 도달합니다.</p>
+<p><a id="the-option-combinator-family"></a></p>
+<h3 id="option-컴비네이터-계열"><a class="header" href="#option-컴비네이터-계열">Option 컴비네이터 계열</a></h3>
+<p>멘탈 모델: <code>Option&lt;T&gt;</code>는 원소가 하나이거나 비어 있는 컬렉션입니다. <code>Option</code>의 컴비네이터는 모두 컬렉션 연산과 대응됩니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>이렇게 씀</th><th>대신 이렇게</th><th>전달하는 의미</th></tr>
+</thead>
+<tbody>
+<tr><td><code>opt.unwrap_or(default)</code></td><td><code>if let Some(x) = opt { x } else { default }</code></td><td>“이 값 쓰거나 없으면 대체”</td></tr>
+<tr><td><code>opt.unwrap_or_else(|| expensive())</code></td><td><code>if let Some(x) = opt { x } else { expensive() }</code></td><td>동일, 기본값은 지연</td></tr>
+<tr><td><code>opt.map(f)</code></td><td><code>match opt { Some(x) =&gt; Some(f(x)), None =&gt; None }</code></td><td>“안쪽만 변환, 부재는 전파”</td></tr>
+<tr><td><code>opt.and_then(f)</code></td><td><code>match opt { Some(x) =&gt; f(x), None =&gt; None }</code></td><td>“실패 가능한 연산 연결”(flatmap)</td></tr>
+<tr><td><code>opt.filter(|x| pred(x))</code></td><td><code>match opt { Some(x) if pred(&amp;x) =&gt; Some(x), _ =&gt; None }</code></td><td>“통과할 때만 유지”</td></tr>
+<tr><td><code>opt.zip(other)</code></td><td><code>if let (Some(a), Some(b)) = (opt, other) { Some((a,b)) } else { None }</code></td><td>“둘 다 있을 때만”</td></tr>
+<tr><td><code>opt.or(fallback)</code></td><td><code>if opt.is_some() { opt } else { fallback }</code></td><td>“먼저 있는 쪽”</td></tr>
+<tr><td><code>opt.or_else(|| try_another())</code></td><td><code>if opt.is_some() { opt } else { try_another() }</code></td><td>“대안을 순서대로 시도”</td></tr>
+<tr><td><code>opt.map_or(default, f)</code></td><td><code>if let Some(x) = opt { f(x) } else { default }</code></td><td>“변환 또는 기본” — 한 줄</td></tr>
+<tr><td><code>opt.map_or_else(default_fn, f)</code></td><td><code>if let Some(x) = opt { f(x) } else { default_fn() }</code></td><td>동일, 양쪽이 클로저</td></tr>
+<tr><td><code>opt?</code></td><td><code>match opt { Some(x) =&gt; x, None =&gt; return None }</code></td><td>“부재를 위로 전파”</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="the-result-combinator-family"></a></p>
+<h3 id="result-컴비네이터-계열"><a class="header" href="#result-컴비네이터-계열">Result 컴비네이터 계열</a></h3>
+<p><code>Result&lt;T, E&gt;</code>에도 같은 패턴이 적용됩니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>이렇게 씀</th><th>대신 이렇게</th><th>전달하는 의미</th></tr>
+</thead>
+<tbody>
+<tr><td><code>res.map(f)</code></td><td><code>match res { Ok(x) =&gt; Ok(f(x)), Err(e) =&gt; Err(e) }</code></td><td>성공 경로 변환</td></tr>
+<tr><td><code>res.map_err(f)</code></td><td><code>match res { Ok(x) =&gt; Ok(x), Err(e) =&gt; Err(f(e)) }</code></td><td>에러 변환</td></tr>
+<tr><td><code>res.and_then(f)</code></td><td><code>match res { Ok(x) =&gt; f(x), Err(e) =&gt; Err(e) }</code></td><td>실패 가능한 연산 연결</td></tr>
+<tr><td><code>res.unwrap_or_else(|e| default(e))</code></td><td><code>match res { Ok(x) =&gt; x, Err(e) =&gt; default(e) }</code></td><td>에러에서 복구</td></tr>
+<tr><td><code>res.ok()</code></td><td><code>match res { Ok(x) =&gt; Some(x), Err(_) =&gt; None }</code></td><td>“에러는 신경 안 씀”</td></tr>
+<tr><td><code>res?</code></td><td><code>match res { Ok(x) =&gt; x, Err(e) =&gt; return Err(e.into()) }</code></td><td>에러를 위로 전파</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="when-if-let-is-better"></a></p>
+<h3 id="if-let이-더-나은-경우"><a class="header" href="#if-let이-더-나은-경우"><code>if let</code>이 더 나은 경우</a></h3>
+<p>컴비네이터가 지는 경우:</p>
+<ul>
+<li><strong><code>Some</code> 가지에 문장이 여러 개 필요할 때.</strong> 5줄짜리 <code>map</code> 클로저는 5줄짜리 <code>if let</code>보다 나쁩니다.</li>
+<li><strong>제어 흐름 자체가 요점일 때.</strong> <code>if let Some(connection) = pool.try_get() { /* 사용 */ } else { /* 로그, 재시도, 알림 */ }</code> — 두 갈래가 진짜로 다른 경로이지, 변환·기본값 패턴이 아닙니다.</li>
+<li><strong>부수 효과가 지배할 때.</strong> 두 갈래 모두 I/O를 하되 에러 처리가 다르면 컴비네이터 버전이 중요한 차이를 가립니다.</li>
+</ul>
+<p><strong>경험칙:</strong> <code>else</code> 가지가 <code>Some</code> 가지와 <strong>같은 타입</strong>을 내고 본문이 짧은 <strong>식</strong>이면 컴비네이터를 쓰세요. 가지가 근본적으로 다른 일을 하면 <code>if let</code>이나 <code>match</code>를 쓰세요.</p>
+<hr>
+<p><a id="82-bool-combinators-then-and-then-some"></a></p>
+<h2 id="82-bool-컴비네이터-then과-then_some"><a class="header" href="#82-bool-컴비네이터-then과-then_some">8.2 Bool 컴비네이터: <code>.then()</code>과 <code>.then_some()</code></a></h2>
+<p>이 패턴도 흔합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let label = if is_admin {
+    Some("ADMIN")
+} else {
+    None
+};
+<span class="boring">}</span></code></pre>
+<p>Rust 1.62+에서는:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let label = is_admin.then_some("ADMIN");
+<span class="boring">}</span></code></pre>
+<p>계산된 값이 필요하면:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let permissions = is_admin.then(|| compute_admin_permissions());
+<span class="boring">}</span></code></pre>
+<p>체인에서 특히 강합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형
+let mut tags = Vec::new();
+if user.is_admin { tags.push("admin"); }
+if user.is_verified { tags.push("verified"); }
+if user.score &gt; 100 { tags.push("power-user"); }
+
+// 함수형
+let tags: Vec&lt;&amp;str&gt; = [
+    user.is_admin.then_some("admin"),
+    user.is_verified.then_some("verified"),
+    (user.score &gt; 100).then_some("power-user"),
+]
+.into_iter()
+.flatten()
+.collect();
+<span class="boring">}</span></code></pre>
+<p>함수형 버전은 “조건부 원소로 리스트를 만든다“는 패턴을 드러냅니다. 명령형은 각 <code>if</code>가 같은 일(push)하는지 일일이 읽어야 합니다.</p>
+<hr>
+<p><a id="83-iterator-chains-vs-loops-the-decision-framework"></a></p>
+<h2 id="83-이터레이터-체인-vs-루프-판단-틀"><a class="header" href="#83-이터레이터-체인-vs-루프-판단-틀">8.3 이터레이터 체인 vs 루프: 판단 틀</a></h2>
+<p>7장에서 기계를 봤다면, 이 절은 판단을 다룹니다.</p>
+<p><a id="when-iterators-win"></a></p>
+<h3 id="이터레이터가-이기는-경우"><a class="header" href="#이터레이터가-이기는-경우">이터레이터가 이기는 경우</a></h3>
+<p><strong>데이터 파이프라인</strong> — 컬렉션을 여러 단계로 변환:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형: 8줄, 가변 변수 2개
+let mut results = Vec::new();
+for item in inventory {
+    if item.category == Category::Server {
+        if let Some(temp) = item.last_temperature() {
+            if temp &gt; 80.0 {
+                results.push((item.id, temp));
+            }
+        }
+    }
+}
+
+// 함수형: 6줄, 가변 변수 0, 파이프라인 하나
+let results: Vec&lt;_&gt; = inventory.iter()
+    .filter(|item| item.category == Category::Server)
+    .filter_map(|item| item.last_temperature().map(|t| (item.id, t)))
+    .filter(|(_, temp)| *temp &gt; 80.0)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>함수형이 이기는 이유:</p>
+<ul>
+<li>각 <code>filter</code>가 독립적으로 읽힘</li>
+<li><code>mut</code> 없음 — 데이터가 한 방향으로 흐름</li>
+<li>파이프라인 단계를 추가·제거·순서 바꾸기에 구조를 뜯지 않아도 됨</li>
+<li>LLVM이 이터레이터 어댑터를 루프와 같은 기계어로 인라인</li>
+</ul>
+<p><strong>집계</strong> — 컬렉션에서 하나의 값 계산:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형
+let mut total_power = 0.0;
+let mut count = 0;
+for server in fleet {
+    total_power += server.power_draw();
+    count += 1;
+}
+let avg = total_power / count as f64;
+
+// 함수형
+let (total_power, count) = fleet.iter()
+    .map(|s| s.power_draw())
+    .fold((0.0, 0usize), |(sum, n), p| (sum + p, n + 1));
+let avg = total_power / count as f64;
+<span class="boring">}</span></code></pre>
+<p>합만 필요하면 더 단순합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let total: f64 = fleet.iter().map(|s| s.power_draw()).sum();
+<span class="boring">}</span></code></pre>
+<p><a id="when-loops-win"></a></p>
+<h3 id="루프가-이기는-경우"><a class="header" href="#루프가-이기는-경우">루프가 이기는 경우</a></h3>
+<p><strong>복잡한 상태로 조기 종료:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이게 명확하고 직접적
+let mut best_candidate = None;
+for server in fleet {
+    let score = evaluate(server);
+    if score &gt; threshold {
+        if server.is_available() {
+            best_candidate = Some(server);
+            break; // 찾았으면 즉시 중단
+        }
+    }
+}
+
+// 함수형 버전도 억지는 아님
+let best_candidate = fleet.iter()
+    .filter(|s| evaluate(s) &gt; threshold)
+    .find(|s| s.is_available());
+<span class="boring">}</span></code></pre>
+<p>잠깐 — 함수형도 꽤 깔끔합니다. 진짜로 지는 경우를 봅시다.</p>
+<p><strong>한 번에 여러 출력을 만드는 경우:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형: 명확, 각 가지가 다른 일
+let mut warnings = Vec::new();
+let mut errors = Vec::new();
+let mut stats = Stats::default();
+
+for event in log_stream {
+    match event.severity {
+        Severity::Warn =&gt; {
+            warnings.push(event.clone());
+            stats.warn_count += 1;
+        }
+        Severity::Error =&gt; {
+            errors.push(event.clone());
+            stats.error_count += 1;
+            if event.is_critical() {
+                alert_oncall(&amp;event);
+            }
+        }
+        _ =&gt; stats.other_count += 1,
+    }
+}
+
+// 함수형: 억지이고 읽기 싫음
+let (warnings, errors, stats) = log_stream.iter().fold(
+    (Vec::new(), Vec::new(), Stats::default()),
+    |(mut w, mut e, mut s), event| {
+        match event.severity {
+            Severity::Warn =&gt; { w.push(event.clone()); s.warn_count += 1; }
+            Severity::Error =&gt; {
+                e.push(event.clone()); s.error_count += 1;
+                if event.is_critical() { alert_oncall(event); }
+            }
+            _ =&gt; s.other_count += 1,
+        }
+        (w, e, s)
+    },
+);
+<span class="boring">}</span></code></pre>
+<p><code>fold</code> 버전은 <em>더 길고</em>, <em>읽기 어렵고</em>, 어차피 돌연변이(<code>mut</code> 누적자)가 있습니다. 루프가 이기는 이유:</p>
+<ul>
+<li>여러 출력을 동시에 쌓음</li>
+<li>부수 효과(알림)가 로직에 섞임</li>
+<li>가지 본문이 식이 아니라 문</li>
+</ul>
+<p><strong>I/O가 있는 상태 머신:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 토큰을 읽는 파서 — 루프 자체가 알고리즘
+let mut state = ParseState::Start;
+loop {
+    let token = lexer.next_token()?;
+    state = match state {
+        ParseState::Start =&gt; match token {
+            Token::Keyword(k) =&gt; ParseState::GotKeyword(k),
+            Token::Eof =&gt; break,
+            _ =&gt; return Err(ParseError::UnexpectedToken(token)),
+        },
+        ParseState::GotKeyword(k) =&gt; match token {
+            Token::Ident(name) =&gt; ParseState::GotName(k, name),
+            _ =&gt; return Err(ParseError::ExpectedIdentifier),
+        },
+        // ...더 많은 상태
+    };
+}
+<span class="boring">}</span></code></pre>
+<p>더 깔끔한 함수형 대안이 없습니다. <code>match state</code>와 함께한 루프가 상태 머신의 자연스러운 표현입니다.</p>
+<p><a id="the-decision-flowchart"></a></p>
+<h3 id="판단-플로차트"><a class="header" href="#판단-플로차트">판단 플로차트</a></h3>
+<pre class="mermaid">flowchart TB
+    START{무엇을 하고 있나?}
+
+    START --&gt;|"컬렉션을 다른 컬렉션으로\n변환"| PIPE[이터레이터 체인 사용]
+    START --&gt;|"컬렉션에서 하나의 값\n계산"| AGG{얼마나 복잡한가?}
+    START --&gt;|"한 패스에서\n여러 출력"| LOOP[for 루프 사용]
+    START --&gt;|"부수 효과·I/O가 있는\n상태 머신"| LOOP
+    START --&gt;|"Option/Result 하나\n변환 + 기본값"| COMB[컴비네이터 사용]
+
+    AGG --&gt;|"합, 개수, 최소, 최대"| BUILTIN[".sum(), .count(),\n.min(), .max() 사용"]
+    AGG --&gt;|"사용자 정의 누적"| FOLD{누적자에 돌연변이나\n부수 효과가 있는가?}
+    FOLD --&gt;|"아니오"| FOLDF[".fold() 사용"]
+    FOLD --&gt;|"예"| LOOP
+
+    style PIPE fill:#d4efdf,stroke:#27ae60,color:#000
+    style COMB fill:#d4efdf,stroke:#27ae60,color:#000
+    style BUILTIN fill:#d4efdf,stroke:#27ae60,color:#000
+    style FOLDF fill:#d4efdf,stroke:#27ae60,color:#000
+    style LOOP fill:#fef9e7,stroke:#f1c40f,color:#000
+</pre>
+
+<p><a id="sidebar-scoped-mutability-imperative-inside-functional-outside"></a></p>
+<h3 id="사이드바-스코프된-가변성--안은-명령형-밖은-함수형"><a class="header" href="#사이드바-스코프된-가변성--안은-명령형-밖은-함수형">사이드바: 스코프된 가변성 — 안은 명령형, 밖은 함수형</a></h3>
+<p>Rust 블록은 식입니다. 돌연변이를 구성 단계에만 가두고 결과를 불변으로 묶을 수 있습니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use rand::random;
+
+let samples = {
+    let mut buf = Vec::with_capacity(10);
+    while buf.len() &lt; 10 {
+        let reading: f64 = random();
+        buf.push(reading);
+        if random::&lt;u8&gt;() % 3 == 0 { break; } // 무작위로 일찍 종료
+    }
+    buf
+};
+// samples는 불변 — 1~10개 원소
+<span class="boring">}</span></code></pre>
+<p>안쪽 <code>buf</code>만 블록 안에서 가변입니다. 블록이 값을 내놓으면 바깥 <code>samples</code>는 불변이고, 이후 <code>samples.push(...)</code>는 컴파일러가 거절합니다.</p>
+<p><strong>이터레이터 체인이 아닌 이유:</strong> 이렇게 시도할 수 있습니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let samples: Vec&lt;f64&gt; = std::iter::from_fn(|| Some(random()))
+    .take(10)
+    .take_while(|_| random::&lt;u8&gt;() % 3 != 0)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>하지만 <code>take_while</code>은 조건을 <strong>실패한 원소를 제외</strong>하므로, 명령형이 보장하는 “최소 하나” 대신 0~9개가 됩니다. <code>scan</code>이나 <code>chain</code>으로 우회할 수는 있지만 명령형이 더 분명합니다.</p>
+<p><strong>스코프 가변성이 진짜로 이기는 경우:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>상황</th><th>이터레이터가 애매한 이유</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>정렬 후 고정</strong> (<code>sort_unstable()</code> + <code>dedup()</code>)</td><td>둘 다 <code>()</code> 반환 — 체인 가능한 출력 없음(itertools에 <code>.sorted().dedup()</code> 등이 있으면 사용)</td></tr>
+<tr><td><strong>상태적 종료</strong>(데이터와 무관한 조건으로 중단)</td><td><code>take_while</code>이 경계 원소를 버림</td></tr>
+<tr><td><strong>여러 단계로 구조체 채우기</strong>(서로 다른 출처에서 필드별)</td><td>자연스러운 단일 파이프라인이 없음</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>솔직한 기준:</strong> 대부분의 컬렉션 구축에는 이터레이터 체인이나 <a href="https://docs.rs/itertools">itertools</a>가 선호됩니다. 분기·조기 종료·원자리(in-place) 돌연변이가 단일 파이프라인에 안 맞을 때 스코프 가변성을 쓰세요. 이 패턴의 진짜 가치는 <strong>돌연변이 스코프가 변수 수명보다 작을 수 있다</strong>는 것을 가르치는 것 — C++, C#, Python에서 온 개발자에게도 놀라운 Rust 기본기입니다.</p>
+<hr>
+<p><a id="84-the--operator-where-functional-meets-imperative"></a></p>
+<h2 id="84--연산자-함수형과-명령형이-만나는-곳"><a class="header" href="#84--연산자-함수형과-명령형이-만나는-곳">8.4 <code>?</code> 연산자: 함수형과 명령형이 만나는 곳</a></h2>
+<p><code>?</code>는 두 스타일을 가장 우아하게 합칩니다. 본질적으로 <code>.and_then()</code>과 조기 반환을 합친 것입니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이런 and_then 체인...
+fn load_config() -&gt; Result&lt;Config, Error&gt; {
+    read_file("config.toml")
+        .and_then(|contents| parse_toml(&amp;contents))
+        .and_then(|table| validate_config(table))
+        .and_then(|valid| Config::from_validated(valid))
+}
+
+// ...은 이것과 동일
+fn load_config() -&gt; Result&lt;Config, Error&gt; {
+    let contents = read_file("config.toml")?;
+    let table = parse_toml(&amp;contents)?;
+    let valid = validate_config(table)?;
+    Config::from_validated(valid)
+}
+<span class="boring">}</span></code></pre>
+<p>둘 다 정신적으로는 함수형(에러를 자동 전파)이지만 <code>?</code> 버전은 중간에 이름을 붙일 수 있어 다음이 중요할 때 유리합니다.</p>
+<ul>
+<li>나중에 <code>contents</code>를 다시 써야 할 때</li>
+<li>단계마다 <code>.context("while parsing config")?</code>를 붙이고 싶을 때</li>
+<li>디버깅할 때 중간 값을 보려 할 때</li>
+</ul>
+<p><strong>안티패턴:</strong> <code>?</code>로 쓸 수 있는데 긴 <code>.and_then()</code> 체인. 체인의 모든 클로저가 <code>|x| next_step(x)</code>이면 <code>?</code>를 재발명한 것입니다.</p>
+<p><strong><code>.and_then()</code>이 <code>?</code>보다 나은 경우:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 조기 반환 없이 Option 안에서 변환
+let port: Option&lt;u16&gt; = config.get("port")
+    .and_then(|v| v.parse::&lt;u16&gt;().ok())
+    .filter(|&amp;p| p &gt; 0 &amp;&amp; p &lt; 65535);
+<span class="boring">}</span></code></pre>
+<p>여기서는 <code>?</code>를 쓸 수 없습니다 — 함수에서 반환할 <code>Option</code>을 <strong>만드는</strong> 중이지 전파하는 중이 아니기 때문입니다.</p>
+<hr>
+<p><a id="85-collection-building-collect-vs-push-loops"></a></p>
+<h2 id="85-컬렉션-만들기-collect-vs-push-루프"><a class="header" href="#85-컬렉션-만들기-collect-vs-push-루프">8.5 컬렉션 만들기: <code>collect()</code> vs push 루프</a></h2>
+<p><code>collect()</code>는 생각보다 강력합니다.</p>
+<p><a id="collecting-into-a-result"></a></p>
+<h3 id="result로-모으기"><a class="header" href="#result로-모으기">Result로 모으기</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형: 리스트 파싱, 첫 에러에서 실패
+let mut numbers = Vec::new();
+for s in input_strings {
+    let n: i64 = s.parse().map_err(|_| Error::BadInput(s.clone()))?;
+    numbers.push(n);
+}
+
+// 함수형: Result&lt;Vec&lt;_&gt;, _&gt;로 모으기
+let numbers: Vec&lt;i64&gt; = input_strings.iter()
+    .map(|s| s.parse::&lt;i64&gt;().map_err(|_| Error::BadInput(s.clone())))
+    .collect::&lt;Result&lt;_, _&gt;&gt;()?;
+<span class="boring">}</span></code></pre>
+<p><code>collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()</code> 트릭은 <code>Result</code>가 <code>FromIterator</code>를 구현하기 때문에 동작합니다. <code>?</code>가 있는 루프처럼 첫 <code>Err</code>에서 단락합니다.</p>
+<p><a id="collecting-into-a-hashmap"></a></p>
+<h3 id="hashmap으로-모으기"><a class="header" href="#hashmap으로-모으기">HashMap으로 모으기</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형
+let mut index = HashMap::new();
+for server in fleet {
+    index.insert(server.id.clone(), server);
+}
+
+// 함수형
+let index: HashMap&lt;_, _&gt; = fleet.into_iter()
+    .map(|s| (s.id.clone(), s))
+    .collect();
+<span class="boring">}</span></code></pre>
+<p><a id="collecting-into-a-string"></a></p>
+<h3 id="string으로-모으기"><a class="header" href="#string으로-모으기">String으로 모으기</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형
+let mut csv = String::new();
+for (i, field) in fields.iter().enumerate() {
+    if i &gt; 0 { csv.push(','); }
+    csv.push_str(field);
+}
+
+// 함수형
+let csv = fields.join(",");
+
+// 더 복잡한 포맷:
+let csv: String = fields.iter()
+    .map(|f| format!("\"{f}\""))
+    .collect::&lt;Vec&lt;_&gt;&gt;()
+    .join(",");
+<span class="boring">}</span></code></pre>
+<p><a id="when-the-loop-version-wins"></a></p>
+<h3 id="루프-버전이-이기는-경우"><a class="header" href="#루프-버전이-이기는-경우">루프 버전이 이기는 경우</a></h3>
+<p><code>collect()</code>는 새 컬렉션을 할당합니다. <strong>원자리 수정</strong>이면 루프가 더 분명하고 효율적일 수 있습니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 원자리 갱신 — 더 나은 함수형 대안이 없음
+for server in &amp;mut fleet {
+    if server.needs_refresh() {
+        server.refresh_telemetry()?;
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>함수형으로는 <code>.iter_mut().for_each(|s| { ... })</code>가 되는데, 이는 문법만 다른 루프입니다.</p>
+<hr>
+<p><a id="86-pattern-matching-as-function-dispatch"></a></p>
+<h2 id="86-패턴-매칭을-함수-디스패치로"><a class="header" href="#86-패턴-매칭을-함수-디스패치로">8.6 패턴 매칭을 함수 디스패치로</a></h2>
+<p>Rust의 <code>match</code>는 대부분 명령적으로 쓰지만 함수형 관점도 있습니다.</p>
+<p><a id="match-as-a-lookup-table"></a></p>
+<h3 id="매치를-룩업-테이블로"><a class="header" href="#매치를-룩업-테이블로">매치를 룩업 테이블로</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령형 사고: "각 경우를 검사"
+fn status_message(code: StatusCode) -&gt; &amp;'static str {
+    if code == StatusCode::OK { "Success" }
+    else if code == StatusCode::NOT_FOUND { "Not found" }
+    else if code == StatusCode::INTERNAL { "Server error" }
+    else { "Unknown" }
+}
+
+// 함수형 사고: "정의역에서 치역으로 매핑"
+fn status_message(code: StatusCode) -&gt; &amp;'static str {
+    match code {
+        StatusCode::OK =&gt; "Success",
+        StatusCode::NOT_FOUND =&gt; "Not found",
+        StatusCode::INTERNAL =&gt; "Server error",
+        _ =&gt; "Unknown",
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><code>match</code> 버전은 스타일만 아니라 컴파일러가 <strong>완전성</strong>을 검사합니다. 새 변형을 추가하면 처리하지 않은 모든 <code>match</code>가 컴파일 에러가 됩니다. <code>if/else</code> 체인은 조용히 기본으로 떨어집니다.</p>
+<p><a id="match--destructuring-as-a-pipeline"></a></p>
+<h3 id="매치--분해를-파이프라인으로"><a class="header" href="#매치--분해를-파이프라인으로">매치 + 분해를 파이프라인으로</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 명령 파싱 — 각 팔이 추출·변환
+fn execute(cmd: Command) -&gt; Result&lt;Response, Error&gt; {
+    match cmd {
+        Command::Get { key } =&gt; db.get(&amp;key).map(Response::Value),
+        Command::Set { key, value } =&gt; db.set(key, value).map(|_| Response::Ok),
+        Command::Delete { key } =&gt; db.delete(&amp;key).map(|_| Response::Ok),
+        Command::Batch(cmds) =&gt; cmds.into_iter()
+            .map(execute)
+            .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()
+            .map(Response::Batch),
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>각 팔은 같은 타입을 내는 식입니다. 열거형 변형을 인덱스로 한 함수 테이블처럼 패턴 매칭이 함수 디스패치입니다.</p>
+<hr>
+<p><a id="87-chaining-methods-on-custom-types"></a></p>
+<h2 id="87-사용자-정의-타입에-메서드-체이닝"><a class="header" href="#87-사용자-정의-타입에-메서드-체이닝">8.7 사용자 정의 타입에 메서드 체이닝</a></h2>
+<p>함수형 스타일은 표준 라이브러리에만 국한되지 않습니다. 빌더·플루언트 API는 위장한 함수형 프로그래밍입니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 자기 타입 위의 컴비네이터 체인
+let query = QueryBuilder::new("servers")
+    .filter("status", Eq, "active")
+    .filter("rack", In, &amp;["A1", "A2", "B1"])
+    .order_by("temperature", Desc)
+    .limit(50)
+    .build();
+<span class="boring">}</span></code></pre>
+<p><strong>핵심:</strong> 타입이 <code>self</code>를 받고 <code>Self</code>(또는 변환된 타입)를 반환하는 메서드가 있으면 컴비네이터를 만든 것입니다. 같은 함수형/명령형 판단이 적용됩니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 좋음: 각 단계가 단순 변환이라 체이닝이 자연스러움
+let config = Config::default()
+    .with_timeout(Duration::from_secs(30))
+    .with_retries(3)
+    .with_tls(true);
+
+// 나쁨: 체이닝은 되지만 체인이 너무 많은 일을 함
+let result = processor
+    .load_data(path)?       // I/O
+    .validate()             // 순수
+    .transform(rule_set)    // 순수
+    .save_to_disk(output)?  // I/O
+    .notify_downstream()?;  // 부수 효과
+
+// 나음: 순수 파이프라인과 I/O를 분리
+let data = load_data(path)?;
+let processed = data.validate().transform(rule_set);
+save_to_disk(output, &amp;processed)?;
+notify_downstream()?;
+<span class="boring">}</span></code></pre>
+<p>체인이 순수 변환과 I/O를 섞으면 실패할 수 있는 호출, 부수 효과, 실제 데이터 변환이 어디인지 읽기 어렵습니다.</p>
+<hr>
+<p><a id="88-performance-theyre-the-same"></a></p>
+<h2 id="88-성능-같은-것"><a class="header" href="#88-성능-같은-것">8.8 성능: 같은 것</a></h2>
+<p>흔한 오해: “클로저와 할당이 많아서 함수형이 느리다.”</p>
+<p>Rust에서는 <strong>이터레이터 체인이 손으로 쓴 루프와 같은 기계어로 컴파일</strong>됩니다. LLVM이 클로저 호출을 인라인하고 이터레이터 어댑터 구조체를 없애고, 종종 어셈블리가 동일합니다. 이것이 <em>제로 비용 추상화</em>이며 말만이 아니라 <strong>측정</strong>됩니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 릴리스 빌드에서 동일 어셈블리가 나오는 경우:
+
+// 함수형
+let sum: i64 = (0..1000).filter(|n| n % 2 == 0).map(|n| n * n).sum();
+
+// 명령형
+let mut sum: i64 = 0;
+for n in 0..1000 {
+    if n % 2 == 0 {
+        sum += n * n;
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>예외 하나:</strong> <code>.collect()</code>는 할당합니다. <code>.map().collect().iter().map().collect()</code>처럼 중간 컬렉션을 여러 번 쌓으면 루프가 피하는 할당 비용을 낼 수 있습니다. 해결: 중간 <code>collect</code>를 없애고 어댑터를 직접 이어 붙이거나, 중간 컬렉션이 다른 이유로 필요하면 루프를 쓰세요.</p>
+<hr>
+<p><a id="89-the-taste-test-a-catalog-of-transformations"></a></p>
+<h2 id="89-맛보기-변환-카탈로그"><a class="header" href="#89-맛보기-변환-카탈로그">8.9 맛보기: 변환 카탈로그</a></h2>
+<p>“6줄 썼는데 한 줄이 있다“는 흔한 패턴 참고표입니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>명령형 패턴</th><th>함수형 대안</th><th>함수형을 선호할 때</th></tr>
+</thead>
+<tbody>
+<tr><td><code>if let Some(x) = opt { f(x) } else { default }</code></td><td><code>opt.map_or(default, f)</code></td><td>양쪽이 짧은 식일 때</td></tr>
+<tr><td><code>if let Some(x) = opt { Some(g(x)) } else { None }</code></td><td><code>opt.map(g)</code></td><td>항상 — <code>map</code>이 하는 일</td></tr>
+<tr><td><code>if condition { Some(x) } else { None }</code></td><td><code>condition.then_some(x)</code></td><td>항상</td></tr>
+<tr><td><code>if condition { Some(compute()) } else { None }</code></td><td><code>condition.then(compute)</code></td><td>항상</td></tr>
+<tr><td><code>match opt { Some(x) if pred(x) =&gt; Some(x), _ =&gt; None }</code></td><td><code>opt.filter(pred)</code></td><td>항상</td></tr>
+<tr><td><code>for x in iter { if pred(x) { result.push(f(x)); } }</code></td><td><code>iter.filter(pred).map(f).collect()</code></td><td>파이프라인이 한 화면에 읽힐 때</td></tr>
+<tr><td><code>if a.is_some() &amp;&amp; b.is_some() { Some((a?, b?)) }</code></td><td><code>a.zip(b)</code></td><td>항상 — <code>.zip()</code>이 이것과 같음</td></tr>
+<tr><td><code>match (a, b) { (Some(x), Some(y)) =&gt; x + y, _ =&gt; 0 }</code></td><td><code>a.zip(b).map(|(x,y)| x + y).unwrap_or(0)</code></td><td>케이스에 따라 — 복잡도에 따름</td></tr>
+<tr><td><code>iter.map(f).collect::&lt;Vec&lt;_&gt;&gt;()[0]</code></td><td><code>iter.map(f).next().unwrap()</code></td><td>한 원소만 필요하면 Vec에 넣지 말 것</td></tr>
+<tr><td><code>let mut v = vec; v.sort(); v</code></td><td><code>{ let mut v = vec; v.sort(); v }</code></td><td>std에는 <code>.sorted()</code> 없음(itertools 사용)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="810-the-anti-patterns"></a></p>
+<h2 id="810-안티패턴"><a class="header" href="#810-안티패턴">8.10 안티패턴</a></h2>
+<p><a id="over-functionalizing-the-5-deep-chain-nobody-can-read"></a></p>
+<h3 id="과함수형-아무도-못-읽는-5단-체인"><a class="header" href="#과함수형-아무도-못-읽는-5단-체인">과함수형: 아무도 못 읽는 5단 체인</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 우아함이 아니라 퍼즐입니다.
+let result = data.iter()
+    .filter_map(|x| x.metadata.as_ref())
+    .flat_map(|m| m.tags.iter())
+    .filter(|t| t.starts_with("env:"))
+    .map(|t| t.strip_prefix("env:").unwrap())
+    .filter(|env| allowed_envs.contains(env))
+    .map(|env| env.to_uppercase())
+    .collect::&lt;HashSet&lt;_&gt;&gt;()
+    .into_iter()
+    .sorted()
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+<span class="boring">}</span></code></pre>
+<p>어댑터가 ~4개를 넘으면 이름 붙은 중간 변수로 쪼개거나 헬퍼를 빼세요.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let env_tags = data.iter()
+    .filter_map(|x| x.metadata.as_ref())
+    .flat_map(|m| m.tags.iter());
+
+let allowed: Vec&lt;_&gt; = env_tags
+    .filter_map(|t| t.strip_prefix("env:"))
+    .filter(|env| allowed_envs.contains(env))
+    .map(|env| env.to_uppercase())
+    .sorted()
+    .collect();
+<span class="boring">}</span></code></pre>
+<p><a id="under-functionalizing-the-c-style-loop-that-rust-has-a-word-for"></a></p>
+<h3 id="부함수형-rust에-단어가-있는-c-스타일-루프"><a class="header" href="#부함수형-rust에-단어가-있는-c-스타일-루프">부함수형: Rust에 단어가 있는 C 스타일 루프</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이건 그냥 .any()
+let mut found = false;
+for item in &amp;list {
+    if item.is_expired() {
+        found = true;
+        break;
+    }
+}
+
+// 이렇게 쓰세요
+let found = list.iter().any(|item| item.is_expired());
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이건 그냥 .find()
+let mut target = None;
+for server in &amp;fleet {
+    if server.id == target_id {
+        target = Some(server);
+        break;
+    }
+}
+
+// 이렇게 쓰세요
+let target = fleet.iter().find(|s| s.id == target_id);
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이건 그냥 .all()
+let mut all_healthy = true;
+for server in &amp;fleet {
+    if !server.is_healthy() {
+        all_healthy = false;
+        break;
+    }
+}
+
+// 이렇게 쓰세요
+let all_healthy = fleet.iter().all(|s| s.is_healthy());
+<span class="boring">}</span></code></pre>
+<p>표준 라이브러리에 이유가 있습니다. 어휘를 익히면 패턴이 분명해집니다.</p>
+<hr>
+<p><a id="key-takeaways"></a></p>
+<h2 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h2>
+<blockquote>
+<ul>
+<li><strong>Option과 Result는 원소 하나짜리 컬렉션입니다.</strong> <code>.map()</code>, <code>.and_then()</code>, <code>.unwrap_or_else()</code>, <code>.filter()</code>, <code>.zip()</code> 등 컴비네이터가 대부분의 <code>if let</code>/<code>match</code> 상용구를 대체합니다.</li>
+<li><strong><code>bool::then_some()</code>을 쓰세요</strong> — <code>if cond { Some(x) } else { None }</code>을 항상 대체합니다.</li>
+<li><strong>데이터 파이프라인에는 이터레이터 체인이 유리합니다</strong> — 가변 상태 없이 filter/map/collect. 루프와 같은 기계어로 컴파일됩니다.</li>
+<li><strong>여러 출력·상태 머신에는 루프가 유리합니다</strong> — 여러 컬렉션을 동시에 쌓거나, 가지에서 I/O를 하거나, 상태 전이를 관리할 때.</li>
+<li><strong><code>?</code> 연산자는 두 세계의 장점</strong> — 함수형 에러 전파와 명령형 가독성.</li>
+<li><strong>어댑터 ~4개에서 체인을 끊으세요</strong> — 가독성을 위해 이름이 중간값을 쓰세요. 과함수형은 부함수형만큼 나쁩니다.</li>
+<li><strong>표준 라이브러리 어휘를 익히세요</strong> — <code>.any()</code>, <code>.all()</code>, <code>.find()</code>, <code>.position()</code>, <code>.sum()</code>, <code>.min_by_key()</code> — 각각이 여러 줄 루프를 한 번의 의도 드러내는 호출로 바꿉니다.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>함께 보기:</strong> 클로저 기계와 <code>Fn</code> 계층은 <a href="ch07-closures-and-higher-order-functions.html">7장</a>. 에러 컴비네이터는 <a href="ch10-error-handling-patterns.html">10장</a>. 플루언트 API는 <a href="ch15-crate-architecture-and-api-design.html">15장</a>.</p>
+</blockquote>
+<hr>
+<p><a id="exercise-refactoring-imperative-to-functional"></a></p>
+<h3 id="연습-명령형을-함수형으로-리팩터링--30분"><a class="header" href="#연습-명령형을-함수형으로-리팩터링--30분">연습: 명령형을 함수형으로 리팩터링 ★★ (~30분)</a></h3>
+<p>아래 함수를 명령형에서 함수형으로 리팩터링하세요. 그다음 <strong>함수형이 더 나쁜 한 곳</strong>을 짚고 이유를 설명하세요.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn summarize_fleet(fleet: &amp;[Server]) -&gt; FleetSummary {
+    let mut healthy = Vec::new();
+    let mut degraded = Vec::new();
+    let mut failed = Vec::new();
+    let mut total_power = 0.0;
+    let mut max_temp = f64::NEG_INFINITY;
+
+    for server in fleet {
+        match server.health_status() {
+            Health::Healthy =&gt; healthy.push(server.id.clone()),
+            Health::Degraded(reason) =&gt; degraded.push((server.id.clone(), reason)),
+            Health::Failed(err) =&gt; failed.push((server.id.clone(), err)),
+        }
+        total_power += server.power_draw();
+        if server.max_temperature() &gt; max_temp {
+            max_temp = server.max_temperature();
+        }
+    }
+
+    FleetSummary {
+        healthy,
+        degraded,
+        failed,
+        avg_power: total_power / fleet.len() as f64,
+        max_temp,
+    }
+}
+<span class="boring">}</span></code></pre>
+<details>
+<summary>🔑 해답</summary>
+<p><code>total_power</code>와 <code>max_temp</code>는 함수형으로 깔끔히 씁니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn summarize_fleet(fleet: &amp;[Server]) -&gt; FleetSummary {
+    let avg_power: f64 = fleet.iter().map(|s| s.power_draw()).sum::&lt;f64&gt;()
+        / fleet.len() as f64;
+
+    let max_temp = fleet.iter()
+        .map(|s| s.max_temperature())
+        .fold(f64::NEG_INFINITY, f64::max);
+
+    // 하지만 세 갈래 분할은 루프가 더 낫습니다.
+    // 함수형이면 세 번의 순회 또는
+    // 세 개의 mut Vec 누적자를 담은 어색한 fold가 필요합니다.
+    let mut healthy = Vec::new();
+    let mut degraded = Vec::new();
+    let mut failed = Vec::new();
+
+    for server in fleet {
+        match server.health_status() {
+            Health::Healthy =&gt; healthy.push(server.id.clone()),
+            Health::Degraded(reason) =&gt; degraded.push((server.id.clone(), reason)),
+            Health::Failed(err) =&gt; failed.push((server.id.clone(), err)),
+        }
+    }
+
+    FleetSummary { healthy, degraded, failed, avg_power, max_temp }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>세 갈래 분할은 루프가 나은 이유:</strong> 함수형으로 하면 <code>.filter().collect()</code>를 세 번 돌려 <strong>순회가 3배</strong>이거나, 튜플 안에 <code>mut Vec</code> 세 개를 가진 <code>.fold()</code>가 되는데, 이는 문법만 나쁜 루프입니다. 명령형 한 패스 루프가 더 분명하고 효율적이며 확장하기도 쉽습니다.</p>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch07-closures-and-higher-order-functions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch09-smart-pointers-and-interior-mutability.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch07-closures-and-higher-order-functions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch09-smart-pointers-and-interior-mutability.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

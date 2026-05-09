@@ -1,0 +1,592 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>9. 리소스 추적을 위한 팬텀 타입 - Rust의 타입 주도 정확성</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-d7038b1f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-020eda16.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust의 타입 주도 정확성</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="phantom-types-for-resource-tracking"></a></p>
+<h1 id="리소스-추적을-위한-팬텀-타입-"><a class="header" href="#리소스-추적을-위한-팬텀-타입-">리소스 추적을 위한 팬텀 타입 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong> <code>PhantomData</code> 마커로 레지스터 폭, DMA 방향, 파일 디스크립터 상태를 <strong>타입 수준</strong>에서 인코딩해, 런타임 비용 없이 리소스 불일치 버그 한 클래스를 막는 방법입니다.</p>
+<p><strong>상호 참조:</strong> <a href="ch05-protocol-state-machines-type-state-for-r.html">ch05</a>(type-state), <a href="ch06-dimensional-analysis-making-the-compiler.html">ch06</a>(차원 타입), <a href="ch08-capability-mixins-compile-time-hardware-.html">ch08</a>(mixin), <a href="ch10-putting-it-all-together-a-complete-diagn.html">ch10</a>(통합)</p>
+</blockquote>
+<p><a id="the-problem-mixing-up-resources"></a></p>
+<h2 id="문제-리소스-혼동"><a class="header" href="#문제-리소스-혼동">문제: 리소스 혼동</a></h2>
+<p>하드웨어 리소스는 코드에서 비슷해 보이지만 서로 바꿔 쓸 수 없습니다.</p>
+<ul>
+<li>32비트 레지스터와 16비트 레지스터는 둘 다 “레지스터”</li>
+<li>읽기용 DMA 버퍼와 쓰기용 DMA 버퍼는 둘 다 <code>*mut u8</code>처럼 보임</li>
+<li>열린 fd와 닫힌 fd는 둘 다 <code>i32</code></li>
+</ul>
+<p>C에서는:</p>
+<pre><code class="language-c">// C — 모든 레지스터가 같아 보임
+uint32_t read_reg32(volatile void *base, uint32_t offset);
+uint16_t read_reg16(volatile void *base, uint32_t offset);
+
+// 버그: 16비트 레지스터를 32비트 함수로 읽음
+uint32_t status = read_reg32(pcie_bar, LINK_STATUS_REG);  // reg16이어야 함!
+</code></pre>
+<p><a id="phantom-type-parameters"></a></p>
+<h2 id="팬텀-타입-매개변수"><a class="header" href="#팬텀-타입-매개변수">팬텀 타입 매개변수</a></h2>
+<p>**팬텀 타입(phantom type)**은 구조체 정의에는 나오지만 어떤 필드에도 쓰이지 않는 타입 매개변수입니다. 순전히 타입 수준 정보를 실어 나릅니다.</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// 레지스터 폭 마커 — 크기 0
+pub struct Width8;
+pub struct Width16;
+pub struct Width32;
+pub struct Width64;
+
+/// 폭으로 매개변수화된 레지스터 핸들.
+/// PhantomData&lt;W&gt;는 0바이트 — 컴파일 타임 전용 마커.
+pub struct Register&lt;W&gt; {
+    base: usize,
+    offset: usize,
+    _width: PhantomData&lt;W&gt;,
+}
+
+impl Register&lt;Width8&gt; {
+    pub fn read(&amp;self) -&gt; u8 {
+        // ... base + offset에서 1바이트 읽기 ...
+        0 // 스텁
+    }
+    pub fn write(&amp;self, _value: u8) {
+        // ... 1바이트 쓰기 ...
+    }
+}
+
+impl Register&lt;Width16&gt; {
+    pub fn read(&amp;self) -&gt; u16 {
+        // ... base + offset에서 2바이트 읽기 ...
+        0 // 스텁
+    }
+    pub fn write(&amp;self, _value: u16) {
+        // ... 2바이트 쓰기 ...
+    }
+}
+
+impl Register&lt;Width32&gt; {
+    pub fn read(&amp;self) -&gt; u32 {
+        // ... base + offset에서 4바이트 읽기 ...
+        0 // 스텁
+    }
+    pub fn write(&amp;self, _value: u32) {
+        // ... 4바이트 쓰기 ...
+    }
+}
+
+/// PCIe 설정 공간 레지스터 정의.
+pub struct PcieConfig {
+    base: usize,
+}
+
+impl PcieConfig {
+    pub fn vendor_id(&amp;self) -&gt; Register&lt;Width16&gt; {
+        Register { base: self.base, offset: 0x00, _width: PhantomData }
+    }
+
+    pub fn device_id(&amp;self) -&gt; Register&lt;Width16&gt; {
+        Register { base: self.base, offset: 0x02, _width: PhantomData }
+    }
+
+    pub fn command(&amp;self) -&gt; Register&lt;Width16&gt; {
+        Register { base: self.base, offset: 0x04, _width: PhantomData }
+    }
+
+    pub fn status(&amp;self) -&gt; Register&lt;Width16&gt; {
+        Register { base: self.base, offset: 0x06, _width: PhantomData }
+    }
+
+    pub fn bar0(&amp;self) -&gt; Register&lt;Width32&gt; {
+        Register { base: self.base, offset: 0x10, _width: PhantomData }
+    }
+}
+
+fn pcie_example() {
+    let cfg = PcieConfig { base: 0xFE00_0000 };
+
+    let vid: u16 = cfg.vendor_id().read();    // u16 반환
+    let bar: u32 = cfg.bar0().read();         // u32 반환
+
+    // 섞어 쓸 수 없음:
+    // let bad: u32 = cfg.vendor_id().read(); // ❌ ERROR: expected u16
+    // cfg.bar0().write(0u16);                // ❌ ERROR: expected u32
+}</code></pre>
+<p><a id="dma-buffer-access-control"></a></p>
+<h2 id="dma-버퍼-접근-제어"><a class="header" href="#dma-버퍼-접근-제어">DMA 버퍼 접근 제어</a></h2>
+<p>DMA 버퍼에는 방향이 있습니다. <strong>디바이스→호스트(읽기)</strong> 용과 <strong>호스트→디바이스(쓰기)</strong> 용이 있는데, 잘못된 방향을 쓰면 데이터가 깨지거나 버스 오류가 납니다.</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// 방향 마커
+pub struct ToDevice;     // 호스트가 쓰고 디바이스가 읽음
+pub struct FromDevice;   // 디바이스가 쓰고 호스트가 읽음
+
+/// 방향이 강제되는 DMA 버퍼.
+pub struct DmaBuffer&lt;Dir&gt; {
+    ptr: *mut u8,
+    len: usize,
+    dma_addr: u64,  // 디바이스용 물리 주소
+    _dir: PhantomData&lt;Dir&gt;,
+}
+
+impl DmaBuffer&lt;ToDevice&gt; {
+    /// 디바이스로 보낼 데이터로 버퍼를 채웁니다.
+    pub fn write_data(&amp;mut self, data: &amp;[u8]) {
+        assert!(data.len() &lt;= self.len);
+        unsafe { std::ptr::copy_nonoverlapping(data.as_ptr(), self.ptr, data.len()) }
+    }
+
+    /// 디바이스가 읽을 DMA 주소.
+    pub fn device_addr(&amp;self) -&gt; u64 {
+        self.dma_addr
+    }
+}
+
+impl DmaBuffer&lt;FromDevice&gt; {
+    /// 디바이스가 버퍼에 쓴 데이터를 읽습니다.
+    pub fn read_data(&amp;self) -&gt; &amp;[u8] {
+        unsafe { std::slice::from_raw_parts(self.ptr, self.len) }
+    }
+
+    /// 디바이스가 쓸 DMA 주소.
+    pub fn device_addr(&amp;self) -&gt; u64 {
+        self.dma_addr
+    }
+}
+
+// FromDevice 버퍼에 쓸 수 없음:
+// fn oops(buf: &amp;mut DmaBuffer&lt;FromDevice&gt;) {
+//     buf.write_data(&amp;[1, 2, 3]);  // ❌ DmaBuffer&lt;FromDevice&gt;에 `write_data` 없음
+// }
+
+// ToDevice 버퍼에서 읽을 수 없음:
+// fn oops2(buf: &amp;DmaBuffer&lt;ToDevice&gt;) {
+//     let data = buf.read_data();  // ❌ DmaBuffer&lt;ToDevice&gt;에 `read_data` 없음
+// }</code></pre>
+<p><a id="file-descriptor-ownership"></a></p>
+<h2 id="파일-디스크립터-소유권"><a class="header" href="#파일-디스크립터-소유권">파일 디스크립터 소유권</a></h2>
+<p>흔한 버그: 닫은 뒤에도 fd를 씁니다. 팬텀 타입으로 열림/닫힘 상태를 추적할 수 있습니다.</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+pub struct Open;
+pub struct Closed;
+
+/// 상태가 추적되는 파일 디스크립터.
+pub struct Fd&lt;State&gt; {
+    raw: i32,
+    _state: PhantomData&lt;State&gt;,
+}
+
+impl Fd&lt;Open&gt; {
+    pub fn open(path: &amp;str) -&gt; Result&lt;Self, String&gt; {
+        // ... 파일 열기 ...
+        Ok(Fd { raw: 3, _state: PhantomData }) // 스텁
+    }
+
+    pub fn read(&amp;self, buf: &amp;mut [u8]) -&gt; Result&lt;usize, String&gt; {
+        // ... fd에서 읽기 ...
+        Ok(0) // 스텁
+    }
+
+    pub fn write(&amp;self, data: &amp;[u8]) -&gt; Result&lt;usize, String&gt; {
+        // ... fd에 쓰기 ...
+        Ok(data.len()) // 스텁
+    }
+
+    /// fd 닫기 — Closed 핸들을 반환.
+    /// Open 핸들은 소비되어 닫은 뒤 사용 방지.
+    pub fn close(self) -&gt; Fd&lt;Closed&gt; {
+        // ... fd 닫기 ...
+        Fd { raw: self.raw, _state: PhantomData }
+    }
+}
+
+impl Fd&lt;Closed&gt; {
+    // read()/write() 없음 — Fd&lt;Closed&gt;에는 존재하지 않음.
+    // 닫은 뒤 사용은 컴파일 오류가 됨.
+
+    pub fn raw_fd(&amp;self) -&gt; i32 {
+        self.raw
+    }
+}
+
+fn fd_example() -&gt; Result&lt;(), String&gt; {
+    let fd = Fd::open("/dev/ipmi0")?;
+    let mut buf = [0u8; 256];
+    fd.read(&amp;mut buf)?;
+
+    let closed = fd.close();
+
+    // closed.read(&amp;mut buf)?;  // ❌ Fd&lt;Closed&gt;에 `read` 없음
+    // closed.write(&amp;[1])?;     // ❌ Fd&lt;Closed&gt;에 `write` 없음
+
+    Ok(())
+}</code></pre>
+<p><a id="combining-phantom-types-with-earlier-patterns"></a></p>
+<h2 id="앞선-패턴과-팬텀-타입-결합"><a class="header" href="#앞선-패턴과-팬텀-타입-결합">앞선 패턴과 팬텀 타입 결합</a></h2>
+<p>팬텀 타입은 지금까지 본 모든 것과 조합됩니다.</p>
+<pre><code class="language-rust ignore"><span class="boring">use std::marker::PhantomData;
+</span><span class="boring">pub struct Width32;
+</span><span class="boring">pub struct Width16;
+</span><span class="boring">pub struct Register&lt;W&gt; { _w: PhantomData&lt;W&gt; }
+</span><span class="boring">impl Register&lt;Width16&gt; { pub fn read(&amp;self) -&gt; u16 { 0 } }
+</span><span class="boring">impl Register&lt;Width32&gt; { pub fn read(&amp;self) -&gt; u32 { 0 } }
+</span><span class="boring">#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+</span><span class="boring">pub struct Celsius(pub f64);
+</span>
+/// 팬텀 타입(레지스터 폭)과 차원 타입(Celsius)을 결합.
+fn read_temp_sensor(reg: &amp;Register&lt;Width16&gt;) -&gt; Celsius {
+    let raw = reg.read();  // 팬텀 타입으로 u16 보장
+    Celsius(raw as f64 * 0.0625)  // 반환 타입으로 Celsius 보장
+}
+
+// 컴파일러가 강제:
+// 1. 레지스터는 16비트(팬텀 타입)
+// 2. 결과는 Celsius(뉴타입)
+// 둘 다 런타임 비용 0.</code></pre>
+<p><a id="when-to-use-phantom-types"></a></p>
+<h3 id="언제-팬텀-매개변수를-쓸까"><a class="header" href="#언제-팬텀-매개변수를-쓸까">언제 팬텀 매개변수를 쓸까</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>시나리오</th><th style="text-align: center">팬텀 매개변수?</th></tr>
+</thead>
+<tbody>
+<tr><td>레지스터 폭 인코딩</td><td style="text-align: center">예 — 폭 불일치 방지</td></tr>
+<tr><td>DMA 버퍼 방향</td><td style="text-align: center">예 — 데이터 손상 방지</td></tr>
+<tr><td>파일 디스크립터 상태</td><td style="text-align: center">예 — 닫은 뒤 사용 방지</td></tr>
+<tr><td>메모리 영역 권한(R/W/X)</td><td style="text-align: center">예 — 접근 제어 강제</td></tr>
+<tr><td>제네릭 컨테이너(Vec, HashMap)</td><td style="text-align: center">아니요 — 구체 타입 매개변수 사용</td></tr>
+<tr><td>런타임에 바뀌는 속성</td><td style="text-align: center">아니요 — 팬텀은 컴파일 타임 전용</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="phantom-type-resource-matrix"></a></p>
+<h2 id="팬텀-타입-리소스-매트릭스"><a class="header" href="#팬텀-타입-리소스-매트릭스">팬텀 타입 리소스 매트릭스</a></h2>
+<pre class="mermaid">flowchart TD
+    subgraph "폭 마커"
+        W8["Width8"] 
+        W16["Width16"]
+        W32["Width32"]
+    end
+    subgraph "방향 마커"
+        RD["Read"]
+        WR["Write"]
+    end
+    subgraph "타입이 있는 리소스"
+        R1["Register&lt;Width16&gt;"]
+        R2["DmaBuffer&lt;Read&gt;"]
+        R3["DmaBuffer&lt;Write&gt;"]
+    end
+    W16 --&gt; R1
+    RD --&gt; R2
+    WR --&gt; R3
+    R2 -.-&gt;|"쓰기 시도"| ERR["❌ 컴파일 오류"]
+    style W8 fill:#e1f5fe,color:#000
+    style W16 fill:#e1f5fe,color:#000
+    style W32 fill:#e1f5fe,color:#000
+    style RD fill:#c8e6c9,color:#000
+    style WR fill:#fff3e0,color:#000
+    style R1 fill:#e8eaf6,color:#000
+    style R2 fill:#c8e6c9,color:#000
+    style R3 fill:#fff3e0,color:#000
+    style ERR fill:#ffcdd2,color:#000
+</pre>
+
+<p><a id="exercise-memory-region-permissions"></a></p>
+<h2 id="연습-메모리-영역-권한"><a class="header" href="#연습-메모리-영역-권한">연습: 메모리 영역 권한</a></h2>
+<p>읽기, 쓰기, 실행 권한이 있는 메모리 영역용 팬텀 타입을 설계하세요.</p>
+<ul>
+<li><code>MemRegion&lt;ReadOnly&gt;</code> — <code>fn read(&amp;self, offset: usize) -&gt; u8</code></li>
+<li><code>MemRegion&lt;ReadWrite&gt;</code> — <code>read</code>와 <code>write</code> 모두</li>
+<li><code>MemRegion&lt;Executable&gt;</code> — <code>read</code>와 <code>fn execute(&amp;self)</code></li>
+<li><code>ReadOnly</code>에 쓰거나 <code>ReadWrite</code>를 실행하면 컴파일되지 않아야 합니다.</li>
+</ul>
+<details>
+<summary>해답</summary>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+pub struct ReadOnly;
+pub struct ReadWrite;
+pub struct Executable;
+
+pub struct MemRegion&lt;Perm&gt; {
+    base: *mut u8,
+    len: usize,
+    _perm: PhantomData&lt;Perm&gt;,
+}
+
+// 모든 권한 타입에서 읽기 가능
+impl&lt;P&gt; MemRegion&lt;P&gt; {
+    pub fn read(&amp;self, offset: usize) -&gt; u8 {
+        assert!(offset &lt; self.len);
+        unsafe { *self.base.add(offset) }
+    }
+}
+
+impl MemRegion&lt;ReadWrite&gt; {
+    pub fn write(&amp;mut self, offset: usize, val: u8) {
+        assert!(offset &lt; self.len);
+        unsafe { *self.base.add(offset) = val; }
+    }
+}
+
+impl MemRegion&lt;Executable&gt; {
+    pub fn execute(&amp;self) {
+        // 기준 주소로 점프(개념상)
+    }
+}
+
+// ❌ region_ro.write(0, 0xFF);  // 컴파일 오류: `write` 메서드 없음
+// ❌ region_rw.execute();       // 컴파일 오류: `execute` 메서드 없음</code></pre>
+</details>
+<p><a id="key-takeaways"></a></p>
+<h2 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h2>
+<ol>
+<li><strong>PhantomData는 크기 0으로 타입 수준 정보를 실어 나릅니다</strong> — 마커는 컴파일러용입니다.</li>
+<li><strong>레지스터 폭 불일치가 컴파일 오류가 됩니다</strong> — <code>Register&lt;Width16&gt;</code>은 <code>u16</code>을 반환하고 <code>u32</code>가 아닙니다.</li>
+<li><strong>DMA 방향이 구조적으로 강제됩니다</strong> — <code>DmaBuffer&lt;Read&gt;</code>에는 <code>write()</code>가 없습니다.</li>
+<li><strong>차원 타입(ch06)과 결합</strong> — <code>Register&lt;Width16&gt;</code>이 파싱 단계에서 <code>Celsius</code>를 반환할 수 있습니다.</li>
+<li><strong>팬텀 타입은 컴파일 타임 전용</strong> — 런타임에 바뀌는 속성에는 쓸 수 없습니다. 그런 경우에는 enum을 쓰세요.</li>
+</ol>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch08-capability-mixins-compile-time-hardware-.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch15-const-fn-compile-time-correctness-proofs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch08-capability-mixins-compile-time-hardware-.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch15-const-fn-compile-time-correctness-proofs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>테스트 - C# 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-89f02b98.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-00223320.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C# 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="testing-in-rust-vs-c"></a></p>
+<h2 id="rust의-테스트-vs-c"><a class="header" href="#rust의-테스트-vs-c">Rust의 테스트 vs C#</a></h2>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> 내장 <code>#[test]</code>와 xUnit의 차이, <code>rstest</code>를 이용한 매개변수화 테스트(<code>Theory</code>와 유사), <code>proptest</code>를 이용한 프로퍼티 테스트, <code>mockall</code> 기반 목 객체 처리, 그리고 async 테스트 패턴을 배웁니다.</p>
+<p><strong>난이도:</strong> 🟡 중급</p>
+</blockquote>
+<p><a id="unit-tests"></a></p>
+<h3 id="단위-테스트"><a class="header" href="#단위-테스트">단위 테스트</a></h3>
+<pre><code class="language-csharp">// C# — xUnit
+using Xunit;
+
+public class CalculatorTests
+{
+    [Fact]
+    public void Add_ReturnsSum()
+    {
+        var calc = new Calculator();
+        Assert.Equal(5, calc.Add(2, 3));
+    }
+
+    [Theory]
+    [InlineData(1, 2, 3)]
+    [InlineData(0, 0, 0)]
+    [InlineData(-1, 1, 0)]
+    public void Add_Theory(int a, int b, int expected)
+    {
+        Assert.Equal(expected, new Calculator().Add(a, b));
+    }
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — 내장 테스트 지원, 별도 프레임워크가 필요 없다
+pub fn add(a: i32, b: i32) -&gt; i32 { a + b }
+
+#[cfg(test)]  // `cargo test` 중에만 컴파일된다
+mod tests {
+    use super::*;  // 부모 모듈에서 가져온다
+
+    #[test]
+    fn add_returns_sum() {
+        assert_eq!(add(2, 3), 5);
+    }
+
+    #[test]
+    fn add_negative_numbers() {
+        assert_eq!(add(-1, 1), 0);
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn add_overflow_panics() {
+        let _ = add(i32::MAX, 1); // debug 모드에서는 panic 발생
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="parameterized-tests-like-theory"></a></p>
+<h3 id="매개변수화-테스트-theory와-유사"><a class="header" href="#매개변수화-테스트-theory와-유사">매개변수화 테스트 (<code>[Theory]</code>와 유사)</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 매개변수화 테스트에는 `rstest` 크레이트를 사용한다
+use rstest::rstest;
+
+#[rstest]
+#[case(1, 2, 3)]
+#[case(0, 0, 0)]
+#[case(-1, 1, 0)]
+fn test_add(#[case] a: i32, #[case] b: i32, #[case] expected: i32) {
+    assert_eq!(add(a, b), expected);
+}
+
+// Fixture - 테스트 setup 메서드와 비슷하다
+#[rstest]
+fn test_with_fixture(#[values(1, 2, 3)] x: i32) {
+    assert!(x &gt; 0);
+}
+<span class="boring">}</span></code></pre>
+<p><a id="assertions-comparison"></a></p>
+<h3 id="assert-매크로-비교"><a class="header" href="#assert-매크로-비교">assert 매크로 비교</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C# (xUnit)</th><th>Rust</th><th>설명</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Assert.Equal(expected, actual)</code></td><td><code>assert_eq!(expected, actual)</code></td><td>실패 시 diff를 출력</td></tr>
+<tr><td><code>Assert.NotEqual(a, b)</code></td><td><code>assert_ne!(a, b)</code></td><td></td></tr>
+<tr><td><code>Assert.True(condition)</code></td><td><code>assert!(condition)</code></td><td></td></tr>
+<tr><td><code>Assert.Contains("sub", str)</code></td><td><code>assert!(str.contains("sub"))</code></td><td></td></tr>
+<tr><td><code>Assert.Throws&lt;T&gt;(() =&gt; ...)</code></td><td><code>#[should_panic]</code></td><td>또는 <code>std::panic::catch_unwind</code> 사용</td></tr>
+<tr><td><code>Assert.Null(obj)</code></td><td><code>assert!(option.is_none())</code></td><td>null이 없으므로 <code>Option</code> 사용</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="test-organization"></a></p>
+<h3 id="테스트-구성"><a class="header" href="#테스트-구성">테스트 구성</a></h3>
+<pre><code class="language-text">my_crate/
+├── src/
+│   ├── lib.rs          # #[cfg(test)] mod tests { } 안에 단위 테스트 작성
+│   └── parser.rs       # 각 모듈은 자체 테스트 모듈을 가질 수 있다
+├── tests/              # 통합 테스트 (각 파일은 별도 crate)
+│   ├── parser_test.rs  # 외부 소비자처럼 공개 API를 테스트
+│   └── api_test.rs
+└── benches/            # 벤치마크 (criterion 크레이트 사용)
+    └── my_benchmark.rs
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// tests/parser_test.rs — 통합 테스트
+// PUBLIC API만 접근할 수 있다 (어셈블리 외부에서 테스트하는 것과 비슷하다)
+use my_crate::parser;
+
+#[test]
+fn test_parse_valid_input() {
+    let result = parser::parse("valid input");
+    assert!(result.is_ok());
+}
+<span class="boring">}</span></code></pre>
+<p><a id="async-tests"></a></p>
+<h3 id="비동기-테스트"><a class="header" href="#비동기-테스트">비동기 테스트</a></h3>
+<pre><code class="language-csharp">// C# — xUnit으로 작성한 async 테스트
+[Fact]
+public async Task GetUser_ReturnsUser()
+{
+    var service = new UserService();
+    var user = await service.GetUserAsync(1);
+    Assert.Equal("Alice", user.Name);
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — tokio를 이용한 async 테스트
+#[tokio::test]
+async fn get_user_returns_user() {
+    let service = UserService::new();
+    let user = service.get_user(1).await.unwrap();
+    assert_eq!(user.name, "Alice");
+}
+<span class="boring">}</span></code></pre>
+<p><a id="mocking-with-mockall"></a></p>
+<h3 id="mockall로-목-객체-만들기"><a class="header" href="#mockall로-목-객체-만들기"><code>mockall</code>로 목 객체 만들기</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use mockall::automock;
+
+#[automock]                         // MockUserRepo 구조체를 생성한다
+trait UserRepo {
+    fn find_by_id(&amp;self, id: u32) -&gt; Option&lt;User&gt;;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn service_returns_user_from_repo() {
+        let mut mock = MockUserRepo::new();
+        mock.expect_find_by_id()
+            .with(mockall::predicate::eq(1))
+            .returning(|_| Some(User { name: "Alice".into() }));
+
+        let service = UserService::new(mock);
+        let user = service.get_user(1).unwrap();
+        assert_eq!(user.name, "Alice");
+    }
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-csharp">// C# — Moq에 해당하는 예
+var mock = new Mock&lt;IUserRepo&gt;();
+mock.Setup(r =&gt; r.FindById(1)).Returns(new User { Name = "Alice" });
+var service = new UserService(mock.Object);
+Assert.Equal("Alice", service.GetUser(1).Name);
+</code></pre>
+<details>
+<summary><strong>🏋️ 연습문제: 포괄적인 테스트 작성하기</strong> (클릭하여 펼치기)</summary>
+<p><strong>문제</strong>: 아래 함수에 대해 정상 경로, 빈 입력, 숫자 문자열, 유니코드 케이스를 모두 다루는 테스트를 작성하세요.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn title_case(input: &amp;str) -&gt; String {
+    input.split_whitespace()
+        .map(|word| {
+            let mut chars = word.chars();
+            match chars.next() {
+                Some(c) =&gt; format!("{}{}", c.to_uppercase(), chars.as_str().to_lowercase()),
+                None =&gt; String::new(),
+            }
+        })
+        .collect::&lt;Vec&lt;_&gt;&gt;()
+        .join(" ")
+}
+<span class="boring">}</span></code></pre>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn happy_path() {
+        assert_eq!(title_case("hello world"), "Hello World");
+    }
+
+    #[test]
+    fn empty_input() {
+        assert_eq!(title_case(""), "");
+    }
+
+    #[test]
+    fn single_word() {
+        assert_eq!(title_case("rust"), "Rust");
+    }
+
+    #[test]
+    fn already_title_case() {
+        assert_eq!(title_case("Hello World"), "Hello World");
+    }
+
+    #[test]
+    fn all_caps() {
+        assert_eq!(title_case("HELLO WORLD"), "Hello World");
+    }
+
+    #[test]
+    fn extra_whitespace() {
+        // split_whitespace가 여러 공백을 처리한다
+        assert_eq!(title_case("  hello   world  "), "Hello World");
+    }
+
+    #[test]
+    fn unicode() {
+        assert_eq!(title_case("café résumé"), "Café Résumé");
+    }
+
+    #[test]
+    fn numeric_words() {
+        assert_eq!(title_case("hello 42 world"), "Hello 42 World");
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>핵심 요점</strong>: Rust의 내장 테스트 프레임워크만으로도 대부분의 단위 테스트를 처리할 수 있습니다. 매개변수화 테스트에는 <code>rstest</code>, 목 객체에는 <code>mockall</code>을 쓰면 되므로 xUnit 같은 큰 프레임워크가 꼭 필요하지 않습니다.</p>
+</details>
+</details>
+<!-- ch14a.1: Property Testing with proptest -->
+<p><a id="property-testing-proving-correctness-at-scale"></a></p>
+<h2 id="프로퍼티-테스트-규모-있게-정확성-증명하기"><a class="header" href="#프로퍼티-테스트-규모-있게-정확성-증명하기">프로퍼티 테스트: 규모 있게 정확성 증명하기</a></h2>
+<p><strong>FsCheck</strong>에 익숙한 C# 개발자라면 프로퍼티 기반 테스트를 바로 알아볼 것입니다. 개별 테스트 케이스를 직접 나열하는 대신, <strong>모든 가능한 입력</strong>에 대해 성립해야 하는 *성질(property)*을 서술하고, 프레임워크가 수천 개의 무작위 입력을 생성해 이를 깨뜨리려 시도합니다.</p>
+<p><a id="why-property-testing-matters"></a></p>
+<h3 id="왜-프로퍼티-테스트가-중요한가"><a class="header" href="#왜-프로퍼티-테스트가-중요한가">왜 프로퍼티 테스트가 중요한가</a></h3>
+<pre><code class="language-csharp">// C# — 손으로 쓴 단위 테스트는 특정 케이스만 검사한다
+[Fact]
+public void Reverse_Twice_Returns_Original()
+{
+    var list = new List&lt;int&gt; { 1, 2, 3 };
+    list.Reverse();
+    list.Reverse();
+    Assert.Equal(new[] { 1, 2, 3 }, list);
+}
+// 하지만 빈 리스트는? 원소가 하나뿐인 경우는? 10,000개 원소는? 음수는?
+// 이런 경우를 모두 다루려면 손으로 수십 개의 케이스를 써야 한다.
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — proptest가 수천 개의 입력을 자동으로 만든다
+use proptest::prelude::*;
+
+fn reverse&lt;T: Clone&gt;(v: &amp;[T]) -&gt; Vec&lt;T&gt; {
+    v.iter().rev().cloned().collect()
+}
+
+proptest! {
+    #[test]
+    fn reverse_twice_is_identity(ref v in prop::collection::vec(any::&lt;i32&gt;(), 0..1000)) {
+        let reversed_twice = reverse(&amp;reverse(v));
+        prop_assert_eq!(v, &amp;reversed_twice);
+    }
+    // proptest는 이것을 수백 개의 임의 Vec&lt;i32&gt;로 실행한다:
+    // [], [0], [i32::MIN, i32::MAX], [42; 999], 무작위 시퀀스 등
+    // 실패하면 가장 작은 실패 입력으로 SHRINK한다!
+}
+<span class="boring">}</span></code></pre>
+<p><a id="getting-started-with-proptest"></a></p>
+<h3 id="proptest-시작하기"><a class="header" href="#proptest-시작하기"><code>proptest</code> 시작하기</a></h3>
+<pre><code class="language-toml"># Cargo.toml
+[dev-dependencies]
+proptest = "1.4"
+</code></pre>
+<p><a id="common-patterns-for-c-developers"></a></p>
+<h3 id="c-개발자가-자주-쓰는-패턴"><a class="header" href="#c-개발자가-자주-쓰는-패턴">C# 개발자가 자주 쓰는 패턴</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use proptest::prelude::*;
+
+// 1. roundtrip 성질: serialize → deserialize = 항등
+// (JsonSerializer.Serialize → Deserialize 테스트와 유사)
+proptest! {
+    #[test]
+    fn json_roundtrip(name in "[a-zA-Z]{1,50}", age in 0u32..150) {
+        let user = User { name: name.clone(), age };
+        let json = serde_json::to_string(&amp;user).unwrap();
+        let parsed: User = serde_json::from_str(&amp;json).unwrap();
+        prop_assert_eq!(user, parsed);
+    }
+}
+
+// 2. invariant 성질: 출력이 항상 특정 조건을 만족한다
+proptest! {
+    #[test]
+    fn sort_output_is_sorted(ref v in prop::collection::vec(any::&lt;i32&gt;(), 0..500)) {
+        let mut sorted = v.clone();
+        sorted.sort();
+        // 인접한 모든 쌍이 정렬 순서를 만족해야 한다
+        for window in sorted.windows(2) {
+            prop_assert!(window[0] &lt;= window[1]);
+        }
+    }
+}
+
+// 3. oracle 성질: 두 구현을 비교한다
+proptest! {
+    #[test]
+    fn fast_path_matches_slow_path(input in "[0-9a-f]{1,100}") {
+        let result_fast = parse_hex_fast(&amp;input);
+        let result_slow = parse_hex_slow(&amp;input);
+        prop_assert_eq!(result_fast, result_slow);
+    }
+}
+
+// 4. 사용자 정의 전략: 도메인 특화 테스트 데이터를 생성한다
+fn valid_email() -&gt; impl Strategy&lt;Value = String&gt; {
+    ("[a-z]{1,20}", "[a-z]{1,10}", prop::sample::select(vec!["com", "org", "io"]))
+        .prop_map(|(user, domain, tld)| format!("{}@{}.{}", user, domain, tld))
+}
+
+proptest! {
+    #[test]
+    fn email_parsing_accepts_valid_emails(email in valid_email()) {
+        let result = Email::new(&amp;email);
+        prop_assert!(result.is_ok(), "Failed to parse: {}", email);
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="proptest-vs-fscheck-comparison"></a></p>
+<h3 id="proptest-vs-fscheck-비교"><a class="header" href="#proptest-vs-fscheck-비교"><code>proptest</code> vs <code>FsCheck</code> 비교</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>기능</th><th>C# FsCheck</th><th>Rust proptest</th></tr>
+</thead>
+<tbody>
+<tr><td>무작위 입력 생성</td><td><code>Arb.Generate&lt;T&gt;()</code></td><td><code>any::&lt;T&gt;()</code></td></tr>
+<tr><td>사용자 정의 생성기</td><td><code>Arb.Register&lt;T&gt;()</code></td><td><code>impl Strategy&lt;Value = T&gt;</code></td></tr>
+<tr><td>실패 시 shrinking</td><td>자동</td><td>자동</td></tr>
+<tr><td>문자열 패턴</td><td>수동</td><td><code>"[regex]"</code> 전략</td></tr>
+<tr><td>컬렉션 생성</td><td><code>Gen.ListOf</code></td><td><code>prop::collection::vec(strategy, range)</code></td></tr>
+<tr><td>생성기 조합</td><td><code>Gen.Select</code></td><td><code>.prop_map()</code>, <code>.prop_flat_map()</code></td></tr>
+<tr><td>설정(케이스 수)</td><td><code>Config.MaxTest</code></td><td><code>proptest!</code> 블록 안의 <code>#![proptest_config(ProptestConfig::with_cases(10000))]</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="when-to-use-property-testing-vs-unit-testing"></a></p>
+<h3 id="프로퍼티-테스트와-단위-테스트를-언제-쓸까"><a class="header" href="#프로퍼티-테스트와-단위-테스트를-언제-쓸까">프로퍼티 테스트와 단위 테스트를 언제 쓸까</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><strong>unit test</strong>를 쓸 때</th><th><strong>proptest</strong>를 쓸 때</th></tr>
+</thead>
+<tbody>
+<tr><td>특정 edge case를 검증할 때</td><td>모든 입력에 대한 invariant를 검증할 때</td></tr>
+<tr><td>에러 메시지/코드를 테스트할 때</td><td>roundtrip 성질(parse ↔ format)을 검증할 때</td></tr>
+<tr><td>통합 테스트나 mock 테스트를 할 때</td><td>두 구현을 비교할 때</td></tr>
+<tr><td>동작이 정확한 값에 의존할 때</td><td>“모든 X에 대해 P가 성립한다“를 검증할 때</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="integration-tests-the-tests-directory"></a></p>
+<h2 id="통합-테스트-tests-디렉터리"><a class="header" href="#통합-테스트-tests-디렉터리">통합 테스트: <code>tests/</code> 디렉터리</a></h2>
+<p>단위 테스트는 <code>src/</code> 내부에서 <code>#[cfg(test)]</code>와 함께 작성합니다. 통합 테스트는 별도의 <code>tests/</code> 디렉터리에 두며, 크레이트의 <strong>공개 API</strong>를 테스트합니다. 이는 C#의 통합 테스트가 프로젝트를 외부 어셈블리처럼 참조하는 방식과 비슷합니다.</p>
+<pre><code>my_crate/
+├── src/
+│   ├── lib.rs          // 공개 API
+│   └── internal.rs     // 비공개 구현
+├── tests/
+│   ├── smoke.rs        // 각 파일이 별도 테스트 바이너리다
+│   ├── api_tests.rs
+│   └── common/
+│       └── mod.rs      // 공용 테스트 헬퍼
+└── Cargo.toml
+</code></pre>
+<p><a id="writing-integration-tests"></a></p>
+<h3 id="통합-테스트-작성하기"><a class="header" href="#통합-테스트-작성하기">통합 테스트 작성하기</a></h3>
+<p><code>tests/</code> 안의 각 파일은 여러분의 라이브러리에 의존하는 별도 크레이트로 컴파일됩니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// tests/smoke.rs — my_crate의 pub 항목만 접근할 수 있다
+use my_crate::{process_order, Order, OrderResult};
+
+#[test]
+fn process_valid_order_returns_confirmation() {
+    let order = Order::new("SKU-001", 3);
+    let result = process_order(order);
+    assert!(matches!(result, OrderResult::Confirmed { .. }));
+}
+<span class="boring">}</span></code></pre>
+<p><a id="shared-test-helpers"></a></p>
+<h3 id="공용-테스트-헬퍼"><a class="header" href="#공용-테스트-헬퍼">공용 테스트 헬퍼</a></h3>
+<p>공통 setup 코드는 <code>tests/common/mod.rs</code>에 두세요. (<code>tests/common.rs</code>에 두면 그 파일 자체가 테스트 파일로 취급됩니다.)</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// tests/common/mod.rs
+use my_crate::Config;
+
+pub fn test_config() -&gt; Config {
+    Config::builder()
+        .database_url("sqlite::memory:")
+        .build()
+        .expect("test config must be valid")
+}
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// tests/api_tests.rs
+mod common;
+
+use my_crate::App;
+
+#[test]
+fn app_starts_with_test_config() {
+    let config = common::test_config();
+    let app = App::new(config);
+    assert!(app.is_healthy());
+}
+<span class="boring">}</span></code></pre>
+<p><a id="running-specific-test-types"></a></p>
+<h3 id="특정-테스트-종류만-실행하기"><a class="header" href="#특정-테스트-종류만-실행하기">특정 테스트 종류만 실행하기</a></h3>
+<pre><code class="language-bash">cargo test                  # run all tests (unit + integration)
+cargo test --lib            # 단위 테스트만 실행 (dotnet test --filter Category=Unit와 유사)
+cargo test --test smoke     # tests/smoke.rs만 실행
+cargo test --test api_tests # tests/api_tests.rs만 실행
+</code></pre>
+<p><strong>C#와의 핵심 차이:</strong> 통합 테스트 파일은 크레이트의 <code>pub</code> API만 접근할 수 있습니다. private 함수는 보이지 않기 때문에, 자연스럽게 공개 인터페이스를 통해 테스트하게 되고 이는 대개 더 좋은 테스트 설계로 이어집니다.</p>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch14-unsafe-rust-and-ffi.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch15-migration-patterns-and-case-studies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch14-unsafe-rust-and-ffi.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch15-migration-patterns-and-case-studies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

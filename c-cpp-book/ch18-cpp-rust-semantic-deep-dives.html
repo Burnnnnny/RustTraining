@@ -1,0 +1,1011 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>18. C++ → Rust 의미론 심화 - C/C++ 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-316e143c.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-30fc96c1.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C/C++ 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="cpp-rust-semantic-deep-dives"></a></p>
+<h2 id="c--rust-의미론-심층-비교"><a class="header" href="#c--rust-의미론-심층-비교">C++ → Rust 의미론 심층 비교</a></h2>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> Rust에 1:1로 대응되지 않는 C++ 개념들을 자세히 매핑합니다. 네 가지 명명된 캐스트, SFINAE와 트레잇 바운드의 차이, CRTP와 연관 타입, 그리고 번역 과정에서 자주 부딪히는 마찰 지점을 다룹니다.</p>
+</blockquote>
+<p>아래 섹션들은 Rust에서 명확한 1:1 대응이 없는 C++ 개념들을 매핑합니다. 이런 차이들은 번역 작업 중 C++ 프로그래머가 자주 걸려 넘어지는 지점입니다.</p>
+<p><a id="casting-hierarchy-four-cpp-casts-rust-equivalents"></a></p>
+<h3 id="캐스팅-계층-네-가지-c-캐스트--rust-대응"><a class="header" href="#캐스팅-계층-네-가지-c-캐스트--rust-대응">캐스팅 계층: 네 가지 C++ 캐스트 → Rust 대응</a></h3>
+<p>C++에는 이름이 붙은 캐스트가 네 가지 있습니다. Rust는 이를 서로 다른, 더 명시적인 메커니즘으로 대체합니다:</p>
+<pre><code class="language-cpp">// C++ 캐스팅 계층
+int i = static_cast&lt;int&gt;(3.14);            // 1. 숫자 변환 / 업캐스트
+Derived* d = dynamic_cast&lt;Derived*&gt;(base); // 2. 런타임 다운캐스팅
+int* p = const_cast&lt;int*&gt;(cp);             // 3. const 제거
+auto* raw = reinterpret_cast&lt;char*&gt;(&amp;obj); // 4. 비트 수준 재해석
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 캐스트</th><th>Rust 대응</th><th>안전성</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td><code>static_cast</code> (숫자 변환)</td><td><code>as</code> 키워드</td><td>안전하지만 잘리거나 래핑될 수 있음</td><td><code>let i = 3.14_f64 as i32;</code> — 3으로 잘림</td></tr>
+<tr><td><code>static_cast</code> (숫자 변환, 검사됨)</td><td><code>From</code>/<code>Into</code></td><td>안전, 컴파일 타임 검증</td><td><code>let i: i32 = 42_u8.into();</code> — 확장 변환만 가능</td></tr>
+<tr><td><code>static_cast</code> (숫자 변환, 실패 가능)</td><td><code>TryFrom</code>/<code>TryInto</code></td><td>안전, <code>Result</code> 반환</td><td><code>let i: u8 = 300_u16.try_into()?;</code> — <code>Err</code> 반환</td></tr>
+<tr><td><code>dynamic_cast</code> (다운캐스트)</td><td>enum에 대한 <code>match</code> / <code>Any::downcast_ref</code></td><td>안전</td><td>enum은 패턴 매칭, 트레잇 객체는 <code>Any</code> 사용</td></tr>
+<tr><td><code>const_cast</code></td><td>대응 없음</td><td></td><td>Rust에는 안전 코드에서 <code>&amp;</code> → <code>&amp;mut</code>로 캐스팅하는 방법이 없습니다. 내부 가변성에는 <code>Cell</code>/<code>RefCell</code>을 사용합니다</td></tr>
+<tr><td><code>reinterpret_cast</code></td><td><code>std::mem::transmute</code></td><td><strong><code>unsafe</code></strong></td><td>비트 패턴을 재해석합니다. 거의 항상 잘못된 선택이므로 <code>from_le_bytes()</code> 등을 우선하세요</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust 대응:
+
+// 1. 숫자 캐스트 — `as`보다 From/Into를 우선
+let widened: u32 = 42_u8.into();             // 실패 불가능한 확장 변환 — 항상 이쪽을 우선
+let truncated = 300_u16 as u8;               // ⚠ 44로 래핑됨! 조용한 데이터 손실
+let checked: Result&lt;u8, _&gt; = 300_u16.try_into(); // Err — 안전한 실패 가능 변환
+
+// 2. 다운캐스트: enum(권장) 또는 Any(타입 소거가 필요할 때)
+use std::any::Any;
+
+fn handle_any(val: &amp;dyn Any) {
+    if let Some(s) = val.downcast_ref::&lt;String&gt;() {
+        println!("Got string: {s}");
+    } else if let Some(n) = val.downcast_ref::&lt;i32&gt;() {
+        println!("Got int: {n}");
+    }
+}
+
+// 3. "const_cast" → 내부 가변성 (`unsafe` 불필요)
+use std::cell::Cell;
+struct Sensor {
+    read_count: Cell&lt;u32&gt;,  // `&amp;self`를 통해 변경
+}
+impl Sensor {
+    fn read(&amp;self) -&gt; f64 {
+        self.read_count.set(self.read_count.get() + 1); // `&amp;mut self`가 아니라 `&amp;self`
+        42.0
+    }
+}
+
+// 4. reinterpret_cast → transmute (거의 필요 없음)
+// 안전한 대안을 우선:
+let bytes: [u8; 4] = 0x12345678_u32.to_ne_bytes();  // ✅ 안전
+let val = u32::from_ne_bytes(bytes);                // ✅ 안전
+// unsafe { std::mem::transmute::&lt;u32, [u8; 4]&gt;(val) } // ❌ 피하세요
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>가이드라인</strong>: idiomatic Rust에서 <code>as</code>는 드물어야 합니다(<code>From</code>/<code>Into</code>는 확장 변환, <code>TryFrom</code>/<code>TryInto</code>는 축소 변환에 사용). <code>transmute</code>는 예외적인 경우에만 써야 하고, <code>const_cast</code>는 내부 가변성 타입이 그 역할을 대신하기 때문에 대응물이 없습니다.</p>
+</blockquote>
+<hr>
+<p><a id="preprocessor-cfg-feature-flags-and-macro-rules"></a></p>
+<h3 id="전처리기--cfg-피처-플래그-macro_rules"><a class="header" href="#전처리기--cfg-피처-플래그-macro_rules">전처리기 → <code>cfg</code>, 피처 플래그, <code>macro_rules!</code></a></h3>
+<p>C++는 조건부 컴파일, 상수, 코드 생성을 위해 전처리기에 크게 의존합니다. Rust는 이 모든 것을 일급 언어 기능으로 대체합니다.</p>
+<p><a id="define-constants-const-or-const-fn"></a></p>
+<h4 id="define-상수--const-또는-const-fn"><a class="header" href="#define-상수--const-또는-const-fn"><code>#define</code> 상수 → <code>const</code> 또는 <code>const fn</code></a></h4>
+<pre><code class="language-cpp">// C++
+#define MAX_RETRIES 5
+#define BUFFER_SIZE (1024 * 64)
+#define SQUARE(x) ((x) * (x))  // 매크로 — 텍스트 치환, 타입 안전성 없음
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — 타입 안전, 스코프 보유, 텍스트 치환 없음
+const MAX_RETRIES: u32 = 5;
+const BUFFER_SIZE: usize = 1024 * 64;
+const fn square(x: u32) -&gt; u32 { x * x }  // 컴파일 타임 평가
+
+// const 컨텍스트에서도 사용 가능:
+const AREA: u32 = square(12);  // 컴파일 타임에 계산됨
+static BUFFER: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE];
+<span class="boring">}</span></code></pre>
+<p><a id="ifdef-if-cfg-and-cfg"></a></p>
+<h4 id="ifdef--if--cfg와-cfg"><a class="header" href="#ifdef--if--cfg와-cfg"><code>#ifdef</code> / <code>#if</code> → <code>#[cfg()]</code>와 <code>cfg!()</code></a></h4>
+<pre><code class="language-cpp">// C++
+#ifdef DEBUG
+    log_verbose("Step 1 complete");
+#endif
+
+#if defined(LINUX) &amp;&amp; !defined(ARM)
+    use_x86_path();
+#else
+    use_generic_path();
+#endif
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — 속성 기반 조건부 컴파일
+#[cfg(debug_assertions)]
+fn log_verbose(msg: &amp;str) { eprintln!("[VERBOSE] {msg}"); }
+
+#[cfg(not(debug_assertions))]
+fn log_verbose(_msg: &amp;str) { /* 릴리즈에서는 컴파일에서 제거됨 */ }
+
+// 조건 결합:
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+fn use_x86_path() { /* ... */ }
+
+#[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+fn use_generic_path() { /* ... */ }
+
+// 런타임 검사(조건 자체는 여전히 컴파일 타임이지만 식 안에서 사용 가능):
+if cfg!(target_os = "windows") {
+    println!("Running on Windows");
+}
+<span class="boring">}</span></code></pre>
+<p><a id="feature-flags-in-cargo-toml"></a></p>
+<h4 id="cargotoml의-피처-플래그"><a class="header" href="#cargotoml의-피처-플래그"><code>Cargo.toml</code>의 피처 플래그</a></h4>
+<pre><code class="language-toml"># Cargo.toml — #ifdef FEATURE_FOO 대체
+[features]
+default = ["json"]
+json = ["dep:serde_json"]       # 선택적 의존성
+verbose-logging = []            # 추가 의존성 없는 플래그
+gpu-support = ["dep:cuda-sys"]  # 선택적 GPU 지원
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 피처 플래그에 따른 조건부 코드:
+#[cfg(feature = "json")]
+pub fn parse_config(data: &amp;str) -&gt; Result&lt;Config, Error&gt; {
+    serde_json::from_str(data).map_err(Error::from)
+}
+
+#[cfg(feature = "verbose-logging")]
+macro_rules! verbose {
+    ($($arg:tt)*) =&gt; { eprintln!("[VERBOSE] {}", format!($($arg)*)); }
+}
+#[cfg(not(feature = "verbose-logging"))]
+macro_rules! verbose {
+    ($($arg:tt)*) =&gt; { }; // 아무것도 생성하지 않음
+}
+<span class="boring">}</span></code></pre>
+<p><a id="define-macro-x-macro-rules"></a></p>
+<h4 id="define-macrox--macro_rules"><a class="header" href="#define-macrox--macro_rules"><code>#define MACRO(x)</code> → <code>macro_rules!</code></a></h4>
+<pre><code class="language-cpp">// C++ — 텍스트 치환 기반이며, 악명 높을 만큼 실수가 잦음
+#define DIAG_CHECK(cond, msg) \
+    do { if (!(cond)) { log_error(msg); return false; } } while(0)
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — 위생적(hygienic)이고, 타입 검사되며, 구문 트리 위에서 동작
+macro_rules! diag_check {
+    ($cond:expr, $msg:expr) =&gt; {
+        if !($cond) {
+            log_error($msg);
+            return Err(DiagError::CheckFailed($msg.to_string()));
+        }
+    };
+}
+
+fn run_test() -&gt; Result&lt;(), DiagError&gt; {
+    diag_check!(temperature &lt; 85.0, "GPU too hot");
+    diag_check!(voltage &gt; 0.8, "Rail voltage too low");
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 전처리기</th><th>Rust 대응</th><th>장점</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#define PI 3.14</code></td><td><code>const PI: f64 = 3.14;</code></td><td>타입이 있고, 스코프가 있으며, 디버거에서 보임</td></tr>
+<tr><td><code>#define MAX(a,b) ((a)&gt;(b)?(a):(b))</code></td><td><code>macro_rules!</code> 또는 제네릭 <code>fn max&lt;T: Ord&gt;</code></td><td>이중 평가 버그 없음</td></tr>
+<tr><td><code>#ifdef DEBUG</code></td><td><code>#[cfg(debug_assertions)]</code></td><td>컴파일러가 검사하며, 오타 위험 없음</td></tr>
+<tr><td><code>#ifdef FEATURE_X</code></td><td><code>#[cfg(feature = "x")]</code></td><td>Cargo가 feature를 관리하고 의존성과 연동됨</td></tr>
+<tr><td><code>#include "header.h"</code></td><td><code>mod module;</code> + <code>use module::Item;</code></td><td>include guard가 필요 없고, 순환 include도 없음</td></tr>
+<tr><td><code>#pragma once</code></td><td>필요 없음</td><td>각 <code>.rs</code> 파일은 하나의 모듈이며 정확히 한 번만 포함됨</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="header-files-and-include-modules-and-use"></a></p>
+<h3 id="헤더-파일과-include--모듈과-use"><a class="header" href="#헤더-파일과-include--모듈과-use">헤더 파일과 <code>#include</code> → 모듈과 <code>use</code></a></h3>
+<p>C++에서 컴파일 모델은 텍스트 포함(textual inclusion)을 중심으로 돌아갑니다:</p>
+<pre><code class="language-cpp">// widget.h — Widget를 사용하는 모든 번역 단위가 이 파일을 include
+#pragma once
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+class Widget {
+public:
+    Widget(std::string name);
+    void activate();
+private:
+    std::string name_;
+    std::vector&lt;int&gt; data_;
+};
+</code></pre>
+<pre><code class="language-cpp">// widget.cpp — 정의는 별도 파일에 존재
+#include "widget.h"
+Widget::Widget(std::string name) : name_(std::move(name)) {}
+void Widget::activate() { /* ... */ }
+</code></pre>
+<p>Rust에는 <strong>헤더 파일도, forward declaration도, include guard도 없습니다</strong>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// src/widget.rs — 선언과 정의가 한 파일에 함께 있음
+pub struct Widget {
+    name: String,         // 기본값은 private
+    data: Vec&lt;i32&gt;,
+}
+
+impl Widget {
+    pub fn new(name: String) -&gt; Self {
+        Widget { name, data: Vec::new() }
+    }
+    pub fn activate(&amp;self) { /* ... */ }
+}
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust">// src/main.rs — 모듈 경로로 가져오기
+mod widget;  // 컴파일러에게 src/widget.rs를 포함하라고 알림
+use widget::Widget;
+
+fn main() {
+    let w = Widget::new("sensor".to_string());
+    w.activate();
+}</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++</th><th>Rust</th><th>더 나은 이유</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#include "foo.h"</code></td><td>부모에서 <code>mod foo;</code> + <code>use foo::Item;</code></td><td>텍스트 포함이 없어 ODR 위반이 없음</td></tr>
+<tr><td><code>#pragma once</code> / include guards</td><td>필요 없음</td><td>각 <code>.rs</code> 파일은 하나의 모듈이며 한 번만 컴파일됨</td></tr>
+<tr><td>Forward declarations</td><td>필요 없음</td><td>컴파일러가 crate 전체를 보므로 선언 순서가 중요하지 않음</td></tr>
+<tr><td><code>class Foo;</code> (불완전 타입)</td><td>필요 없음</td><td>선언/정의를 분리하지 않음</td></tr>
+<tr><td>각 클래스마다 <code>.h</code> + <code>.cpp</code></td><td>단일 <code>.rs</code> 파일</td><td>선언/정의 불일치 버그가 없음</td></tr>
+<tr><td><code>using namespace std;</code></td><td><code>use std::collections::HashMap;</code></td><td>항상 명시적이라 전역 네임스페이스 오염이 없음</td></tr>
+<tr><td>중첩된 <code>namespace a::b</code></td><td>중첩 <code>mod a { mod b { } }</code> 또는 <code>a/b.rs</code></td><td>파일 시스템이 모듈 트리를 그대로 반영함</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="friend-and-access-control-module-visibility"></a></p>
+<h3 id="friend와-접근-제어--모듈-가시성"><a class="header" href="#friend와-접근-제어--모듈-가시성"><code>friend</code>와 접근 제어 → 모듈 가시성</a></h3>
+<p>C++는 <code>friend</code>를 사용해 특정 클래스나 함수에 private 멤버 접근 권한을 부여합니다. Rust에는 <code>friend</code> 키워드가 없습니다. 대신 <strong>프라이버시는 모듈 스코프</strong>입니다:</p>
+<pre><code class="language-cpp">// C++
+class Engine {
+    friend class Car;   // Car는 private 멤버에 접근 가능
+    int rpm_;
+    void set_rpm(int r) { rpm_ = r; }
+public:
+    int rpm() const { return rpm_; }
+};
+</code></pre>
+<pre class="playground"><code class="language-rust">// Rust — 같은 모듈 안의 아이템은 모든 필드에 접근할 수 있으므로 `friend`가 필요 없음
+mod vehicle {
+    pub struct Engine {
+        rpm: u32,  // struct 기준이 아니라 모듈 기준으로 private
+    }
+
+    impl Engine {
+        pub fn new() -&gt; Self { Engine { rpm: 0 } }
+        pub fn rpm(&amp;self) -&gt; u32 { self.rpm }
+    }
+
+    pub struct Car {
+        engine: Engine,
+    }
+
+    impl Car {
+        pub fn new() -&gt; Self { Car { engine: Engine::new() } }
+        pub fn accelerate(&amp;mut self) {
+            self.engine.rpm = 3000; // ✅ 같은 모듈 — 필드 직접 접근 가능
+        }
+        pub fn rpm(&amp;self) -&gt; u32 {
+            self.engine.rpm  // ✅ 같은 모듈 — private 필드 읽기 가능
+        }
+    }
+}
+
+fn main() {
+    let mut car = vehicle::Car::new();
+    car.accelerate();
+    // car.engine.rpm = 9000;  // ❌ 컴파일 에러: `engine`는 private
+    println!("RPM: {}", car.rpm()); // ✅ Car의 public 메서드 사용
+}</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 접근 제어</th><th>Rust 대응</th><th>범위</th></tr>
+</thead>
+<tbody>
+<tr><td><code>private</code></td><td>(기본값, 키워드 없음)</td><td>같은 모듈 내부에서만 접근 가능</td></tr>
+<tr><td><code>protected</code></td><td>직접 대응 없음</td><td>부모 모듈 접근에는 <code>pub(super)</code> 사용</td></tr>
+<tr><td><code>public</code></td><td><code>pub</code></td><td>어디서나 접근 가능</td></tr>
+<tr><td><code>friend class Foo</code></td><td><code>Foo</code>를 같은 모듈에 둠</td><td>모듈 수준 프라이버시가 friend를 대체</td></tr>
+<tr><td>—</td><td><code>pub(crate)</code></td><td>crate 내부에서는 보이지만 외부 의존성에서는 안 보임</td></tr>
+<tr><td>—</td><td><code>pub(super)</code></td><td>부모 모듈에서만 보임</td></tr>
+<tr><td>—</td><td><code>pub(in crate::path)</code></td><td>특정 모듈 서브트리 안에서만 보임</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>핵심 통찰</strong>: C++의 프라이버시는 클래스 단위이고, Rust의 프라이버시는 모듈 단위입니다. 따라서 어떤 타입들을 같은 모듈에 둘지로 접근 제어를 설계합니다. 같은 모듈에 함께 둔 타입들은 서로의 private 필드에 완전히 접근할 수 있습니다.</p>
+</blockquote>
+<hr>
+<p><a id="volatile-atomics-and-read-volatile-write-volatile"></a></p>
+<h3 id="volatile--atomics와-read_volatilewrite_volatile"><a class="header" href="#volatile--atomics와-read_volatilewrite_volatile"><code>volatile</code> → atomics와 <code>read_volatile</code>/<code>write_volatile</code></a></h3>
+<p>C++에서 <code>volatile</code>은 읽기/쓰기를 최적화로 제거하지 말라고 컴파일러에 지시합니다. 보통 메모리 매핑 하드웨어 레지스터에 사용됩니다. <strong>Rust에는 <code>volatile</code> 키워드가 없습니다.</strong></p>
+<pre><code class="language-cpp">// C++: 하드웨어 레지스터를 위한 volatile
+volatile uint32_t* const GPIO_REG = reinterpret_cast&lt;volatile uint32_t*&gt;(0x4002'0000);
+*GPIO_REG = 0x01;              // 쓰기가 최적화로 제거되지 않음
+uint32_t val = *GPIO_REG;     // 읽기가 최적화로 제거되지 않음
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust: 명시적인 volatile 연산 — `unsafe` 코드에서만 가능
+use std::ptr;
+
+const GPIO_REG: *mut u32 = 0x4002_0000 as *mut u32;
+
+unsafe {
+    ptr::write_volatile(GPIO_REG, 0x01);    // 쓰기가 최적화로 제거되지 않음
+    let val = ptr::read_volatile(GPIO_REG); // 읽기가 최적화로 제거되지 않음
+}
+<span class="boring">}</span></code></pre>
+<p><strong>동시성에서 공유되는 상태</strong>라는 또 다른 흔한 <code>volatile</code> 사용처에서는, Rust는 atomics를 사용합니다:</p>
+<pre><code class="language-cpp">// C++: `volatile`만으로는 스레드 안전성이 보장되지 않음(흔한 실수!)
+volatile bool stop_flag = false;  // ❌ 데이터 레이스 — C++11+에서는 UB
+
+// 올바른 C++:
+std::atomic&lt;bool&gt; stop_flag{false};
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust: 스레드 사이에서 변경 가능한 상태를 공유하는 유일한 방법은 atomics
+use std::sync::atomic::{AtomicBool, Ordering};
+
+static STOP_FLAG: AtomicBool = AtomicBool::new(false);
+
+// 다른 스레드에서:
+STOP_FLAG.store(true, Ordering::Release);
+
+// 확인:
+if STOP_FLAG.load(Ordering::Acquire) {
+    println!("Stopping");
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 사용 방식</th><th>Rust 대응</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td>하드웨어 레지스터용 <code>volatile</code></td><td><code>ptr::read_volatile</code> / <code>ptr::write_volatile</code></td><td><code>unsafe</code>가 필요하지만 MMIO에는 정확한 선택</td></tr>
+<tr><td>스레드 신호 전달용 <code>volatile</code></td><td><code>AtomicBool</code> / <code>AtomicU32</code> 등</td><td>이 용도에서는 C++의 <code>volatile</code>도 잘못된 선택</td></tr>
+<tr><td><code>std::atomic&lt;T&gt;</code></td><td><code>std::sync::atomic::AtomicT</code></td><td>같은 의미론, 같은 메모리 순서</td></tr>
+<tr><td><code>std::atomic&lt;T&gt;::load(memory_order_acquire)</code></td><td><code>AtomicT::load(Ordering::Acquire)</code></td><td>1:1 매핑</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="static-variables-static-const-lazylock-oncelock"></a></p>
+<h3 id="static-변수--static-const-lazylock-oncelock"><a class="header" href="#static-변수--static-const-lazylock-oncelock"><code>static</code> 변수 → <code>static</code>, <code>const</code>, <code>LazyLock</code>, <code>OnceLock</code></a></h3>
+<p><a id="basic-static-and-const"></a></p>
+<h4 id="기본-static과-const"><a class="header" href="#기본-static과-const">기본 <code>static</code>과 <code>const</code></a></h4>
+<pre><code class="language-cpp">// C++
+const int MAX_RETRIES = 5;                    // 컴파일 타임 상수
+static std::string CONFIG_PATH = "/etc/app";  // 정적 초기화 — 순서가 정의되지 않음!
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust
+const MAX_RETRIES: u32 = 5;                   // 컴파일 타임 상수, 인라인됨
+static CONFIG_PATH: &amp;str = "/etc/app";        // `'static` 라이프타임, 고정 주소
+<span class="boring">}</span></code></pre>
+<p><a id="the-static-initialization-order-fiasco"></a></p>
+<h4 id="정적-초기화-순서-문제"><a class="header" href="#정적-초기화-순서-문제">정적 초기화 순서 문제</a></h4>
+<p>C++에는 잘 알려진 문제가 있습니다. 서로 다른 번역 단위에 있는 전역 생성자들이 <strong>정해지지 않은 순서</strong>로 실행됩니다. Rust는 이 문제를 아예 피합니다. <code>static</code> 값은 컴파일 타임 상수여야 하므로 생성자가 없습니다.</p>
+<p>런타임에 초기화되는 전역값이 필요하다면 <code>LazyLock</code>(Rust 1.80+)이나 <code>OnceLock</code>을 사용하세요:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::LazyLock;
+
+// C++의 `static std::regex`에 해당 — 첫 접근 시 초기화되며, 스레드 안전
+static CONFIG_REGEX: LazyLock&lt;regex::Regex&gt; = LazyLock::new(|| {
+    regex::Regex::new(r"^[a-z]+_diag$").expect("invalid regex")
+});
+
+fn is_valid_diag(name: &amp;str) -&gt; bool {
+    CONFIG_REGEX.is_match(name)  // 첫 호출에서 초기화, 이후 호출은 빠름
+}
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::OnceLock;
+
+// OnceLock: 한 번만 초기화되며, 런타임 데이터를 이용해 설정 가능
+static DB_CONN: OnceLock&lt;String&gt; = OnceLock::new();
+
+fn init_db(connection_string: &amp;str) {
+    DB_CONN.set(connection_string.to_string())
+        .expect("DB_CONN already initialized");
+}
+
+fn get_db() -&gt; &amp;'static str {
+    DB_CONN.get().expect("DB not initialized")
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++</th><th>Rust</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td><code>const int X = 5;</code></td><td><code>const X: i32 = 5;</code></td><td>둘 다 컴파일 타임. Rust는 타입 표기가 필요</td></tr>
+<tr><td><code>constexpr int X = 5;</code></td><td><code>const X: i32 = 5;</code></td><td>Rust의 <code>const</code>는 항상 constexpr</td></tr>
+<tr><td><code>static int count = 0;</code> (파일 스코프)</td><td><code>static COUNT: AtomicI32 = AtomicI32::new(0);</code></td><td>변경 가능한 static은 <code>unsafe</code>나 atomics가 필요</td></tr>
+<tr><td><code>static std::string s = "hi";</code></td><td><code>static S: &amp;str = "hi";</code> 또는 <code>LazyLock&lt;String&gt;</code></td><td>단순한 경우 런타임 생성자 불필요</td></tr>
+<tr><td><code>static MyObj obj;</code> (복잡한 초기화)</td><td><code>static OBJ: LazyLock&lt;MyObj&gt; = LazyLock::new(|| { ... });</code></td><td>스레드 안전, 지연 초기화, 초기화 순서 문제 없음</td></tr>
+<tr><td><code>thread_local</code></td><td><code>thread_local! { static X: Cell&lt;u32&gt; = Cell::new(0); }</code></td><td>의미론 동일</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="constexpr-const-fn"></a></p>
+<h3 id="constexpr--const-fn"><a class="header" href="#constexpr--const-fn"><code>constexpr</code> → <code>const fn</code></a></h3>
+<p>C++의 <code>constexpr</code>는 함수와 변수를 컴파일 타임 평가 대상으로 지정합니다. Rust는 같은 목적에 <code>const fn</code>과 <code>const</code>를 사용합니다:</p>
+<pre><code class="language-cpp">// C++
+constexpr int factorial(int n) {
+    return n &lt;= 1 ? 1 : n * factorial(n - 1);
+}
+constexpr int val = factorial(5);  // 컴파일 타임에 계산됨 → 120
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust
+const fn factorial(n: u32) -&gt; u32 {
+    if n &lt;= 1 { 1 } else { n * factorial(n - 1) }
+}
+const VAL: u32 = factorial(5);  // 컴파일 타임에 계산됨 → 120
+
+// 배열 크기와 match 패턴에도 사용 가능:
+const LOOKUP: [u32; 5] = [factorial(1), factorial(2), factorial(3),
+                           factorial(4), factorial(5)];
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++</th><th>Rust</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td><code>constexpr int f()</code></td><td><code>const fn f() -&gt; i32</code></td><td>의도는 동일 — 컴파일 타임 평가 가능</td></tr>
+<tr><td><code>constexpr</code> 변수</td><td><code>const</code> 변수</td><td>Rust의 <code>const</code>는 항상 컴파일 타임</td></tr>
+<tr><td><code>consteval</code> (C++20)</td><td>대응 없음</td><td><code>const fn</code>은 런타임에도 실행 가능</td></tr>
+<tr><td><code>if constexpr</code> (C++17)</td><td>직접 대응 없음 (<code>cfg!</code>나 제네릭 사용)</td><td>일부 경우는 트레잇 specialization이 대신함</td></tr>
+<tr><td><code>constinit</code> (C++20)</td><td>const 초기화자가 있는 <code>static</code></td><td>Rust의 <code>static</code>은 기본적으로 const 초기화여야 함</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong><code>const fn</code>의 현재 제한 사항</strong> (Rust 1.82 기준으로 안정화된 내용):</p>
+<ul>
+<li>트레잇 메서드는 사용할 수 없음(const 컨텍스트에서 <code>Vec</code>에 <code>.len()</code> 호출 불가)</li>
+<li>힙 할당 불가(<code>Box::new</code>, <code>Vec::new</code>는 const 아님)</li>
+<li><del>부동소수점 연산 불가</del> — <strong>Rust 1.82에서 안정화</strong></li>
+<li><code>for</code> 루프를 사용할 수 없음(재귀나 수동 인덱스를 둔 <code>while</code> 사용)</li>
+</ul>
+</blockquote>
+<hr>
+<p><a id="sfinae-and-enable-if-trait-bounds-and-where-clauses"></a></p>
+<h3 id="sfinae와-enable_if--트레잇-바운드와-where-절"><a class="header" href="#sfinae와-enable_if--트레잇-바운드와-where-절">SFINAE와 <code>enable_if</code> → 트레잇 바운드와 <code>where</code> 절</a></h3>
+<p>C++에서 SFINAE(Substitution Failure Is Not An Error)는 조건부 제네릭 프로그래밍의 핵심 메커니즘입니다. 강력하지만 읽기 어렵기로 악명 높습니다. Rust는 이를 <strong>트레잇 바운드</strong>로 완전히 대체합니다:</p>
+<pre><code class="language-cpp">// C++: SFINAE 기반 조건부 함수(C++20 이전)
+template&lt;typename T,
+         std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, int&gt; = 0&gt;
+T double_it(T val) { return val * 2; }
+
+template&lt;typename T,
+         std::enable_if_t&lt;std::is_floating_point_v&lt;T&gt;, int&gt; = 0&gt;
+T double_it(T val) { return val * 2.0; }
+
+// C++20 concepts — 더 깔끔하지만 여전히 장황함
+template&lt;std::integral T&gt;
+T double_it(T val) { return val * 2; }
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust: 트레잇 바운드 — 읽기 쉽고, 조합 가능하며, 에러 메시지도 뛰어남
+use std::ops::Mul;
+
+fn double_it&lt;T: Mul&lt;Output = T&gt; + From&lt;u8&gt;&gt;(val: T) -&gt; T {
+    val * T::from(2)
+}
+
+// 복잡한 제약에는 where 절 사용:
+fn process&lt;T&gt;(val: T) -&gt; String
+where
+    T: std::fmt::Display + Clone + Send,
+{
+    format!("Processing: {}", val)
+}
+
+// 별도의 impl로 조건부 동작 구현(SFINAE 오버로드 세트를 대체)
+trait Describable {
+    fn describe(&amp;self) -&gt; String;
+}
+
+impl Describable for u32 {
+    fn describe(&amp;self) -&gt; String { format!("integer: {self}") }
+}
+
+impl Describable for f64 {
+    fn describe(&amp;self) -&gt; String { format!("float: {self:.2}") }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 템플릿 메타프로그래밍</th><th>Rust 대응</th><th>가독성</th></tr>
+</thead>
+<tbody>
+<tr><td><code>std::enable_if_t&lt;cond&gt;</code></td><td><code>where T: Trait</code></td><td>🟢 영어처럼 읽힘</td></tr>
+<tr><td><code>std::is_integral_v&lt;T&gt;</code></td><td>숫자 트레잇이나 구체 타입에 대한 바운드</td><td>🟢 <code>_v</code> / <code>_t</code> 접미사 없음</td></tr>
+<tr><td>SFINAE 오버로드 세트</td><td>별도의 <code>impl Trait for ConcreteType</code> 블록</td><td>🟢 각 impl이 독립적으로 읽힘</td></tr>
+<tr><td><code>if constexpr (std::is_same_v&lt;T, int&gt;)</code></td><td>트레잇 impl 기반 specialization</td><td>🟢 컴파일 타임 디스패치</td></tr>
+<tr><td>C++20 <code>concept</code></td><td><code>trait</code></td><td>🟢 의도가 거의 동일</td></tr>
+<tr><td><code>requires</code> 절</td><td><code>where</code> 절</td><td>🟢 위치와 문법이 비슷</td></tr>
+<tr><td>템플릿 깊숙한 곳에서 컴파일 실패</td><td>호출 지점에서 트레잇 불일치로 컴파일 실패</td><td>🟢 200줄짜리 오류 연쇄가 없음</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>핵심 통찰</strong>: C++20 concept는 Rust 트레잇에 가장 가까운 개념입니다. C++20 concept에 익숙하다면, Rust 트레잇을 “1.0부터 일급 언어 기능으로 제공된 concept“라고 생각하면 됩니다. 단순한 duck typing이 아니라, 일관된 구현 모델(트레잇 impl)까지 포함합니다.</p>
+</blockquote>
+<hr>
+<p><a id="std-function-function-pointers-impl-fn-and-box-dyn-fn"></a></p>
+<h3 id="stdfunction--함수-포인터-impl-fn-boxdyn-fn"><a class="header" href="#stdfunction--함수-포인터-impl-fn-boxdyn-fn"><code>std::function</code> → 함수 포인터, <code>impl Fn</code>, <code>Box&lt;dyn Fn&gt;</code></a></h3>
+<p>C++의 <code>std::function&lt;R(Args...)&gt;</code>는 타입 소거된 호출 가능 객체입니다. Rust에는 서로 다른 트레이드오프를 가진 세 가지 선택지가 있습니다:</p>
+<pre><code class="language-cpp">// C++: 만능 해법(힙 할당, 타입 소거)
+#include &lt;functional&gt;
+std::function&lt;int(int)&gt; make_adder(int n) {
+    return [n](int x) { return x + n; };
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust 옵션 1: fn 포인터 — 단순하고, 캡처가 없으며, 할당이 없음
+fn add_one(x: i32) -&gt; i32 { x + 1 }
+let f: fn(i32) -&gt; i32 = add_one;
+println!("{}", f(5)); // 6
+
+// Rust 옵션 2: impl Fn — 모노모피제이션, 제로 오버헤드, 캡처 가능
+fn apply(val: i32, f: impl Fn(i32) -&gt; i32) -&gt; i32 { f(val) }
+let n = 10;
+let result = apply(5, |x| x + n);  // 클로저가 `n`을 캡처
+
+// Rust 옵션 3: Box&lt;dyn Fn&gt; — 타입 소거, 힙 할당(`std::function`과 유사)
+fn make_adder(n: i32) -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(move |x| x + n)
+}
+let adder = make_adder(10);
+println!("{}", adder(5));  // 15
+
+// 서로 다른 callable 저장(`vector&lt;function&lt;int(int)&gt;&gt;`와 유사):
+let callbacks: Vec&lt;Box&lt;dyn Fn(i32) -&gt; i32&gt;&gt; = vec![
+    Box::new(|x| x + 1),
+    Box::new(|x| x * 2),
+    Box::new(make_adder(100)),
+];
+for cb in &amp;callbacks {
+    println!("{}", cb(5));  // 6, 10, 105
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>사용할 때</th><th>C++ 대응</th><th>Rust 선택</th></tr>
+</thead>
+<tbody>
+<tr><td>최상위 함수, 캡처 없음</td><td>함수 포인터</td><td><code>fn(Args) -&gt; Ret</code></td></tr>
+<tr><td>callable을 받는 제네릭 함수</td><td>템플릿 매개변수</td><td><code>impl Fn(Args) -&gt; Ret</code> (정적 디스패치)</td></tr>
+<tr><td>제네릭의 트레잇 바운드</td><td><code>template&lt;typename F&gt;</code></td><td><code>F: Fn(Args) -&gt; Ret</code></td></tr>
+<tr><td>저장되는 callable, 타입 소거 필요</td><td><code>std::function&lt;R(Args)&gt;</code></td><td><code>Box&lt;dyn Fn(Args) -&gt; Ret&gt;</code></td></tr>
+<tr><td>상태를 변경하는 콜백</td><td>가변 람다를 담은 <code>std::function</code></td><td><code>Box&lt;dyn FnMut(Args) -&gt; Ret&gt;</code></td></tr>
+<tr><td>한 번만 호출되는 콜백(소모됨)</td><td>이동된 <code>std::function</code></td><td><code>Box&lt;dyn FnOnce(Args) -&gt; Ret&gt;</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>성능 참고</strong>: <code>impl Fn</code>은 제로 오버헤드입니다(모노모피제이션되어 C++ 템플릿과 비슷함). <code>Box&lt;dyn Fn&gt;</code>은 <code>std::function</code>과 같은 수준의 오버헤드(vtable + 힙 할당)가 있습니다. 서로 다른 callable을 저장해야 할 때가 아니라면 <code>impl Fn</code>을 우선하세요.</p>
+</blockquote>
+<hr>
+<p><a id="container-mapping-cpp-stl-rust-std-collections"></a></p>
+<h3 id="컨테이너-매핑-c-stl--rust-stdcollections"><a class="header" href="#컨테이너-매핑-c-stl--rust-stdcollections">컨테이너 매핑: C++ STL → Rust <code>std::collections</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ STL 컨테이너</th><th>Rust 대응</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td><code>std::vector&lt;T&gt;</code></td><td><code>Vec&lt;T&gt;</code></td><td>API가 거의 동일. Rust는 기본적으로 경계 검사 수행</td></tr>
+<tr><td><code>std::array&lt;T, N&gt;</code></td><td><code>[T; N]</code></td><td>스택에 할당되는 고정 크기 배열</td></tr>
+<tr><td><code>std::deque&lt;T&gt;</code></td><td><code>std::collections::VecDeque&lt;T&gt;</code></td><td>링 버퍼. 양끝 push/pop이 효율적</td></tr>
+<tr><td><code>std::list&lt;T&gt;</code></td><td><code>std::collections::LinkedList&lt;T&gt;</code></td><td>Rust에서는 거의 쓰지 않음 — 대부분 <code>Vec</code>가 더 빠름</td></tr>
+<tr><td><code>std::forward_list&lt;T&gt;</code></td><td>대응 없음</td><td><code>Vec</code>나 <code>VecDeque</code> 사용</td></tr>
+<tr><td><code>std::unordered_map&lt;K, V&gt;</code></td><td><code>std::collections::HashMap&lt;K, V&gt;</code></td><td>기본 해시로 <code>SipHash</code> 사용(DoS 저항)</td></tr>
+<tr><td><code>std::map&lt;K, V&gt;</code></td><td><code>std::collections::BTreeMap&lt;K, V&gt;</code></td><td>B-tree 기반, 키 정렬됨, <code>K: Ord</code> 필요</td></tr>
+<tr><td><code>std::unordered_set&lt;T&gt;</code></td><td><code>std::collections::HashSet&lt;T&gt;</code></td><td><code>T: Hash + Eq</code> 필요</td></tr>
+<tr><td><code>std::set&lt;T&gt;</code></td><td><code>std::collections::BTreeSet&lt;T&gt;</code></td><td>정렬 집합, <code>T: Ord</code> 필요</td></tr>
+<tr><td><code>std::priority_queue&lt;T&gt;</code></td><td><code>std::collections::BinaryHeap&lt;T&gt;</code></td><td>기본이 max-heap(C++와 동일)</td></tr>
+<tr><td><code>std::stack&lt;T&gt;</code></td><td><code>.push()</code> / <code>.pop()</code>을 사용하는 <code>Vec&lt;T&gt;</code></td><td>별도 stack 타입 불필요</td></tr>
+<tr><td><code>std::queue&lt;T&gt;</code></td><td><code>.push_back()</code> / <code>.pop_front()</code>를 사용하는 <code>VecDeque&lt;T&gt;</code></td><td>별도 queue 타입 불필요</td></tr>
+<tr><td><code>std::string</code></td><td><code>String</code></td><td>UTF-8이 보장되며, null 종료 문자열이 아님</td></tr>
+<tr><td><code>std::string_view</code></td><td><code>&amp;str</code></td><td>빌린 UTF-8 슬라이스</td></tr>
+<tr><td><code>std::span&lt;T&gt;</code> (C++20)</td><td><code>&amp;[T]</code> / <code>&amp;mut [T]</code></td><td>Rust 슬라이스는 1.0부터 일급 타입</td></tr>
+<tr><td><code>std::tuple&lt;A, B, C&gt;</code></td><td><code>(A, B, C)</code></td><td>문법 차원에서 지원되며 구조 분해 가능</td></tr>
+<tr><td><code>std::pair&lt;A, B&gt;</code></td><td><code>(A, B)</code></td><td>그냥 2원소 튜플</td></tr>
+<tr><td><code>std::bitset&lt;N&gt;</code></td><td>std 대응 없음</td><td><code>bitvec</code> crate 또는 <code>[u8; N/8]</code> 사용</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>핵심 차이점</strong>:</p>
+<ul>
+<li>Rust의 <code>HashMap</code>/<code>HashSet</code>은 <code>K: Hash + Eq</code>를 요구합니다. C++처럼 해시 불가능한 키를 썼을 때 STL 깊숙한 곳에서 템플릿 오류가 터지는 대신, Rust는 컴파일러가 이를 타입 수준에서 강제합니다.</li>
+<li><code>Vec</code> 인덱싱(<code>v[i]</code>)은 기본적으로 범위를 벗어나면 panic합니다. <code>Option&lt;&amp;T&gt;</code>를 반환하는 <code>.get(i)</code>나, 경계 검사 자체를 없애는 iterator를 사용하세요.</li>
+<li><code>std::multimap</code>이나 <code>std::multiset</code>은 없습니다. <code>HashMap&lt;K, Vec&lt;V&gt;&gt;</code> 또는 <code>BTreeMap&lt;K, Vec&lt;V&gt;&gt;</code>를 사용하세요.</li>
+</ul>
+<hr>
+<p><a id="exception-safety-panic-safety"></a></p>
+<h3 id="예외-안전성--패닉-안전성"><a class="header" href="#예외-안전성--패닉-안전성">예외 안전성 → 패닉 안전성</a></h3>
+<p>C++는 예외 안전성을 세 단계(Abrahams guarantees)로 나눕니다:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 수준</th><th>의미</th><th>Rust 대응</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>No-throw</strong></td><td>함수가 절대 throw하지 않음</td><td>함수가 panic하지 않음(<code>Result</code>를 반환)</td></tr>
+<tr><td><strong>Strong</strong> (commit-or-rollback)</td><td>throw되더라도 상태는 바뀌지 않음</td><td>소유권 모델 덕분에 자연스럽게 달성됨 — <code>?</code>로 조기 반환되면 부분적으로 만들어진 값은 drop됨</td></tr>
+<tr><td><strong>Basic</strong></td><td>throw되더라도 불변식은 유지됨</td><td>Rust의 기본값 — <code>Drop</code>이 실행되고, 누수 없음</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="how-rusts-ownership-model-helps"></a></p>
+<h4 id="rust의-소유권-모델이-주는-이점"><a class="header" href="#rust의-소유권-모델이-주는-이점">Rust의 소유권 모델이 주는 이점</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Strong guarantee가 사실상 공짜 — file.write()가 실패해도 config는 바뀌지 않음
+fn update_config(config: &amp;mut Config, path: &amp;str) -&gt; Result&lt;(), Error&gt; {
+    let new_data = fetch_from_network()?; // Err → 조기 반환, config는 그대로
+    let validated = validate(new_data)?;  // Err → 조기 반환, config는 그대로
+    *config = validated;                  // 성공했을 때만 실행(commit)
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<p>C++에서 strong guarantee를 달성하려면 수동 rollback이나 copy-and-swap 관용구가 필요합니다. Rust에서는 대부분의 코드에서 <code>?</code> 전파만으로 strong guarantee를 기본적으로 얻게 됩니다.</p>
+<p><a id="catch-unwind-rusts-equivalent-of-catch"></a></p>
+<h4 id="catch_unwind--rust에서-catch에-해당하는-것"><a class="header" href="#catch_unwind--rust에서-catch에-해당하는-것"><code>catch_unwind</code> — Rust에서 <code>catch(...)</code>에 해당하는 것</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::panic;
+
+// panic 잡기(C++의 catch(...)와 유사) — 정말 필요한 경우는 드묾
+let result = panic::catch_unwind(|| {
+    // panic할 수 있는 코드
+    let v = vec![1, 2, 3];
+    v[10]  // Panic! (인덱스 범위 초과)
+});
+
+match result {
+    Ok(val) =&gt; println!("Got: {val}"),
+    Err(_) =&gt; eprintln!("Caught a panic — cleaned up"),
+}
+<span class="boring">}</span></code></pre>
+<p><a id="unwindsafe-marking-types-as-panic-safe"></a></p>
+<h4 id="unwindsafe--타입이-패닉에-안전함을-표시하기"><a class="header" href="#unwindsafe--타입이-패닉에-안전함을-표시하기"><code>UnwindSafe</code> — 타입이 패닉에 안전함을 표시하기</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::panic::UnwindSafe;
+
+// &amp;mut 뒤에 있는 타입은 기본적으로 UnwindSafe가 아님 — panic이
+// 중간 수정 상태를 남겼을 수 있기 때문
+fn safe_execute&lt;F: FnOnce() + UnwindSafe&gt;(f: F) {
+    let _ = std::panic::catch_unwind(f);
+}
+
+// 코드를 검토해 안전함을 확인했다면 AssertUnwindSafe로 덮어쓸 수 있음:
+use std::panic::AssertUnwindSafe;
+let mut data = vec![1, 2, 3];
+let _ = std::panic::catch_unwind(AssertUnwindSafe(|| {
+    data.push(4);
+}));
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++ 예외 패턴</th><th>Rust 대응</th></tr>
+</thead>
+<tbody>
+<tr><td><code>throw MyException()</code></td><td><code>return Err(MyError::...)</code>(권장) 또는 <code>panic!("...")</code></td></tr>
+<tr><td><code>try { } catch (const E&amp; e)</code></td><td><code>match result { Ok(v) =&gt; ..., Err(e) =&gt; ... }</code> 또는 <code>?</code></td></tr>
+<tr><td><code>catch (...)</code></td><td><code>std::panic::catch_unwind(...)</code></td></tr>
+<tr><td><code>noexcept</code></td><td><code>-&gt; Result&lt;T, E&gt;</code>(에러는 예외가 아니라 값)</td></tr>
+<tr><td>스택 언와인딩 중 RAII cleanup</td><td>panic 언와인딩 중에도 <code>Drop::drop()</code> 실행</td></tr>
+<tr><td><code>std::uncaught_exceptions()</code></td><td><code>std::thread::panicking()</code></td></tr>
+<tr><td><code>-fno-exceptions</code> 컴파일 플래그</td><td><code>Cargo.toml</code>의 <code>[profile]</code>에서 <code>panic = "abort"</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>핵심 요약</strong>: Rust에서는 대부분의 코드가 예외 대신 <code>Result&lt;T, E&gt;</code>를 사용하므로, 에러 경로가 명시적이고 조합 가능합니다. <code>panic!</code>은 일상적인 오류가 아니라 버그(<code>assert!</code> 실패 같은 경우)를 위한 것입니다. 그래서 “예외 안전성“은 대체로 큰 이슈가 아닙니다. 정리(cleanup)는 소유권 시스템이 자동으로 처리합니다.</p>
+</blockquote>
+<hr>
+<p><a id="cpp-to-rust-migration-patterns"></a></p>
+<h2 id="c에서-rust로의-마이그레이션-패턴"><a class="header" href="#c에서-rust로의-마이그레이션-패턴">C++에서 Rust로의 마이그레이션 패턴</a></h2>
+<p><a id="quick-reference-cpp-rust-idiom-map"></a></p>
+<h3 id="빠른-참조-c--rust-관용구-매핑"><a class="header" href="#빠른-참조-c--rust-관용구-매핑">빠른 참조: C++ → Rust 관용구 매핑</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><strong>C++ 패턴</strong></th><th><strong>Rust 관용구</strong></th><th><strong>비고</strong></th></tr>
+</thead>
+<tbody>
+<tr><td><code>class Derived : public Base</code></td><td><code>enum Variant { A {...}, B {...} }</code></td><td>닫힌 집합에는 enum을 우선</td></tr>
+<tr><td><code>virtual void method() = 0</code></td><td><code>trait MyTrait { fn method(&amp;self); }</code></td><td>열려 있거나 확장 가능한 인터페이스에 사용</td></tr>
+<tr><td><code>dynamic_cast&lt;Derived*&gt;(ptr)</code></td><td><code>match value { Variant::A(data) =&gt; ..., }</code></td><td>exhaustiveness가 보장되며 런타임 실패 없음</td></tr>
+<tr><td><code>vector&lt;unique_ptr&lt;Base&gt;&gt;</code></td><td><code>Vec&lt;Box&lt;dyn Trait&gt;&gt;</code></td><td>진짜 다형성이 필요할 때만</td></tr>
+<tr><td><code>shared_ptr&lt;T&gt;</code></td><td><code>Rc&lt;T&gt;</code> 또는 <code>Arc&lt;T&gt;</code></td><td>먼저 <code>Box&lt;T&gt;</code>나 소유 값으로 해결 가능한지 확인</td></tr>
+<tr><td><code>enable_shared_from_this&lt;T&gt;</code></td><td>arena 패턴(<code>Vec&lt;T&gt;</code> + 인덱스)</td><td>참조 사이클을 아예 없앰</td></tr>
+<tr><td>모든 클래스에 <code>Base* m_pFramework</code> 저장</td><td><code>fn execute(&amp;mut self, ctx: &amp;mut Context)</code></td><td>포인터를 저장하지 말고 context를 전달</td></tr>
+<tr><td><code>try { } catch (...) { }</code></td><td><code>match result { Ok(v) =&gt; ..., Err(e) =&gt; ... }</code></td><td>또는 <code>?</code>로 전파</td></tr>
+<tr><td><code>std::optional&lt;T&gt;</code></td><td><code>Option&lt;T&gt;</code></td><td><code>match</code>를 강제하므로 <code>None</code>을 잊을 수 없음</td></tr>
+<tr><td><code>const std::string&amp;</code> 매개변수</td><td><code>&amp;str</code> 매개변수</td><td><code>String</code>과 <code>&amp;str</code> 모두 받을 수 있음</td></tr>
+<tr><td><code>enum class Foo { A, B, C }</code></td><td><code>enum Foo { A, B, C }</code></td><td>Rust enum은 데이터도 함께 담을 수 있음</td></tr>
+<tr><td><code>auto x = std::move(obj)</code></td><td><code>let x = obj;</code></td><td>move가 기본값이므로 <code>std::move</code> 불필요</td></tr>
+<tr><td>CMake + make + lint</td><td><code>cargo build / test / clippy / fmt</code></td><td>하나의 도구로 일관되게 처리</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="migration-strategy"></a></p>
+<h3 id="마이그레이션-전략"><a class="header" href="#마이그레이션-전략">마이그레이션 전략</a></h3>
+<ol>
+<li><strong>데이터 타입부터 시작하세요</strong>: 먼저 struct와 enum을 옮기면 소유권을 어떻게 설계할지 강제로 고민하게 됩니다.</li>
+<li><strong>팩토리를 enum으로 바꾸세요</strong>: 팩토리가 서로 다른 파생 타입을 만든다면, 대개 <code>enum</code> + <code>match</code>가 더 적합합니다.</li>
+<li><strong>god object를 합성된 struct로 바꾸세요</strong>: 관련 필드를 관심사별로 묶어 더 작은 struct로 나누세요.</li>
+<li><strong>포인터를 borrow로 바꾸세요</strong>: 저장된 <code>Base*</code> 포인터를 라이프타임이 있는 <code>&amp;'a T</code> borrow로 전환하세요.</li>
+<li><strong><code>Box&lt;dyn Trait&gt;</code>는 아껴 쓰세요</strong>: 플러그인 시스템과 테스트 mocking 같은 경우에만 사용하세요.</li>
+<li><strong>컴파일러의 안내를 따르세요</strong>: Rust의 오류 메시지는 매우 좋습니다. 천천히 읽어 보면 설계 방향까지 알려줍니다.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch17-4-logging-and-tracing-ecosystem.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch19-macros.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch17-4-logging-and-tracing-ecosystem.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch19-macros.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

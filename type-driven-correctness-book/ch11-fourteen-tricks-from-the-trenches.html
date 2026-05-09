@@ -1,0 +1,1300 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>15. 실전에서 건진 열네 가지 요령 - Rust의 타입 주도 정확성</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-d7038b1f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-020eda16.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust의 타입 주도 정확성</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="fourteen-tricks-from-the-trenches"></a></p>
+<h1 id="실전에서-건진-열네-가지-요령-"><a class="header" href="#실전에서-건진-열네-가지-요령-">실전에서 건진 열네 가지 요령 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong> sentinel 제거, sealed trait, 세션 타입, <code>Pin</code>, RAII, <code>#[must_use]</code>에 이르는 열네 가지 작지만 correct-by-construction 기법 — 각각 거의 비용 없이 특정 버그 클래스를 없앱니다.</p>
+<p><strong>상호 참조:</strong> <a href="ch02-typed-command-interfaces-request-determi.html">ch02</a>(sealed trait가 ch02 확장), <a href="ch05-protocol-state-machines-type-state-for-r.html">ch05</a>(typestate 빌더가 ch05 확장), <a href="ch07-validated-boundaries-parse-dont-validate.html">ch07</a>(FromStr가 ch07 확장)</p>
+</blockquote>
+<h2 id="실전에서-건진-열네-가지-요령"><a class="header" href="#실전에서-건진-열네-가지-요령">실전에서 건진 열네 가지 요령</a></h2>
+<p>핵심 패턴 여덟 가지(ch02–ch09)가 주요 correct-by-construction 기법을 다룹니다. 이 장은 프로덕션 Rust 코드에 <strong>반복해서 등장하는 작지만 가치 높은 요령 열네 가지</strong>를 모았습니다 — 각각 거의 비용 없이 특정 버그 클래스를 제거합니다.</p>
+<p><a id="trick-1-sentinel--option-at-the-boundary"></a></p>
+<h3 id="요령-1--sentinel을-경계에서-option으로"><a class="header" href="#요령-1--sentinel을-경계에서-option으로">요령 1 — Sentinel을 경계에서 <code>Option</code>으로</a></h3>
+<p>하드웨어 프로토콜에는 sentinel 값이 가득합니다: IPMI는 “센서 없음“에 <code>0xFF</code>, PCI는 “디바이스 없음“에 <code>0xFFFF</code>, SMBIOS는 “알 수 없음“에 <code>0x00</code>을 씁니다. 이 sentinel을 그냥 정수로 코드 전체에 끌고 가면 모든 소비자가 마법 값을 기억해 검사해야 합니다. 비교 한 곳이라도 빠지면 유령 255°C 읽기나 엉뚱한 벤더 ID 매칭이 생깁니다.</p>
+<p><strong>규칙:</strong> <strong>가장 처음 파싱 경계</strong>에서 sentinel을 <code>Option</code>으로 바꾸고, <strong>직렬화 경계</strong>에서만 다시 sentinel으로 되돌립니다.</p>
+<h4 id="안티-패턴pcie_treesrclspcirs에서"><a class="header" href="#안티-패턴pcie_treesrclspcirs에서">안티 패턴(<code>pcie_tree/src/lspci.rs</code>에서)</a></h4>
+<pre><code class="language-rust ignore">// Sentinel이 내부에 남음 — 모든 비교가 기억해야 함
+let mut current_vendor_id: u16 = 0xFFFF;
+let mut current_device_id: u16 = 0xFFFF;
+
+// ... later, parsing fails silently ...
+current_vendor_id = u16::from_str_radix(hex, 16)
+    .unwrap_or(0xFFFF);  // sentinel hides the error</code></pre>
+<p><code>current_vendor_id</code>를 받는 모든 함수는 <code>0xFFFF</code>가 특수하다는 걸 알아야 합니다. 누군가 먼저 <code>0xFFFF</code>를 확인하지 않고 <code>if vendor_id == target_id</code>만 쓰면, 잘못된 입력이 <code>0xFFFF</code>로 파싱될 때 없는 디바이스가 조용히 매칭됩니다.</p>
+<h4 id="올바른-패턴nic_selsrceventsrs에서"><a class="header" href="#올바른-패턴nic_selsrceventsrs에서">올바른 패턴(<code>nic_sel/src/events.rs</code>에서)</a></h4>
+<pre><code class="language-rust ignore">pub struct ThermalEvent {
+    pub record_id: u16,
+    pub temperature: Option&lt;u8&gt;,  // None if sensor reports 0xFF
+}
+
+impl ThermalEvent {
+    pub fn from_raw(record_id: u16, raw_temp: u8) -&gt; Self {
+        ThermalEvent {
+            record_id,
+            temperature: if raw_temp != 0xFF {
+                Some(raw_temp)
+            } else {
+                None
+            },
+        }
+    }
+}</code></pre>
+<p>이제 모든 소비자가 <code>None</code>을 <strong>반드시</strong> 처리해야 합니다 — 컴파일러가 강제합니다.</p>
+<pre><code class="language-rust ignore">// 안전 — 컴파일러가 누락 온도 처리를 보장
+fn is_overtemp(temp: Option&lt;u8&gt;, threshold: u8) -&gt; bool {
+    temp.map_or(false, |t| t &gt; threshold)
+}
+
+// None 처리를 잊으면 컴파일 오류:
+// fn bad_check(temp: Option&lt;u8&gt;, threshold: u8) -&gt; bool {
+//     temp &gt; threshold  // ERROR: can't compare Option&lt;u8&gt; with u8
+// }</code></pre>
+<h4 id="실제-영향"><a class="header" href="#실제-영향">실제 영향</a></h4>
+<p><code>inventory/src/events.rs</code>는 GPU 열 알림에 같은 패턴을 씁니다.</p>
+<pre><code class="language-rust ignore">temperature: if data[1] != 0xFF {
+    Some(data[1] as i8)
+} else {
+    None
+},</code></pre>
+<p><code>pcie_tree/src/lspci.rs</code> 리팩터링은 단순합니다: <code>current_vendor_id: u16</code>을
+<code>current_vendor_id: Option&lt;u16&gt;</code>로 바꾸고, <code>0xFFFF</code>를 <code>None</code>으로 바꾼 뒤
+컴파일러가 고쳐야 할 모든 위치를 찾게 하면 됩니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>이전</th><th>이후</th></tr>
+</thead>
+<tbody>
+<tr><td><code>let mut vendor_id: u16 = 0xFFFF</code></td><td><code>let mut vendor_id: Option&lt;u16&gt; = None</code></td></tr>
+<tr><td><code>.unwrap_or(0xFFFF)</code></td><td><code>.ok()</code> (이미 <code>Option</code> 반환)</td></tr>
+<tr><td><code>if vendor_id != 0xFFFF { ... }</code></td><td><code>if let Some(vid) = vendor_id { ... }</code></td></tr>
+<tr><td>직렬화: <code>vendor_id</code></td><td><code>vendor_id.unwrap_or(0xFFFF)</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="trick-2-sealed-traits"></a></p>
+<h3 id="요령-2--sealed-traits"><a class="header" href="#요령-2--sealed-traits">요령 2 — Sealed Traits</a></h3>
+<p>2장은 각 명령을 응답에 묶는 연관 타입으로 <code>IpmiCmd</code>를 소개했습니다. 하지만 구멍이 있습니다: <strong>누구나</strong> <code>IpmiCmd</code>를 구현할 수 있다면, 누군가 <code>parse_response</code>가 잘못된 타입을 반환하거나 패닉하는 <code>MaliciousCmd</code>를 쓸 수 있습니다. 전체 시스템의 타입 안전성은 모든 구현이 올바르다는 가정에 달려 있습니다.</p>
+<p><strong>sealed trait</strong>이 이 구멍을 막습니다. 아이디어는 단순합니다: 트레잇이 <strong>오직 크레이트 안에서만</strong> 구현 가능한 <em>비공개</em> 슈퍼트레잇을 요구하게 만듭니다.</p>
+<pre><code class="language-rust ignore">// — 비공개 모듈: 크레이트 밖으로 내보내지 않음 —
+mod private {
+    pub trait Sealed {}
+}
+
+// — 공개 트레잇: Sealed 필요 — 외부에서는 구현 불가 —
+pub trait IpmiCmd: private::Sealed {
+    type Response;
+    fn net_fn(&amp;self) -&gt; u8;
+    fn cmd_byte(&amp;self) -&gt; u8;
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt;;
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Self::Response&gt;;
+}</code></pre>
+<p>크레이트 안에서는 승인된 각 명령 타입에 대해 <code>Sealed</code>를 구현합니다.</p>
+<pre><code class="language-rust ignore">pub struct ReadTemp { pub sensor_id: u8 }
+impl private::Sealed for ReadTemp {}
+
+impl IpmiCmd for ReadTemp {
+    type Response = Celsius;
+    fn net_fn(&amp;self) -&gt; u8 { 0x04 }
+    fn cmd_byte(&amp;self) -&gt; u8 { 0x2D }
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt; { vec![self.sensor_id] }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Celsius&gt; {
+        if raw.is_empty() { return Err(io::Error::new(io::ErrorKind::InvalidData, "empty")); }
+        Ok(Celsius(raw[0] as f64))
+    }
+}</code></pre>
+<p>외부 코드는 <code>IpmiCmd</code>를 보고 <code>execute()</code>를 호출할 수 있지만 구현할 수는 없습니다.</p>
+<pre><code class="language-rust ignore">// 다른 크레이트:
+struct EvilCmd;
+// impl private::Sealed for EvilCmd {}  // ERROR: module `private` is private
+// impl IpmiCmd for EvilCmd { ... }     // ERROR: `Sealed` is not satisfied</code></pre>
+<p><a id="when-to-seal"></a></p>
+<h4 id="언제-seal할까"><a class="header" href="#언제-seal할까">언제 seal할까</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Seal할 때…</th><th>Seal하지 말 때…</th></tr>
+</thead>
+<tbody>
+<tr><td>안전성이 올바른 구현에 달림(IpmiCmd, DiagModule)</td><td>사용자가 시스템을 확장해야 함(사용자 정의 보고 포맷터 등)</td></tr>
+<tr><td>연관 타입이 불변식을 만족해야 함</td><td>트레잇이 단순 역량 마커(HasIpmi)</td></tr>
+<tr><td>정식 구현 집합을 직접 소유</td><td>서드파티 플러그인이 설계 목표</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="실제-후보"><a class="header" href="#실제-후보">실제 후보</a></h4>
+<ul>
+<li><code>IpmiCmd</code> — 잘못된 파싱이 타입이 있는 응답을 망가뜨릴 수 있음</li>
+<li><code>DiagModule</code> — 프레임워크가 <code>run()</code>이 유효한 DER 레코드를 반환한다고 가정</li>
+<li><code>SelEventFilter</code> — 깨진 필터가 중요한 SEL 이벤트를 삼킬 수 있음</li>
+</ul>
+<hr>
+<p><a id="trick-3-non_exhaustive-for-evolving-enums"></a></p>
+<h3 id="요령-3--진화하는-열거형에-non_exhaustive"><a class="header" href="#요령-3--진화하는-열거형에-non_exhaustive">요령 3 — 진화하는 열거형에 <code>#[non_exhaustive]</code></a></h3>
+<p><code>inventory/src/types.rs</code>의 <code>SkuVariant</code>는 현재 다섯 변형이 있습니다.</p>
+<pre><code class="language-rust ignore">pub enum SkuVariant {
+    S1001, S2001, S2002, S2003, S3001,
+}</code></pre>
+<p>다음 세대에 <code>S4001</code>을 추가하면, 와일드카드 팔이 없는 외부 코드는 <strong>조용히 컴파일에 실패</strong>합니다 — 그게 의도입니다. 내부 코드는요? <code>#[non_exhaustive]</code> 없이 <em>같은 크레이트</em>의 <code>match</code>는 와일드카드 없이 컴파일되고, 새 변형을 추가하면 자신의 빌드가 깨집니다.</p>
+<p>열거형에 <code>#[non_exhaustive]</code>를 붙이면 그 열거형을 매칭하는 <strong>외부 크레이트</strong>는 와일드카드 팔을 포함해야 합니다. 정의 크레이트 안에서는 <code>#[non_exhaustive]</code>가 효과 없음 — 여전히 완전한 매치를 쓸 수 있습니다.</p>
+<p><strong>왜 유용한가:</strong> 라이브러리 크레이트(또는 워크스페이스 공유 서브크레이트)에서 <code>SkuVariant</code>를 배포하면 하류 코드가 알 수 없는 미래 변형을 처리하도록 강제됩니다. 다음 세대에 <code>S4001</code>을 추가해도 하류는 이미 와일드카드가 있어 컴파일됩니다.</p>
+<pre><code class="language-rust ignore">// gpu_sel 크레이트(정의 크레이트) 안:
+#[non_exhaustive]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SkuVariant {
+    S1001,
+    S2001,
+    S2002,
+    S2003,
+    S3001,
+    // 다음 SKU가 나오면 여기에 추가.
+    // 외부 소비자는 이미 와일드카드를 가짐 — 깨짐 없음.
+}
+
+// gpu_sel 내부 — 완전 매치 허용(와일드카드 불필요):
+fn diag_path_internal(sku: SkuVariant) -&gt; &amp;'static str {
+    match sku {
+        SkuVariant::S1001 =&gt; "legacy_gen1",
+        SkuVariant::S2001 =&gt; "gen2_accel_diag",
+        SkuVariant::S2002 =&gt; "gen2_alt_diag",
+        SkuVariant::S2003 =&gt; "gen2_alt_hf_diag",
+        SkuVariant::S3001 =&gt; "gen3_accel_diag",
+        // 정의 크레이트 안에서는 와일드카드 불필요.
+        // 여기에 S4001을 추가하면 이 match에서 컴파일 오류 —
+        // 원하는 동작 — 업데이트를 강제.
+    }
+}</code></pre>
+<pre><code class="language-rust ignore">// 바이너리 크레이트(inventory에 의존하는 하류):
+fn diag_path_external(sku: inventory::SkuVariant) -&gt; &amp;'static str {
+    match sku {
+        inventory::SkuVariant::S1001 =&gt; "legacy_gen1",
+        inventory::SkuVariant::S2001 =&gt; "gen2_accel_diag",
+        inventory::SkuVariant::S2002 =&gt; "gen2_alt_diag",
+        inventory::SkuVariant::S2003 =&gt; "gen2_alt_hf_diag",
+        inventory::SkuVariant::S3001 =&gt; "gen3_accel_diag",
+        _ =&gt; "generic_diag",  // 외부 크레이트는 #[non_exhaustive] 때문에 필수
+    }
+}</code></pre>
+<blockquote>
+<p><strong>워크스페이스 팁:</strong> 코드가 모두 한 크레이트에 있으면 <code>#[non_exhaustive]</code>는 도움이 안 됩니다 — 크레이트 경계에만 영향을 줍니다. 이 프로젝트처럼 큰 워크스페이스에서는 진화하는 열거형을 공유 크레이트(<code>core_lib</code> 또는 <code>inventory</code>)에 두어 속성이 다른 워크스페이스 크레이트 소비자를 보호하게 하세요.</p>
+</blockquote>
+<h4 id="후보"><a class="header" href="#후보">후보</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>열거형</th><th>모듈</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td><code>SkuVariant</code></td><td><code>inventory</code>, <code>net_inventory</code></td><td>세대마다 새 SKU</td></tr>
+<tr><td><code>SensorType</code></td><td><code>protocol_lib</code></td><td>IPMI 스펙이 0xC0–0xFF를 OEM용으로 예약</td></tr>
+<tr><td><code>CompletionCode</code></td><td><code>protocol_lib</code></td><td>커스텀 BMC 벤더가 코드 추가</td></tr>
+<tr><td><code>Component</code></td><td><code>event_handler</code></td><td>새 하드웨어 범주(최근 NewSoC 추가 등)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="trick-4-typestate-builder"></a></p>
+<h3 id="요령-4--typestate-빌더"><a class="header" href="#요령-4--typestate-빌더">요령 4 — Typestate 빌더</a></h3>
+<p>5장은 <em>프로토콜</em>(세션 수명, 링크 트레이닝)에 type-state를 보여 주었습니다. 같은 생각은 <em>빌더</em>에도 적용됩니다 — 필수 필드가 모두 채워졌을 때만 <code>build()</code> / <code>finish()</code>를 호출할 수 있는 구조체입니다.</p>
+<h4 id="유창fluent-빌더의-문제"><a class="header" href="#유창fluent-빌더의-문제">유창(fluent) 빌더의 문제</a></h4>
+<p><code>diag_framework/src/der.rs</code>의 <code>DerBuilder</code>는 오늘은 이렇게 생겼습니다(단순화):</p>
+<pre><code class="language-rust ignore">// 현재 유창 빌더 — finish()가 항상 사용 가능
+pub struct DerBuilder {
+    der: Der,
+}
+
+impl DerBuilder {
+    pub fn new(marker: &amp;str, fault_code: u32) -&gt; Self { ... }
+    pub fn mnemonic(mut self, m: &amp;str) -&gt; Self { ... }
+    pub fn fault_class(mut self, fc: &amp;str) -&gt; Self { ... }
+    pub fn finish(self) -&gt; Der { self.der }  // ← 항상 호출 가능!
+}</code></pre>
+<p>에러 없이 컴파일되지만 불완전한 DER 레코드를 만듭니다.</p>
+<pre><code class="language-rust ignore">let bad = DerBuilder::new("CSI_ERR", 62691)
+    .finish();  // 앗 — mnemonic, fault_class 없음</code></pre>
+<h4 id="typestate-빌더-finish는-두-필드-모두-필요"><a class="header" href="#typestate-빌더-finish는-두-필드-모두-필요">Typestate 빌더: <code>finish()</code>는 두 필드 모두 필요</a></h4>
+<pre><code class="language-rust ignore">pub struct Missing;
+pub struct Set&lt;T&gt;(T);
+
+pub struct DerBuilder&lt;Mnemonic, FaultClass&gt; {
+    marker: String,
+    fault_code: u32,
+    mnemonic: Mnemonic,
+    fault_class: FaultClass,
+    description: Option&lt;String&gt;,
+}
+
+// 생성자: 필수 필드 둘 다 Missing으로 시작
+impl DerBuilder&lt;Missing, Missing&gt; {
+    pub fn new(marker: &amp;str, fault_code: u32) -&gt; Self {
+        DerBuilder {
+            marker: marker.to_string(),
+            fault_code,
+            mnemonic: Missing,
+            fault_class: Missing,
+            description: None,
+        }
+    }
+}
+
+// mnemonic 설정(fault_class 상태와 무관)
+impl&lt;FC&gt; DerBuilder&lt;Missing, FC&gt; {
+    pub fn mnemonic(self, m: &amp;str) -&gt; DerBuilder&lt;Set&lt;String&gt;, FC&gt; {
+        DerBuilder {
+            marker: self.marker, fault_code: self.fault_code,
+            mnemonic: Set(m.to_string()),
+            fault_class: self.fault_class,
+            description: self.description,
+        }
+    }
+}
+
+// fault_class 설정(mnemonic 상태와 무관)
+impl&lt;MN&gt; DerBuilder&lt;MN, Missing&gt; {
+    pub fn fault_class(self, fc: &amp;str) -&gt; DerBuilder&lt;MN, Set&lt;String&gt;&gt; {
+        DerBuilder {
+            marker: self.marker, fault_code: self.fault_code,
+            mnemonic: self.mnemonic,
+            fault_class: Set(fc.to_string()),
+            description: self.description,
+        }
+    }
+}
+
+// 선택 필드 — 모든 상태에서 사용 가능
+impl&lt;MN, FC&gt; DerBuilder&lt;MN, FC&gt; {
+    pub fn description(mut self, desc: &amp;str) -&gt; Self {
+        self.description = Some(desc.to_string());
+        self
+    }
+}
+
+/// 완전히 빌드된 DER 레코드.
+pub struct Der {
+    pub marker: String,
+    pub fault_code: u32,
+    pub mnemonic: String,
+    pub fault_class: String,
+    pub description: Option&lt;String&gt;,
+}
+
+// finish() ONLY available when both required fields are Set
+impl DerBuilder&lt;Set&lt;String&gt;, Set&lt;String&gt;&gt; {
+    pub fn finish(self) -&gt; Der {
+        Der {
+            marker: self.marker,
+            fault_code: self.fault_code,
+            mnemonic: self.mnemonic.0,
+            fault_class: self.fault_class.0,
+            description: self.description,
+        }
+    }
+}</code></pre>
+<p>이제 버그가 있는 호출은 컴파일 오류입니다.</p>
+<pre><code class="language-rust ignore">// ✅ 컴파일 — 필수 필드 둘 다 설정(순서 무관)
+let der = DerBuilder::new("CSI_ERR", 62691)
+    .fault_class("GPU Module")   // 순서는 상관없음
+    .mnemonic("ACCEL_CARD_ER691")
+    .description("Thermal throttle")
+    .finish();
+
+// ❌ 컴파일 오류 — DerBuilder&lt;Set&lt;String&gt;, Missing&gt;에 finish() 없음
+let bad = DerBuilder::new("CSI_ERR", 62691)
+    .mnemonic("ACCEL_CARD_ER691")
+    .finish();  // ERROR: method `finish` not found</code></pre>
+<h4 id="언제-typestate-빌더를-쓸까"><a class="header" href="#언제-typestate-빌더를-쓸까">언제 typestate 빌더를 쓸까</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>쓸 때…</th><th>굳이 안 써도 될 때…</th></tr>
+</thead>
+<tbody>
+<tr><td>필드 생략이 조용한 버그를 만듦(DER에 mnemonic 없음)</td><td>모든 필드에 타당한 기본값이 있음</td></tr>
+<tr><td>빌더가 공개 API의 일부</td><td>빌더가 테스트 전용 뼈대</td></tr>
+<tr><td>필수 필드가 2–3개 이상</td><td>필수 필드가 하나(<code>new()</code>에서 받기)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="trick-5-fromstr-as-a-validation-boundary"></a></p>
+<h3 id="요령-5--검증-경계로서의-fromstr"><a class="header" href="#요령-5--검증-경계로서의-fromstr">요령 5 — 검증 경계로서의 <code>FromStr</code></a></h3>
+<p>7장은 이진 데이터(FRU, SEL)에 <code>TryFrom&lt;&amp;[u8]&gt;</code>을 보여 주었습니다.
+<strong>문자열</strong> 입력 — 설정 파일, CLI 인자, JSON 필드 — 에 대응하는 경계는 <code>FromStr</code>입니다.</p>
+<h4 id="문제"><a class="header" href="#문제">문제</a></h4>
+<pre><code class="language-rust ignore">// C++ / 검증 없는 Rust: 조용히 기본값으로 떨어짐
+fn route_diag(level: &amp;str) -&gt; DiagMode {
+    if level == "quick" { ... }
+    else if level == "standard" { ... }
+    else { QuickMode }  // 설정 오타? ¯\_(ツ)_/¯
+}</code></pre>
+<p>설정에 <code>"diag_level": "extendedd"</code>(오타)가 있으면 조용히 <code>QuickMode</code>가 됩니다.</p>
+<h4 id="패턴config_loadersrcdiagrs에서"><a class="header" href="#패턴config_loadersrcdiagrs에서">패턴(<code>config_loader/src/diag.rs</code>에서)</a></h4>
+<pre><code class="language-rust ignore">use std::str::FromStr;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DiagLevel {
+    Quick,
+    Standard,
+    Extended,
+    Stress,
+}
+
+impl FromStr for DiagLevel {
+    type Err = String;
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        match s.to_lowercase().as_str() {
+            "quick"    | "1" =&gt; Ok(DiagLevel::Quick),
+            "standard" | "2" =&gt; Ok(DiagLevel::Standard),
+            "extended" | "3" =&gt; Ok(DiagLevel::Extended),
+            "stress"   | "4" =&gt; Ok(DiagLevel::Stress),
+            other =&gt; Err(format!("unknown diag level: '{other}'")),
+        }
+    }
+}</code></pre>
+<p>오타는 즉시 잡힙니다.</p>
+<pre><code class="language-rust ignore">let level: DiagLevel = "extendedd".parse()?;
+// Err("unknown diag level: 'extendedd'")</code></pre>
+<h4 id="세-가지-이점"><a class="header" href="#세-가지-이점">세 가지 이점</a></h4>
+<ol>
+<li><strong>빠른 실패:</strong> 잘못된 입력이 진단 로직 세 겹 안이 아니라 <strong>파싱 경계</strong>에서 잡힙니다.</li>
+<li><strong>별칭이 명시적:</strong> <code>"MEM"</code>, <code>"DIMM"</code>, <code>"MEMORY"</code>가 모두 <code>Component::Memory</code>로 매핑 — match 팔이 문서화 역할을 합니다.</li>
+<li><strong><code>.parse()</code>가 간결:</strong> <code>FromStr</code>이 <code>str::parse()</code>와 결합해 한 줄이 됩니다: <code>let level: DiagLevel = config["level"].parse()?;</code></li>
+</ol>
+<h4 id="코드베이스-실제-사용"><a class="header" href="#코드베이스-실제-사용">코드베이스 실제 사용</a></h4>
+<p>프로젝트에는 이미 <code>FromStr</code> 구현이 8개 있습니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>타입</th><th>모듈</th><th>주요 별칭</th></tr>
+</thead>
+<tbody>
+<tr><td><code>DiagLevel</code></td><td><code>config_loader</code></td><td><code>"1"</code> = Quick, <code>"4"</code> = Stress</td></tr>
+<tr><td><code>Component</code></td><td><code>event_handler</code></td><td><code>"MEM"</code> / <code>"DIMM"</code> = Memory, <code>"SSD"</code> / <code>"NVME"</code> = Disk</td></tr>
+<tr><td><code>SkuVariant</code></td><td><code>net_inventory</code></td><td><code>"Accel-X1"</code> = S2001, <code>"Accel-M1"</code> = S2002, <code>"Accel-Z1"</code> = S3001</td></tr>
+<tr><td><code>SkuVariant</code></td><td><code>inventory</code></td><td>동일 별칭(별도 모듈, 같은 패턴)</td></tr>
+<tr><td><code>FaultStatus</code></td><td><code>config_loader</code></td><td>Fault lifecycle states</td></tr>
+<tr><td><code>DiagAction</code></td><td><code>config_loader</code></td><td>Remediation action types</td></tr>
+<tr><td><code>ActionType</code></td><td><code>config_loader</code></td><td>Action categories</td></tr>
+<tr><td><code>DiagMode</code></td><td><code>cluster_diag</code></td><td>Multi-node test modes</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>TryFrom</code>과 대비:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th><code>TryFrom&lt;&amp;[u8]&gt;</code></th><th><code>FromStr</code></th></tr>
+</thead>
+<tbody>
+<tr><td>입력</td><td>원시 바이트(이진 프로토콜)</td><td>문자열(설정, CLI, JSON)</td></tr>
+<tr><td>전형적 출처</td><td>IPMI, PCIe 설정 공간, FRU</td><td>JSON 필드, 환경 변수, 사용자 입력</td></tr>
+<tr><td>장</td><td>ch07</td><td>ch11</td></tr>
+<tr><td>공통</td><td><code>Result</code> — 호출자가 잘못된 입력 처리</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="trick-6-const-generics-for-compile-time-size-validation"></a></p>
+<h3 id="요령-6--컴파일-타임-크기-검증을-위한-const-제네릭"><a class="header" href="#요령-6--컴파일-타임-크기-검증을-위한-const-제네릭">요령 6 — 컴파일 타임 크기 검증을 위한 const 제네릭</a></h3>
+<p>하드웨어 버퍼, 레지스터 뱅크, 프로토콜 프레임에 고정 크기가 있으면
+const 제네릭으로 컴파일러가 강제할 수 있습니다.</p>
+<pre><code class="language-rust ignore">/// A fixed-size register bank. The size is part of the type.
+/// `RegisterBank&lt;256&gt;` and `RegisterBank&lt;4096&gt;` are different types.
+pub struct RegisterBank&lt;const N: usize&gt; {
+    data: [u8; N],
+}
+
+impl&lt;const N: usize&gt; RegisterBank&lt;N&gt; {
+    /// Read a register at the given offset.
+    /// Compile-time: N is known, so the array size is fixed.
+    /// Runtime: only the offset is checked.
+    pub fn read(&amp;self, offset: usize) -&gt; Option&lt;u8&gt; {
+        self.data.get(offset).copied()
+    }
+}
+
+// PCIe conventional config space: 256 bytes
+type PciConfigSpace = RegisterBank&lt;256&gt;;
+
+// PCIe extended config space: 4096 bytes
+type PcieExtConfigSpace = RegisterBank&lt;4096&gt;;
+
+// These are different types — can't accidentally pass one for the other:
+fn read_extended_cap(config: &amp;PcieExtConfigSpace, offset: usize) -&gt; Option&lt;u8&gt; {
+    config.read(offset)
+}
+// read_extended_cap(&amp;pci_config, 0x100);
+//                   ^^^^^^^^^^^ expected RegisterBank&lt;4096&gt;, found RegisterBank&lt;256&gt; ❌</code></pre>
+<p><strong>const 제네릭으로 컴파일 타임 단언:</strong></p>
+<pre><code class="language-rust ignore">/// NVMe admin commands use 4096-byte buffers. Enforce at compile time.
+pub struct NvmeBuffer&lt;const N: usize&gt; {
+    data: Box&lt;[u8; N]&gt;,
+}
+
+impl&lt;const N: usize&gt; NvmeBuffer&lt;N&gt; {
+    pub fn new() -&gt; Self {
+        // 런타임 단언: 512 또는 4096만 허용
+        assert!(N == 4096 || N == 512, "NVMe buffers must be 512 or 4096 bytes");
+        NvmeBuffer { data: Box::new([0u8; N]) }
+    }
+}
+// NvmeBuffer::&lt;1024&gt;::new();  // 이 형태는 런타임에 패닉
+// 진짜 컴파일 타임 강제는 요령 9(const 단언) 참고.</code></pre>
+<blockquote>
+<p><strong>언제 쓸까:</strong> 고정 크기 프로토콜 버퍼(NVMe, PCIe 설정 공간),
+DMA 디스크립터, 하드웨어 FIFO 깊이. 크기가 런타임에 바뀌면 안 되는 하드웨어 상수인 모든 곳.</p>
+</blockquote>
+<hr>
+<p><a id="trick-7-safe-wrappers-around-unsafe"></a></p>
+<h3 id="요령-7--unsafe-주변의-안전-래퍼"><a class="header" href="#요령-7--unsafe-주변의-안전-래퍼">요령 7 — <code>unsafe</code> 주변의 안전 래퍼</a></h3>
+<p>프로젝트에는 현재 <code>unsafe</code> 블록이 없습니다. 하지만 accel-mgmt/accel-query에
+MMIO, DMA, FFI를 추가하면 <code>unsafe</code>가 필요합니다. correct-by-construction 접근:
+<strong>모든 <code>unsafe</code> 블록을 안전한 추상으로 감싸</strong> 위험을 한곳에 모으고 감사 가능하게 만듭니다.</p>
+<pre><code class="language-rust ignore">/// MMIO 매핑 레지스터. 포인터는 매핑 수명 동안 유효.
+/// unsafe는 이 모듈에만 — 호출자는 안전한 메서드만 사용.
+pub struct MmioRegion {
+    base: *mut u8,
+    len: usize,
+}
+
+impl MmioRegion {
+    /// # Safety
+    /// - `base` must be a valid pointer to an MMIO-mapped region
+    /// - The region must remain mapped for the lifetime of this struct
+    /// - No other code may alias this region
+    pub unsafe fn new(base: *mut u8, len: usize) -&gt; Self {
+        MmioRegion { base, len }
+    }
+
+    /// 안전한 읽기 — 범위 검사로 MMIO 벗어남 방지
+    pub fn read_u32(&amp;self, offset: usize) -&gt; Option&lt;u32&gt; {
+        if offset + 4 &gt; self.len { return None; }
+        // SAFETY: offset is bounds-checked above, base is valid per new() contract
+        Some(unsafe {
+            core::ptr::read_volatile(self.base.add(offset) as *const u32)
+        })
+    }
+
+    /// 안전한 쓰기 — 범위 검사로 MMIO 벗어남 방지
+    pub fn write_u32(&amp;self, offset: usize, value: u32) -&gt; bool {
+        if offset + 4 &gt; self.len { return false; }
+        // SAFETY: offset is bounds-checked above, base is valid per new() contract
+        unsafe {
+            core::ptr::write_volatile(self.base.add(offset) as *mut u32, value);
+        }
+        true
+    }
+}</code></pre>
+<p><strong>ch09 팬텀 타입과 결합해 타입이 있는 MMIO:</strong></p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+pub struct ReadOnly;
+pub struct ReadWrite;
+
+pub struct TypedMmio&lt;Perm&gt; {
+    region: MmioRegion,
+    _perm: PhantomData&lt;Perm&gt;,
+}
+
+impl TypedMmio&lt;ReadOnly&gt; {
+    pub fn read_u32(&amp;self, offset: usize) -&gt; Option&lt;u32&gt; {
+        self.region.read_u32(offset)
+    }
+    // 쓰기 메서드 없음 — ReadOnly 영역에 쓰면 컴파일 오류
+}
+
+impl TypedMmio&lt;ReadWrite&gt; {
+    pub fn read_u32(&amp;self, offset: usize) -&gt; Option&lt;u32&gt; {
+        self.region.read_u32(offset)
+    }
+    pub fn write_u32(&amp;self, offset: usize, value: u32) -&gt; bool {
+        self.region.write_u32(offset, value)
+    }
+}</code></pre>
+<blockquote>
+<p><strong><code>unsafe</code> 래퍼 가이드라인:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>규칙</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td><code># Safety</code> 불변식을 문서화한 <code>unsafe fn new()</code> 하나</td><td>호출자 책임을 한 번만</td></tr>
+<tr><td>나머지 메서드는 모두 safe</td><td>호출자가 UB를 유발할 수 없음</td></tr>
+<tr><td>모든 <code>unsafe</code> 블록에 <code># SAFETY:</code> 주석</td><td>감사자가 국소적으로 검증</td></tr>
+<tr><td><code>#[deny(unsafe_op_in_unsafe_fn)]</code> 모듈로 감싸기</td><td><code>unsafe fn</code> 안에서도 연산마다 <code>unsafe</code> 필요</td></tr>
+<tr><td>래퍼에 <code>cargo +nightly miri test</code> 실행</td><td>메모리 모델 준수 검증</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<hr>
+<p><a id="checkpoint-tricks-17"></a></p>
+<h3 id="체크포인트-요령-17"><a class="header" href="#체크포인트-요령-17">체크포인트: 요령 1–7</a></h3>
+<p>일곱 가지 실용 요령을 얻었습니다. 빠른 점수표:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">요령</th><th>없애는 버그 클래스</th><th style="text-align: center">도입 비용</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">1</td><td>Sentinel 혼동(0xFF)</td><td style="text-align: center">낮음 — 경계에서 <code>match</code> 하나</td></tr>
+<tr><td style="text-align: center">2</td><td>무단 트레잇 구현</td><td style="text-align: center">낮음 — <code>Sealed</code> 슈퍼트레잇 추가</td></tr>
+<tr><td style="text-align: center">3</td><td>열거형 성장 후 하류 깨짐</td><td style="text-align: center">낮음 — 한 줄 속성</td></tr>
+<tr><td style="text-align: center">4</td><td>빌더 필드 누락</td><td style="text-align: center">중간 — 추가 타입 매개변수</td></tr>
+<tr><td style="text-align: center">5</td><td>문자열 설정 오타</td><td style="text-align: center">낮음 — <code>impl FromStr</code></td></tr>
+<tr><td style="text-align: center">6</td><td>잘못된 버퍼 크기</td><td style="text-align: center">낮음 — const 제네릭 매개변수</td></tr>
+<tr><td style="text-align: center">7</td><td>코드베이스에 <code>unsafe</code> 산재</td><td style="text-align: center">중간 — 래퍼 모듈</td></tr>
+</tbody>
+</table>
+</div>
+<p>요령 8–14는 <strong>더 고급</strong> — async, const 평가, 세션 타입, <code>Pin</code>, <code>Drop</code>을 다룹니다. 필요하면 여기서 쉬세요; 위 기법만으로도 내일 바로 쓸 가치 높고 노력 적은 승리입니다.</p>
+<hr>
+<p><a id="trick-8-async-type-state-machines"></a></p>
+<h3 id="요령-8--비동기-type-state-머신"><a class="header" href="#요령-8--비동기-type-state-머신">요령 8 — 비동기 Type-State 머신</a></h3>
+<p>하드웨어 드라이버가 <code>async</code>를 쓰면(예: 비동기 BMC, 비동기 NVMe I/O) type-state는 여전히 통하지만, <code>.await</code> 지점을 넘나드는 소유권에 주의해야 합니다.</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+pub struct Idle;
+pub struct Authenticating;
+pub struct Active;
+
+pub struct AsyncSession&lt;S&gt; {
+    host: String,
+    _state: PhantomData&lt;S&gt;,
+}
+
+impl AsyncSession&lt;Idle&gt; {
+    pub fn new(host: &amp;str) -&gt; Self {
+        AsyncSession { host: host.to_string(), _state: PhantomData }
+    }
+
+    /// Idle → Authenticating → Active 전환.
+    /// 세션은 .await를 넘어 future 안으로 이동(소비)된다.
+    pub async fn authenticate(self, user: &amp;str, pass: &amp;str)
+        -&gt; Result&lt;AsyncSession&lt;Active&gt;, String&gt;
+    {
+        // 1단계: 자격 증명 전송(Idle 세션 소비)
+        let pending: AsyncSession&lt;Authenticating&gt; = AsyncSession {
+            host: self.host,
+            _state: PhantomData,
+        };
+
+        // 비동기 BMC 인증 시뮬레이션
+        // tokio::time::sleep(Duration::from_secs(1)).await;
+
+        // 2단계: Active 세션 반환
+        Ok(AsyncSession {
+            host: pending.host,
+            _state: PhantomData,
+        })
+    }
+}
+
+impl AsyncSession&lt;Active&gt; {
+    pub async fn send_command(&amp;mut self, cmd: &amp;[u8]) -&gt; Vec&lt;u8&gt; {
+        // 비동기 I/O...
+        vec![0x00]
+    }
+}
+
+// 사용 예:
+// let session = AsyncSession::new("192.168.1.100");
+// let mut session = session.authenticate("admin", "pass").await?;
+// let resp = session.send_command(&amp;[0x04, 0x2D]).await;</code></pre>
+<p><strong>비동기 type-state 핵심 규칙:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>규칙</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td>전환 메서드는 <code>&amp;mut self</code>가 아니라 값(<code>self</code>)으로 받기</td><td><code>.await</code> 너머로 소유권 이동</td></tr>
+<tr><td>복구 가능한 오류는 <code>Result&lt;NextState, (Error, PrevState)&gt;</code></td><td>호출자가 이전 상태에서 재시도</td></tr>
+<tr><td>상태를 여러 future에 쪼개지 말 것</td><td>한 future가 한 세션 소유</td></tr>
+<tr><td><code>tokio::spawn</code>이면 <code>Send + 'static</code> bounds</td><td>세션이 스레드 간 이동 가능해야 함</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>주의:</strong> 오류 시 재시도하려 <strong>이전</strong> 상태를 돌려받아야 하면
+<code>Result&lt;AsyncSession&lt;Active&gt;, (Error, AsyncSession&lt;Idle&gt;)&gt;</code>처럼 반환해
+호출자가 소유권을 되찾게 하세요. 그렇지 않으면 실패한 <code>.await</code> 뒤 세션이 영구히 drop됩니다.</p>
+</blockquote>
+<hr>
+<p><a id="trick-9-refinement-types-via-const-assertions"></a></p>
+<h3 id="요령-9--const-단언으로-정제-타입refinement"><a class="header" href="#요령-9--const-단언으로-정제-타입refinement">요령 9 — Const 단언으로 정제 타입(refinement)</a></h3>
+<p>숫자 제약이 <strong>런타임 데이터가 아니라</strong> 컴파일 타임 불변식이면
+<code>const</code> 평가로 강제합니다. 요령 6(타입 수준 크기 구분)과 다릅니다 — 여기서는
+컴파일 타임에 <em>잘못된 값을 거부</em>합니다.</p>
+<pre><code class="language-rust ignore">/// A sensor ID that must be in the IPMI SDR range (0x01..=0xFE).
+/// The constraint is checked at compile time when `N` is const.
+pub struct SdrSensorId&lt;const N: u8&gt;;
+
+impl&lt;const N: u8&gt; SdrSensorId&lt;N&gt; {
+    /// Compile-time validation: panics during compilation if N is out of range.
+    pub const fn validate() {
+        assert!(N &gt;= 0x01, "Sensor ID must be &gt;= 0x01");
+        assert!(N &lt;= 0xFE, "Sensor ID must be &lt;= 0xFE (0xFF is reserved)");
+    }
+
+    pub const VALIDATED: () = Self::validate();
+
+    pub const fn value() -&gt; u8 { N }
+}
+
+// Usage:
+fn read_sensor_const&lt;const N: u8&gt;() -&gt; f64 {
+    let _ = SdrSensorId::&lt;N&gt;::VALIDATED;  // compile-time check
+    // read sensor N...
+    42.0
+}
+
+// read_sensor_const::&lt;0x20&gt;();   // ✅ compiles — 0x20 is valid
+// read_sensor_const::&lt;0x00&gt;();   // ❌ compile error — "Sensor ID must be &gt;= 0x01"
+// read_sensor_const::&lt;0xFF&gt;();   // ❌ compile error — 0xFF is reserved</code></pre>
+<p><strong>더 단순한 형태 — 팬 ID 상한:</strong></p>
+<pre><code class="language-rust ignore">pub struct BoundedFanId&lt;const N: u8&gt;;
+
+impl&lt;const N: u8&gt; BoundedFanId&lt;N&gt; {
+    pub const VALIDATED: () = assert!(N &lt; 8, "Server has at most 8 fans (0..7)");
+
+    pub const fn id() -&gt; u8 {
+        let _ = Self::VALIDATED;
+        N
+    }
+}
+
+// BoundedFanId::&lt;3&gt;::id();   // ✅
+// BoundedFanId::&lt;10&gt;::id();  // ❌ compile error</code></pre>
+<blockquote>
+<p><strong>언제 쓸까:</strong> 컴파일 타임에 알려진 하드웨어 고정 ID(센서 ID, 팬 슬롯, PCIe 슬롯 번호).
+값이 런타임 데이터(설정, 사용자 입력)에서 오면 <code>TryFrom</code> / <code>FromStr</code>(ch07, 요령 5)을 쓰세요.</p>
+</blockquote>
+<hr>
+<p><a id="trick-10-session-types-for-channel-communication"></a></p>
+<h3 id="요령-10--채널-통신을-위한-세션-타입"><a class="header" href="#요령-10--채널-통신을-위한-세션-타입">요령 10 — 채널 통신을 위한 세션 타입</a></h3>
+<p>두 컴포넌트가 채널로 통신할 때(예: 진단 오케스트레이터 ↔ 워커 스레드)
+<strong>세션 타입</strong>이 프로토콜을 타입 시스템에 인코딩합니다.</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// 프로토콜: 클라이언트가 Request, 서버가 Response, 그다음 종료.
+pub struct SendRequest;
+pub struct RecvResponse;
+pub struct Done;
+
+/// 타입이 있는 채널 끝점. `S`는 현재 프로토콜 상태.
+pub struct Chan&lt;S&gt; {
+    // 실제 코드: mpsc::Sender/Receiver 쌍을 감쌈
+    _state: PhantomData&lt;S&gt;,
+}
+
+impl Chan&lt;SendRequest&gt; {
+    /// 요청 전송 — RecvResponse 상태로 전환.
+    pub fn send(self, request: DiagRequest) -&gt; Chan&lt;RecvResponse&gt; {
+        // ... 채널로 전송 ...
+        Chan { _state: PhantomData }
+    }
+}
+
+impl Chan&lt;RecvResponse&gt; {
+    /// 응답 수신 — Done 상태로 전환.
+    pub fn recv(self) -&gt; (DiagResponse, Chan&lt;Done&gt;) {
+        // ... 채널에서 수신 ...
+        (DiagResponse { passed: true }, Chan { _state: PhantomData })
+    }
+}
+
+impl Chan&lt;Done&gt; {
+    /// 채널 닫기 — 프로토콜이 완료된 뒤에만 가능.
+    pub fn close(self) { /* drop */ }
+}
+
+pub struct DiagRequest { pub test_name: String }
+pub struct DiagResponse { pub passed: bool }
+
+// 프로토콜은 반드시 순서대로:
+fn orchestrator(chan: Chan&lt;SendRequest&gt;) {
+    let chan = chan.send(DiagRequest { test_name: "gpu_stress".into() });
+    let (response, chan) = chan.recv();
+    chan.close();
+    println!("Result: {}", if response.passed { "PASS" } else { "FAIL" });
+}
+
+// send 전에 recv 불가:
+// fn wrong_order(chan: Chan&lt;SendRequest&gt;) {
+//     chan.recv();  // ❌ no method `recv` on Chan&lt;SendRequest&gt;
+// }</code></pre>
+<blockquote>
+<p><strong>언제 쓸까:</strong> 스레드 간 진단 프로토콜, BMC 명령 순서, 순서가 중요한 요청-응답 패턴.
+복잡한 다중 메시지 프로토콜은 <a href="https://crates.io/crates/session-types"><code>session-types</code></a>
+또는 <a href="https://crates.io/crates/rumpsteak"><code>rumpsteak</code></a> 크레이트를 고려하세요.</p>
+</blockquote>
+<hr>
+<p><a id="trick-11-pin-for-self-referential-state-machines"></a></p>
+<h3 id="요령-11--자기-참조-상태-머신을-위한-pin"><a class="header" href="#요령-11--자기-참조-상태-머신을-위한-pin">요령 11 — 자기 참조 상태 머신을 위한 <code>Pin</code></a></h3>
+<p>일부 type-state 머신은 자기 데이터 안을 가리키는 참조가 필요합니다(예: 소유 버퍼 안 위치를 추적하는 파서). Rust는 구조체를 옮기면 내부 포인터가 무효가 되어 이를 보통 금지합니다. <code>Pin&lt;T&gt;</code>는 값이 <strong>이동되지 않음</strong>을 보장해 이를 해결합니다.</p>
+<pre><code class="language-rust ignore">use std::pin::Pin;
+use std::marker::PhantomPinned;
+
+/// 소유 버퍼 안을 가리키는 참조를 갖는 스트리밍 파서.
+/// 고정(pinned)되면 이동할 수 없음 — 내부 참조가 유효로 유지.
+pub struct StreamParser {
+    buffer: Vec&lt;u8&gt;,
+    /// `buffer` 안을 가리킴. 고정된 동안만 유효.
+    cursor: *const u8,
+    _pin: PhantomPinned,  // Unpin 옵트아웃 — 실수로 unpin 방지
+}
+
+impl StreamParser {
+    pub fn new(data: Vec&lt;u8&gt;) -&gt; Pin&lt;Box&lt;Self&gt;&gt; {
+        let parser = StreamParser {
+            buffer: data,
+            cursor: std::ptr::null(),
+            _pin: PhantomPinned,
+        };
+        let mut boxed = Box::pin(parser);
+
+        // 고정된 버퍼 안을 가리키도록 커서 설정
+        let cursor = boxed.buffer.as_ptr();
+        // SAFETY: we have exclusive access and the parser is pinned
+        unsafe {
+            let mut_ref = Pin::as_mut(&amp;mut boxed);
+            Pin::get_unchecked_mut(mut_ref).cursor = cursor;
+        }
+
+        boxed
+    }
+
+    /// 다음 바이트 읽기 — Pin&lt;&amp;mut Self&gt;로만 호출 가능.
+    pub fn next_byte(self: Pin&lt;&amp;mut Self&gt;) -&gt; Option&lt;u8&gt; {
+        // 파서가 이동할 수 없으므로 커서가 유효
+        if self.cursor.is_null() { return None; }
+        // ... advance cursor through buffer ...
+        Some(42) // 스텁
+    }
+}
+
+// 사용 예:
+// let mut parser = StreamParser::new(vec![0x01, 0x02, 0x03]);
+// let byte = parser.as_mut().next_byte();</code></pre>
+<p><strong>핵심 통찰:</strong> <code>Pin</code>은 자기 참조 구조체 문제에 대한 correct-by-construction 해법입니다. 없으면 <code>unsafe</code>와 수동 라이프타임 추적이 필요합니다. 있으면 컴파일러가 이동을 막고 내부 포인터 불변식을 유지합니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><code>Pin</code>을 쓸 때…</th><th><code>Pin</code>을 쓰지 말 때…</th></tr>
+</thead>
+<tbody>
+<tr><td>상태 머신이 구조체 내부 참조를 씀</td><td>모든 필드가 독립적으로 소유됨</td></tr>
+<tr><td><code>.await</code>를 넘어 빌리는 async future</td><td>자기 참조 불필요</td></tr>
+<tr><td>메모리에서 옮기면 안 되는 DMA 디스크립터</td><td>데이터를 자유롭게 옮겨도 됨</td></tr>
+<tr><td>내부 커서가 있는 하드웨어 링 버퍼</td><td>단순 인덱스 순회로 충분</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="trick-12-raii-drop-as-a-correctness-guarantee"></a></p>
+<h3 id="요령-12--정확성-보장으로서의-raii--drop"><a class="header" href="#요령-12--정확성-보장으로서의-raii--drop">요령 12 — 정확성 보장으로서의 RAII / <code>Drop</code></a></h3>
+<p>Rust의 <code>Drop</code> 트레잇은 correct-by-construction 메커니즘입니다: 정리 코드는 컴파일러가 자동 삽입하므로 <strong>잊을 수 없습니다</strong>. 정확히 한 번 해제해야 하는 하드웨어 리소스에 특히 유용합니다.</p>
+<pre><code class="language-rust ignore">use std::io;
+
+/// 끝나면 반드시 닫아야 하는 IPMI 세션.
+/// `Drop` 구현이 패닉이나 조기 `?` 반환에도 정리를 보장.
+pub struct IpmiSession {
+    handle: u32,
+}
+
+impl IpmiSession {
+    pub fn open(host: &amp;str) -&gt; io::Result&lt;Self&gt; {
+        // ... negotiate IPMI session ...
+        Ok(IpmiSession { handle: 42 })
+    }
+
+    pub fn send_raw(&amp;self, _data: &amp;[u8]) -&gt; io::Result&lt;Vec&lt;u8&gt;&gt; {
+        Ok(vec![0x00])
+    }
+}
+
+impl Drop for IpmiSession {
+    fn drop(&amp;mut self) {
+        // Close Session 명령: 패닉/조기 반환에도 항상 실행.
+        // C에서는 CloseSession()을 잊으면 BMC 세션 슬롯이 누수.
+        let _ = self.send_raw(&amp;[0x06, 0x3C]);
+        eprintln!("[RAII] session {} closed", self.handle);
+    }
+}
+// 사용 예:
+fn diagnose(host: &amp;str) -&gt; io::Result&lt;()&gt; {
+    let session = IpmiSession::open(host)?;
+    session.send_raw(&amp;[0x04, 0x2D, 0x20])?;
+    // 명시적 close 불필요 — 여기서 Drop 자동 실행
+    Ok(())
+    // send_raw가 Err(...)여도 세션은 닫힘.
+}</code></pre>
+<p><strong>RAII가 없애는 C/C++ 실패 모드:</strong></p>
+<pre><code class="language-text">C:     session = ipmi_open(host);
+       ipmi_send(session, data);
+       if (error) return -1;        // 🐛 leaked session — forgot close()
+       ipmi_close(session);
+
+Rust:  let session = IpmiSession::open(host)?;
+       session.send_raw(data)?;     // ✅ Drop runs on ? return
+       // Drop always runs — leak is impossible
+</code></pre>
+<p><strong>순서가 있는 정리를 위해 RAII와 type-state(ch05) 결합:</strong></p>
+<p>제네릭 매개변수마다 <code>Drop</code>을 특수화할 수 없습니다(Rust E0366).
+대신 상태마다 <strong>별도 래퍼 타입</strong>을 씁니다.</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+pub struct Open;
+pub struct Locked;
+
+pub struct GpuContext&lt;S&gt; {
+    device_id: u32,
+    _state: PhantomData&lt;S&gt;,
+}
+
+impl GpuContext&lt;Open&gt; {
+    pub fn lock_clocks(self) -&gt; LockedGpu {
+        // ... lock GPU clocks for stable benchmarking ...
+        LockedGpu { device_id: self.device_id }
+    }
+}
+
+/// 잠긴 상태용 별도 타입 — 자체 Drop 보유.
+/// `impl Drop for GpuContext&lt;Locked&gt;`는 불가(E0366)이므로
+/// 잠긴 리소스를 소유하는 별도 래퍼를 씀.
+pub struct LockedGpu {
+    device_id: u32,
+}
+
+impl LockedGpu {
+    pub fn run_benchmark(&amp;self) -&gt; f64 {
+        // ... benchmark with locked clocks ...
+        42.0
+    }
+}
+
+impl Drop for LockedGpu {
+    fn drop(&amp;mut self) {
+        // drop 시 클럭 해제 — 잠긴 래퍼에서만 실행.
+        eprintln!("[RAII] GPU {} clocks unlocked", self.device_id);
+    }
+}
+
+// GpuContext&lt;Open&gt;은 특별한 Drop 없음 — 풀 클럭 없음.
+// LockedGpu는 패닉·조기 반환에도 drop 시 항상 언락.</code></pre>
+<blockquote>
+<p><strong><code>impl Drop for GpuContext&lt;Locked&gt;</code>를 왜 안 쓰나?</strong> Rust는 <code>Drop</code> 구현이
+제네릭 타입의 <em>모든</em> 인스턴스에 적용되기를 요구합니다. 상태별 정리를 얻으려면:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>접근</th><th>장점</th><th>단점</th></tr>
+</thead>
+<tbody>
+<tr><td>별도 래퍼 타입(위)</td><td>깔끔, 제로 코스트</td><td>타입 이름 추가</td></tr>
+<tr><td>제네릭 <code>Drop</code> + 런타임 <code>TypeId</code> 검사</td><td>단일 타입</td><td><code>'static</code> 필요, 런타임 비용</td></tr>
+<tr><td><code>enum</code> 상태 + <code>Drop</code>에서 완전 매치</td><td>단일 제네릭 타입</td><td>런타임 디스패치, 타입 안전성 감소</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<blockquote>
+<p><strong>언제 쓸까:</strong> BMC 세션, GPU 클럭 잠금, DMA 버퍼 매핑, 파일 핸들,
+뮤텍스 가드, 필수 해제 단계가 있는 모든 리소스. <code>fn close(&amp;mut self)</code>나
+<code>fn cleanup()</code>을 쓰기 시작했다면 거의 확실히 <code>Drop</code>이어야 합니다.</p>
+</blockquote>
+<hr>
+<p><a id="trick-13-error-type-hierarchies-as-correctness"></a></p>
+<h3 id="요령-13--정확성으로서의-에러-타입-계층"><a class="header" href="#요령-13--정확성으로서의-에러-타입-계층">요령 13 — 정확성으로서의 에러 타입 계층</a></h3>
+<p>잘 설계된 에러 타입은 에러 삼킴을 막고 호출자가 각 실패 모드를 적절히 처리하게 합니다. 구조화된 에러에 <code>thiserror</code>를 쓰는 것은 correct-by-construction 패턴입니다 — 컴파일러가 완전한 매칭을 강제합니다.</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+thiserror = "1"
+# 애플리케이션 수준 에러 처리(선택):
+# anyhow = "1"
+</code></pre>
+<pre><code class="language-rust ignore">use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum DiagError {
+    #[error("IPMI communication failed: {0}")]
+    Ipmi(#[from] IpmiError),
+
+    #[error("sensor {sensor_id:#04x} reading out of range: {value}")]
+    SensorRange { sensor_id: u8, value: f64 },
+
+    #[error("GPU {gpu_id} not responding")]
+    GpuTimeout { gpu_id: u32 },
+
+    #[error("configuration invalid: {0}")]
+    Config(String),
+}
+
+#[derive(Debug, Error)]
+pub enum IpmiError {
+    #[error("session authentication failed")]
+    AuthFailed,
+
+    #[error("command {net_fn:#04x}/{cmd:#04x} timed out")]
+    Timeout { net_fn: u8, cmd: u8 },
+
+    #[error("completion code {0:#04x}")]
+    CompletionCode(u8),
+}
+
+// 호출자는 각 변형을 처리해야 함 — 조용한 삼킴 없음:
+fn run_thermal_check() -&gt; Result&lt;(), DiagError&gt; {
+    // IpmiError를 반환하면 #[from]으로 DiagError::Ipmi로 자동 변환.
+    let temp = read_cpu_temp()?;
+    if temp &gt; 105.0 {
+        return Err(DiagError::SensorRange {
+            sensor_id: 0x20,
+            value: temp,
+        });
+    }
+    Ok(())
+}
+
+<span class="boring">fn read_cpu_temp() -&gt; Result&lt;f64, DiagError&gt; { Ok(42.0) }</span></code></pre>
+<p><strong>왜 이것이 correct-by-construction인가:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>구조화 에러 없음</th><th><code>thiserror</code> 열거형 있음</th></tr>
+</thead>
+<tbody>
+<tr><td><code>fn op() -&gt; Result&lt;T, String&gt;</code></td><td><code>fn op() -&gt; Result&lt;T, DiagError&gt;</code></td></tr>
+<tr><td>호출자는 불투명한 문자열만 받음</td><td>호출자가 구체 변형에 매치</td></tr>
+<tr><td>인증 실패와 타임아웃 구분 불가</td><td><code>DiagError::Ipmi(IpmiError::AuthFailed)</code> vs <code>Timeout</code></td></tr>
+<tr><td>로깅이 에러를 삼킴</td><td><code>match</code>가 각 케이스 처리 강제</td></tr>
+<tr><td>새 에러 변형 → 아무도 모름</td><td>새 변형 → 컴파일러가 매치 누락 경고</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong><code>anyhow</code> vs <code>thiserror</code> 선택:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><code>thiserror</code>를 쓸 때…</th><th><code>anyhow</code>를 쓸 때…</th></tr>
+</thead>
+<tbody>
+<tr><td>라이브러리/크레이트 작성</td><td>바이너리/CLI 작성</td></tr>
+<tr><td>호출자가 에러 변형에 매치해야 함</td><td>호출자는 로그만 하고 종료</td></tr>
+<tr><td>에러 타입이 공개 API의 일부</td><td>내부 에러 배관</td></tr>
+<tr><td><code>protocol_lib</code>, <code>accel_diag</code>, <code>thermal_diag</code></td><td><code>diag_tool</code> 메인 바이너리</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>언제 쓸까:</strong> 워크스페이스의 각 크레이트는 <code>thiserror</code>로 자체 에러 열거형을 정의하는 것이 좋습니다. 최상위 바이너리 크레이트는 <code>anyhow</code>로 집계할 수 있습니다. 라이브러리 호출자에게 컴파일 타임 에러 처리 보장을 주면서 바이너리는 쓰기 편하게 유지됩니다.</p>
+</blockquote>
+<hr>
+<p><a id="trick-14-must_use-for-enforcing-consumption"></a></p>
+<h3 id="요령-14--소비-강제를-위한-must_use"><a class="header" href="#요령-14--소비-강제를-위한-must_use">요령 14 — 소비 강제를 위한 <code>#[must_use]</code></a></h3>
+<p><code>#[must_use]</code> 속성은 무시된 반환값을 컴파일러 경고로 바꿉니다. 이 가이드의 모든 패턴과 짝을 이루는 가벼운 correct-by-construction 도구입니다.</p>
+<pre><code class="language-rust ignore">/// 반드시 사용해야 하는 보정 토큰 — 조용히 drop하면 버그.
+#[must_use = "calibration token must be passed to calibrate(), not dropped"]
+pub struct CalibrationToken {
+    _private: (),
+}
+
+/// 반드시 확인해야 하는 진단 결과 — 실패 무시는 버그.
+#[must_use = "diagnostic result must be inspected for failures"]
+pub struct DiagResult {
+    pub passed: bool,
+    pub details: String,
+}
+
+/// 중요한 값을 반환하는 함수에도 표시:
+#[must_use = "the authenticated session must be used or explicitly closed"]
+pub fn authenticate(user: &amp;str, pass: &amp;str) -&gt; Result&lt;Session, AuthError&gt; {
+    // ...
+<span class="boring">  unimplemented!()
+</span>}
+<span class="boring">
+</span><span class="boring">pub struct Session;
+</span><span class="boring">pub struct AuthError;</span></code></pre>
+<p><strong>컴파일러가 알려 주는 것:</strong></p>
+<pre><code class="language-text">warning: unused `CalibrationToken` that must be used
+  --&gt; src/main.rs:5:5
+   |
+5  |     CalibrationToken { _private: () };
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: calibration token must be passed to calibrate(), not dropped
+</code></pre>
+<p><strong><code>#[must_use]</code>를 붙일 패턴:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>패턴</th><th>무엇에 붙일지</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td>단일 사용 토큰(ch03)</td><td><code>CalibrationToken</code>, <code>FusePayload</code></td><td>사용 없이 drop = 로직 버그</td></tr>
+<tr><td>Capability 토큰(ch04)</td><td><code>AdminToken</code></td><td>인증만 하고 토큰 무시</td></tr>
+<tr><td>Type-State 전환</td><td><code>authenticate()</code>, <code>activate()</code> 반환 타입</td><td>세션만 만들고 안 씀</td></tr>
+<tr><td>결과</td><td><code>DiagResult</code>, <code>SensorReading</code></td><td>실패를 조용히 삼킴</td></tr>
+<tr><td>RAII 핸들(요령 12)</td><td><code>IpmiSession</code>, <code>LockedGpu</code></td><td>열기만 하고 사용 안 함</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>경험 법칙:</strong> 사용 없이 drop하는 것이 항상 버그면 <code>#[must_use]</code>를 붙입니다. 의도적인 경우가 있으면(예: <code>Vec</code>) 붙이지 않습니다. <code>_</code> 접두사(<code>let _ = foo()</code>)는 경고를 명시적으로 인정하고 끄는 것 — 의도적 drop이면 괜찮습니다.</p>
+</blockquote>
+<p><a id="key-takeaways"></a></p>
+<h2 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h2>
+<ol>
+<li><strong>Sentinel → 경계에서 <code>Option</code></strong> — 파싱 시 마법 값을 <code>Option</code>으로 바꿈; 컴파일러가 <code>None</code> 처리를 강제.</li>
+<li><strong>Sealed trait이 구현 구멍을 막음</strong> — 비공개 슈퍼트레잇으로 크레이트 밖에서는 트레잇 구현 불가.</li>
+<li><strong><code>#[non_exhaustive]</code> + <code>#[must_use]</code>는 한 줄짜리 고가치 어노테이션</strong> — 진화하는 열거형과 소비되는 토큰에 추가.</li>
+<li><strong>Typestate 빌더가 필수 필드를 강제</strong> — 필수 타입 매개변수가 모두 <code>Set</code>일 때만 <code>finish()</code> 존재.</li>
+<li><strong>각 요령이 특정 버그 클래스를 겨냄</strong> — 점진적으로 도입; 아키텍처 전체를 고칠 필요 없음.</li>
+</ol>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch18-redfish-server-walkthrough.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch12-exercises.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch18-redfish-server-walkthrough.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch12-exercises.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

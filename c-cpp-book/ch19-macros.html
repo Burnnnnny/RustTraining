@@ -1,0 +1,810 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>19. Rust 매크로: 전처리기에서 메타프로그래밍까지 - C/C++ 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-316e143c.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-30fc96c1.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C/C++ 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h2 id="rust-매크로-전처리기에서-메타프로그래밍까지"><a class="header" href="#rust-매크로-전처리기에서-메타프로그래밍까지">Rust 매크로: 전처리기에서 메타프로그래밍까지</a></h2>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> Rust 매크로가 어떻게 동작하는지, 함수나 제네릭 대신 언제 매크로를 써야 하는지, 그리고 매크로가 C/C++ 전처리기를 어떻게 대체하는지 배웁니다. 이 장을 마치면 직접 <code>macro_rules!</code> 매크로를 작성할 수 있고, <code>#[derive(Debug)]</code>가 내부적으로 무엇을 하는지도 이해하게 됩니다.</p>
+</blockquote>
+<p>매크로는 Rust에서 가장 먼저 마주치는 요소 중 하나입니다(<code>println!("hello")</code>를 첫 줄에서 보게 되죠). 하지만 대부분의 강의가 가장 늦게 설명하는 주제이기도 합니다. 이 장에서는 그 공백을 메웁니다.</p>
+<h3 id="왜-매크로가-존재할까"><a class="header" href="#왜-매크로가-존재할까">왜 매크로가 존재할까</a></h3>
+<p>함수와 제네릭만으로도 Rust의 대부분의 코드 재사용은 해결됩니다. 매크로는 타입 시스템만으로는 닿지 않는 빈틈을 메웁니다:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>필요한 것</th><th>함수/제네릭으로 해결?</th><th>매크로?</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td>값 계산</td><td>✅ <code>fn max&lt;T: Ord&gt;(a: T, b: T) -&gt; T</code></td><td>—</td><td>타입 시스템으로 해결 가능</td></tr>
+<tr><td>가변 개수의 인자 받기</td><td>❌ Rust에는 가변 인자 함수가 없음</td><td>✅ <code>println!("{} {}", a, b)</code></td><td>매크로는 토큰을 원하는 개수만큼 받을 수 있음</td></tr>
+<tr><td>반복적인 <code>impl</code> 블록 생성</td><td>❌ 제네릭만으로는 불가능</td><td>✅ <code>macro_rules!</code></td><td>매크로가 컴파일 타임에 코드를 생성</td></tr>
+<tr><td>컴파일 타임에 코드 실행</td><td>❌ <code>const fn</code>에는 제약이 많음</td><td>✅ 프로시저 매크로</td><td>컴파일 타임에 전체 Rust 코드를 실행 가능</td></tr>
+<tr><td>조건부로 코드 포함</td><td>❌</td><td>✅ <code>#[cfg(...)]</code></td><td>attribute 매크로가 컴파일 여부를 제어</td></tr>
+</tbody>
+</table>
+</div>
+<p>C/C++에서 왔다면, 매크로를 <em>전처리기를 대체하는 유일하게 올바른 수단</em>이라고 생각하면 됩니다. 차이는 Rust 매크로가 생 텍스트가 아니라 구문 트리 위에서 동작한다는 점입니다. 그래서 위생적이며(hygienic, 우발적인 이름 충돌이 없음), 타입도 인지합니다.</p>
+<blockquote>
+<p><strong>C 개발자를 위한 참고:</strong> Rust 매크로는 <code>#define</code>을 완전히 대체합니다. 텍스트 치환형 전처리기는 없습니다. 전처리기와 Rust의 전체 대응표는 <a href="ch18-cpp-rust-semantic-deep-dives.html">ch18</a>에서 확인하세요.</p>
+</blockquote>
+<hr>
+<p><a id="declarative-macros-with-macro_rules"></a></p>
+<h2 id="선언적-매크로와-macro_rules"><a class="header" href="#선언적-매크로와-macro_rules">선언적 매크로와 <code>macro_rules!</code></a></h2>
+<p>선언적 매크로(“macros by example“이라고도 부름)는 Rust에서 가장 흔한 매크로 형태입니다. 값에 대해 <code>match</code>를 쓰듯이, 문법 패턴에 대해 매칭합니다.</p>
+<h3 id="기본-문법"><a class="header" href="#기본-문법">기본 문법</a></h3>
+<pre class="playground"><code class="language-rust">macro_rules! say_hello {
+    () =&gt; {
+        println!("Hello!");
+    };
+}
+
+fn main() {
+    say_hello!();  // 다음으로 확장된다: println!("Hello!");
+}</code></pre>
+<p>이름 뒤의 <code>!</code>는 이것이 매크로 호출이라는 사실을 사용자와 컴파일러 모두에게 알려줍니다.</p>
+<h3 id="인자를-받는-패턴-매칭"><a class="header" href="#인자를-받는-패턴-매칭">인자를 받는 패턴 매칭</a></h3>
+<p>매크로는 프래그먼트 지정자(fragment specifier)를 사용해 *토큰 트리(token tree)*에 매칭합니다:</p>
+<pre class="playground"><code class="language-rust">macro_rules! greet {
+    // 패턴 1: 인자 없음
+    () =&gt; {
+        println!("Hello, world!");
+    };
+    // 패턴 2: 표현식 인자 하나
+    ($name:expr) =&gt; {
+        println!("Hello, {}!", $name);
+    };
+}
+
+fn main() {
+    greet!();           // "Hello, world!" 출력
+    greet!("Rust");     // "Hello, Rust!" 출력
+}</code></pre>
+<h4 id="프래그먼트-지정자-요약"><a class="header" href="#프래그먼트-지정자-요약">프래그먼트 지정자 요약</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>지정자</th><th>매칭 대상</th><th>예시</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$x:expr</code></td><td>임의의 표현식</td><td><code>42</code>, <code>a + b</code>, <code>foo()</code></td></tr>
+<tr><td><code>$x:ty</code></td><td>타입</td><td><code>i32</code>, <code>Vec&lt;String&gt;</code>, <code>&amp;str</code></td></tr>
+<tr><td><code>$x:ident</code></td><td>식별자</td><td><code>foo</code>, <code>my_var</code></td></tr>
+<tr><td><code>$x:pat</code></td><td>패턴</td><td><code>Some(x)</code>, <code>_</code>, <code>(a, b)</code></td></tr>
+<tr><td><code>$x:stmt</code></td><td>문장</td><td><code>let x = 5;</code></td></tr>
+<tr><td><code>$x:block</code></td><td>블록</td><td><code>{ println!("hi"); 42 }</code></td></tr>
+<tr><td><code>$x:literal</code></td><td>리터럴</td><td><code>42</code>, <code>"hello"</code>, <code>true</code></td></tr>
+<tr><td><code>$x:tt</code></td><td>단일 토큰 트리</td><td>무엇이든 가능 - 와일드카드</td></tr>
+<tr><td><code>$x:item</code></td><td>아이템(fn, struct, impl 등)</td><td><code>fn foo() {}</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="반복---매크로의-핵심-기능"><a class="header" href="#반복---매크로의-핵심-기능">반복 - 매크로의 핵심 기능</a></h3>
+<p>C/C++ 매크로는 반복할 수 없습니다. Rust 매크로는 패턴 반복이 가능합니다:</p>
+<pre class="playground"><code class="language-rust">macro_rules! make_vec {
+    // 쉼표로 구분된 표현식을 0개 이상 매칭
+    ( $( $element:expr ),* ) =&gt; {
+        {
+            let mut v = Vec::new();
+            $( v.push($element); )*  // 매칭된 각 요소마다 반복
+            v
+        }
+    };
+}
+
+fn main() {
+    let v = make_vec![1, 2, 3, 4, 5];
+    println!("{v:?}");  // [1, 2, 3, 4, 5]
+}</code></pre>
+<p><code>$( ... ),*</code> 문법은 “이 패턴을 쉼표로 구분해 0개 이상 매칭하라“는 뜻입니다. 확장 쪽의 <code>$( ... )*</code>는 매칭된 항목마다 본문을 한 번씩 반복합니다.</p>
+<blockquote>
+<p><strong>표준 라이브러리의 <code>vec![]</code>도 정확히 이런 방식으로 구현됩니다.</strong> 실제 소스는 다음과 같습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! vec {
+    () =&gt; { Vec::new() };
+    ($elem:expr; $n:expr) =&gt; { vec::from_elem($elem, $n) };
+    ($($x:expr),+ $(,)?) =&gt; { &lt;[_]&gt;::into_vec(Box::new([$($x),+])) };
+}
+<span class="boring">}</span></code></pre>
+<p>끝의 <code>$(,)?</code>는 마지막 쉼표를 선택적으로 허용합니다.</p>
+</blockquote>
+<h4 id="반복-연산자"><a class="header" href="#반복-연산자">반복 연산자</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>연산자</th><th>의미</th><th>예시</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$( ... )*</code></td><td>0개 이상</td><td><code>vec![]</code>, <code>vec![1]</code>, <code>vec![1, 2, 3]</code></td></tr>
+<tr><td><code>$( ... )+</code></td><td>1개 이상</td><td>최소 1개 요소 필요</td></tr>
+<tr><td><code>$( ... )?</code></td><td>0개 또는 1개</td><td>선택적 요소</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="실용-예제-hashmap-생성자"><a class="header" href="#실용-예제-hashmap-생성자">실용 예제: <code>hashmap!</code> 생성자</a></h3>
+<p>표준 라이브러리에는 <code>vec![]</code>는 있지만 <code>hashmap!{}</code>는 없습니다. 직접 만들어 봅시다:</p>
+<pre class="playground"><code class="language-rust">macro_rules! hashmap {
+    ( $( $key:expr =&gt; $value:expr ),* $(,)? ) =&gt; {
+        {
+            let mut map = std::collections::HashMap::new();
+            $( map.insert($key, $value); )*
+            map
+        }
+    };
+}
+
+fn main() {
+    let scores = hashmap! {
+        "Alice" =&gt; 95,
+        "Bob" =&gt; 87,
+        "Carol" =&gt; 92,  // $(,)? 덕분에 마지막 쉼표 허용
+    };
+    println!("{scores:?}");
+}</code></pre>
+<h3 id="실용-예제-진단-체크-매크로"><a class="header" href="#실용-예제-진단-체크-매크로">실용 예제: 진단 체크 매크로</a></h3>
+<p>임베디드/진단 코드에서 흔히 쓰는 패턴입니다. 조건을 검사하고 실패하면 에러를 반환합니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use thiserror::Error;
+
+#[derive(Error, Debug)]
+enum DiagError {
+    #[error("Check failed: {0}")]
+    CheckFailed(String),
+}
+
+macro_rules! diag_check {
+    ($cond:expr, $msg:expr) =&gt; {
+        if !($cond) {
+            return Err(DiagError::CheckFailed($msg.to_string()));
+        }
+    };
+}
+
+fn run_diagnostics(temp: f64, voltage: f64) -&gt; Result&lt;(), DiagError&gt; {
+    diag_check!(temp &lt; 85.0, "GPU too hot");
+    diag_check!(voltage &gt; 0.8, "Rail voltage too low");
+    diag_check!(voltage &lt; 1.5, "Rail voltage too high");
+    println!("All checks passed");
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>C/C++ 비교:</strong></p>
+<pre><code class="language-c">// C 전처리기 - 텍스트 치환, 타입 안전성 없음, hygiene 없음
+#define DIAG_CHECK(cond, msg) \
+    do { if (!(cond)) { log_error(msg); return -1; } } while(0)
+</code></pre>
+<p>Rust 버전은 올바른 <code>Result</code> 타입을 반환하고, 이중 평가(double evaluation) 위험이 없으며, 컴파일러가 <code>$cond</code>가 실제로 <code>bool</code> 표현식인지까지 검사해 줍니다.</p>
+</blockquote>
+<h3 id="위생성hygiene-rust-매크로가-안전한-이유"><a class="header" href="#위생성hygiene-rust-매크로가-안전한-이유">위생성(hygiene): Rust 매크로가 안전한 이유</a></h3>
+<p>C/C++ 매크로 버그는 이름 충돌에서 시작되는 경우가 많습니다:</p>
+<pre><code class="language-c">// C: 위험함 - `x`가 호출자 쪽 `x`를 가릴 수 있다
+#define SQUARE(x) ((x) * (x))
+int x = 5;
+int result = SQUARE(x++);  // UB: x가 두 번 증가한다!
+</code></pre>
+<p>Rust 매크로는 <strong>위생적(hygienic)</strong> 입니다. 매크로 내부에서 만든 변수는 바깥으로 새지 않습니다:</p>
+<pre class="playground"><code class="language-rust">macro_rules! make_x {
+    () =&gt; {
+        let x = 42;  // 이 `x`는 매크로 확장 범위 안에만 있다
+    };
+}
+
+fn main() {
+    let x = 10;
+    make_x!();
+    println!("{x}");  // 10이 출력된다. 42가 아니다 - hygiene이 충돌을 막는다
+}</code></pre>
+<p>매크로 안의 <code>x</code>와 호출자 쪽 <code>x</code>는 이름이 같아 보여도 컴파일러가 서로 다른 변수로 취급합니다. <strong>이것은 C 전처리기로는 불가능합니다.</strong></p>
+<hr>
+<p><a id="common-standard-library-macros"></a></p>
+<h2 id="표준-라이브러리의-공통-매크로"><a class="header" href="#표준-라이브러리의-공통-매크로">표준 라이브러리의 공통 매크로</a></h2>
+<p>1장부터 계속 써 왔지만, 실제로 무엇을 하는지 정리하면 다음과 같습니다:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>매크로</th><th>하는 일</th><th>대략적인 확장 결과</th></tr>
+</thead>
+<tbody>
+<tr><td><code>println!("{}", x)</code></td><td>포맷 후 stdout에 출력하고 개행 추가</td><td><code>std::io::_print(format_args!(...))</code></td></tr>
+<tr><td><code>eprintln!("{}", x)</code></td><td>stderr에 출력하고 개행 추가</td><td>stderr용으로 동일</td></tr>
+<tr><td><code>format!("{}", x)</code></td><td>포맷 결과를 <code>String</code>으로 생성</td><td>할당 후 <code>String</code> 반환</td></tr>
+<tr><td><code>vec![1, 2, 3]</code></td><td>요소가 들어 있는 <code>Vec</code> 생성</td><td><code>Vec::from([1, 2, 3])</code> (대략)</td></tr>
+<tr><td><code>todo!()</code></td><td>미완성 코드를 표시</td><td><code>panic!("not yet implemented")</code></td></tr>
+<tr><td><code>unimplemented!()</code></td><td>의도적으로 구현하지 않은 코드를 표시</td><td><code>panic!("not implemented")</code></td></tr>
+<tr><td><code>unreachable!()</code></td><td>컴파일러가 도달 불가능하다고 증명하지 못한 코드를 표시</td><td><code>panic!("unreachable")</code></td></tr>
+<tr><td><code>assert!(cond)</code></td><td>조건이 거짓이면 panic</td><td><code>if !cond { panic!(...) }</code></td></tr>
+<tr><td><code>assert_eq!(a, b)</code></td><td>값이 다르면 panic</td><td>실패 시 두 값을 함께 보여줌</td></tr>
+<tr><td><code>dbg!(expr)</code></td><td>표현식과 값을 stderr에 출력하고 그 값을 반환</td><td><code>eprintln!("[file:line] expr = {:#?}", &amp;expr); expr</code></td></tr>
+<tr><td><code>include_str!("file.txt")</code></td><td>컴파일 타임에 파일 내용을 <code>&amp;str</code>로 포함</td><td>컴파일 중 파일을 읽음</td></tr>
+<tr><td><code>include_bytes!("data.bin")</code></td><td>컴파일 타임에 파일 내용을 <code>&amp;[u8]</code>로 포함</td><td>컴파일 중 파일을 읽음</td></tr>
+<tr><td><code>cfg!(condition)</code></td><td>컴파일 타임 조건을 <code>bool</code> 값으로 평가</td><td>타깃에 따라 <code>true</code> 또는 <code>false</code></td></tr>
+<tr><td><code>env!("VAR")</code></td><td>컴파일 타임에 환경 변수 읽기</td><td>설정되어 있지 않으면 컴파일 실패</td></tr>
+<tr><td><code>concat!("a", "b")</code></td><td>컴파일 타임에 리터럴을 이어 붙임</td><td><code>"ab"</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="dbg---매일-쓰게-될-디버깅-매크로"><a class="header" href="#dbg---매일-쓰게-될-디버깅-매크로"><code>dbg!</code> - 매일 쓰게 될 디버깅 매크로</a></h3>
+<pre class="playground"><code class="language-rust">fn factorial(n: u32) -&gt; u32 {
+    if dbg!(n &lt;= 1) {     // 출력: [src/main.rs:2] n &lt;= 1 = false
+        dbg!(1)           // 출력: [src/main.rs:3] 1 = 1
+    } else {
+        dbg!(n * factorial(n - 1))  // 중간 값을 출력
+    }
+}
+
+fn main() {
+    dbg!(factorial(4));   // 모든 재귀 호출을 file:line과 함께 출력
+}</code></pre>
+<p><code>dbg!</code>는 감싼 값을 그대로 반환하므로, 프로그램 동작을 바꾸지 않고 거의 어디에나 끼워 넣을 수 있습니다. 출력은 stdout이 아니라 stderr로 나가기 때문에 정상 프로그램 출력과도 섞이지 않습니다. <strong>코드를 커밋하기 전에는 모든 <code>dbg!</code> 호출을 제거하세요.</strong></p>
+<h3 id="포맷-문자열-문법"><a class="header" href="#포맷-문자열-문법">포맷 문자열 문법</a></h3>
+<p><code>println!</code>, <code>format!</code>, <code>eprintln!</code>, <code>write!</code>는 모두 같은 포맷팅 엔진을 쓰므로, 여기서 핵심 문법만 빠르게 정리합니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let name = "sensor";
+let value = 3.14159;
+let count = 42;
+
+println!("{name}");                    // 이름으로 변수 참조(Rust 1.58+)
+println!("{}", name);                  // 위치 기반
+println!("{value:.2}");                // 소수 둘째 자리까지: "3.14"
+println!("{count:&gt;10}");               // 오른쪽 정렬, 너비 10: "        42"
+println!("{count:0&gt;10}");              // 앞을 0으로 채움: "0000000042"
+println!("{count:#06x}");              // 접두사 포함 16진수: "0x002a"
+println!("{count:#010b}");             // 접두사 포함 2진수: "0b00101010"
+println!("{value:?}");                 // Debug 포맷
+println!("{value:#?}");                // 사람이 읽기 쉬운 Debug 포맷
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>C 개발자를 위한 참고:</strong> 이것은 타입 안전한 <code>printf</code>라고 생각하면 됩니다. 컴파일러가 <code>{:.2}</code>가 문자열이 아니라 부동소수점 값에 적용되는지 검사해 줍니다. <code>%s</code>/<code>%d</code> 불일치 버그가 없습니다.</p>
+<p><strong>C++ 개발자를 위한 참고:</strong> <code>std::cout &lt;&lt; std::fixed &lt;&lt; std::setprecision(2) &lt;&lt; value</code>를 하나의 읽기 쉬운 포맷 문자열로 대체한 것에 가깝습니다.</p>
+</blockquote>
+<hr>
+<p><a id="derive-macros"></a></p>
+<h2 id="derive-매크로"><a class="header" href="#derive-매크로">derive 매크로</a></h2>
+<p>이 책에서 거의 모든 구조체 위에서 <code>#[derive(...)]</code>를 보셨을 겁니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone, PartialEq)]
+struct Point {
+    x: f64,
+    y: f64,
+}
+<span class="boring">}</span></code></pre>
+<p><code>#[derive(Debug)]</code>는 <strong>derive 매크로</strong>입니다. 즉, 트레잇 구현을 자동으로 생성하는 특별한 프로시저 매크로입니다. 대략 다음과 같은 코드를 만들어 냅니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// #[derive(Debug)]가 Point에 대해 생성하는 코드:
+impl std::fmt::Debug for Point {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        f.debug_struct("Point")
+            .field("x", &amp;self.x)
+            .field("y", &amp;self.y)
+            .finish()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><code>#[derive(Debug)]</code>가 없다면, 구조체마다 저 <code>impl</code> 블록을 손으로 직접 써야 합니다.</p>
+<h3 id="자주-derive하는-트레잇"><a class="header" href="#자주-derive하는-트레잇">자주 derive하는 트레잇</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>derive</th><th>생성되는 것</th><th>언제 쓰나</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Debug</code></td><td><code>{:?}</code> 포맷팅</td><td>거의 항상 - 디버깅 출력을 가능하게 함</td></tr>
+<tr><td><code>Clone</code></td><td><code>.clone()</code> 메서드</td><td>값을 복제해야 할 때</td></tr>
+<tr><td><code>Copy</code></td><td>대입 시 암묵적 복사</td><td>작고 스택에만 있는 타입(정수, <code>[f64; 3]</code> 등)</td></tr>
+<tr><td><code>PartialEq</code> / <code>Eq</code></td><td><code>==</code>와 <code>!=</code> 연산자</td><td>동등 비교가 필요할 때</td></tr>
+<tr><td><code>PartialOrd</code> / <code>Ord</code></td><td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> 연산자</td><td>순서 비교가 필요할 때</td></tr>
+<tr><td><code>Hash</code></td><td><code>HashMap</code>/<code>HashSet</code> 키용 해시</td><td>맵 키로 쓰이는 타입</td></tr>
+<tr><td><code>Default</code></td><td><code>Type::default()</code> 생성자</td><td>합리적인 0/빈값이 있는 타입</td></tr>
+<tr><td><code>serde::Serialize</code> / <code>Deserialize</code></td><td>JSON/TOML 등 직렬화</td><td>API 경계를 넘나드는 데이터 타입</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="derive-판단-트리"><a class="header" href="#derive-판단-트리">derive 판단 트리</a></h3>
+<pre><code class="language-text">derive를 붙여야 할까?
+  │
+  ├── 내 타입의 모든 필드가 이 트레잇을 구현하고 있는가?
+  │     ├── 예 → #[derive]로 된다
+  │     └── 아니오 → 직접 impl을 쓰거나 생략
+  │
+  └── 이 타입 사용자들이 이런 동작을 자연스럽게 기대할까?
+        ├── 예 → derive하자 (Debug, Clone, PartialEq는 거의 늘 무난)
+        └── 아니오 → derive하지 말자 (예: 파일 핸들을 가진 타입에 Copy 금지)
+</code></pre>
+<blockquote>
+<p><strong>C++ 비교:</strong> <code>#[derive(Clone)]</code>는 올바른 복사 생성자를 자동으로 만들어 주는 것과 비슷합니다. <code>#[derive(PartialEq)]</code>는 각 필드를 비교하는 <code>operator==</code>를 자동 생성하는 것과 비슷한데, 이는 C++20의 <code>= default</code> 비교 연산자가 뒤늦게 제공한 기능입니다.</p>
+</blockquote>
+<hr>
+<p><a id="attribute-macros"></a></p>
+<h2 id="attribute-매크로"><a class="header" href="#attribute-매크로">attribute 매크로</a></h2>
+<p>attribute 매크로는 자신이 붙은 아이템을 변환합니다. 이미 여러 번 사용했습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]                    // 함수를 테스트로 표시
+fn test_addition() {
+    assert_eq!(2 + 2, 4);
+}
+
+#[cfg(target_os = "linux")] // 이 함수를 조건부로 포함
+fn linux_only() { /* ... */ }
+
+#[derive(Debug)]            // Debug 구현 생성
+struct MyType { /* ... */ }
+
+#[allow(dead_code)]         // 컴파일러 경고 억제
+fn unused_helper() { /* ... */ }
+
+#[must_use]                 // 반환값을 버리면 경고
+fn compute_checksum(data: &amp;[u8]) -&gt; u32 { /* ... */ }
+<span class="boring">}</span></code></pre>
+<p>자주 쓰는 내장 attribute는 다음과 같습니다:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Attribute</th><th>목적</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#[test]</code></td><td>테스트 함수로 표시</td></tr>
+<tr><td><code>#[cfg(...)]</code></td><td>조건부 컴파일</td></tr>
+<tr><td><code>#[derive(...)]</code></td><td>트레잇 impl 자동 생성</td></tr>
+<tr><td><code>#[allow(...)]</code> / <code>#[deny(...)]</code> / <code>#[warn(...)]</code></td><td>lint 수준 제어</td></tr>
+<tr><td><code>#[must_use]</code></td><td>사용하지 않은 반환값 경고</td></tr>
+<tr><td><code>#[inline]</code> / <code>#[inline(always)]</code></td><td>함수 인라인 힌트</td></tr>
+<tr><td><code>#[repr(C)]</code></td><td>C 호환 메모리 레이아웃 사용(FFI용)</td></tr>
+<tr><td><code>#[no_mangle]</code></td><td>심볼 이름 맹글링 금지(FFI용)</td></tr>
+<tr><td><code>#[deprecated]</code></td><td>선택적 메시지와 함께 deprecated 표시</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>C/C++ 개발자를 위한 참고:</strong> attribute는 전처리 지시어(<code>#pragma</code>), <code>__attribute__((...))</code>, 컴파일러별 확장 기능이 섞여 있던 자리를 대체합니다. Rust에서는 이것들이 덧붙인 확장이 아니라 언어 문법 자체의 일부입니다.</p>
+</blockquote>
+<hr>
+<p><a id="procedural-macros-conceptual-overview"></a></p>
+<h2 id="프로시저-매크로개념-개요"><a class="header" href="#프로시저-매크로개념-개요">프로시저 매크로(개념 개요)</a></h2>
+<p>프로시저 매크로(“proc macro”)는 <em>별도의 Rust 프로그램</em>으로 작성되어 컴파일 타임에 실행되고 코드를 생성하는 매크로입니다. <code>macro_rules!</code>보다 훨씬 강력하지만, 그만큼 복잡합니다.</p>
+<p>종류는 세 가지입니다:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>종류</th><th>문법</th><th>예시</th><th>하는 일</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>함수형</strong></td><td><code>my_macro!(...)</code></td><td><code>sql!(SELECT * FROM users)</code></td><td>커스텀 문법을 파싱해 Rust 코드 생성</td></tr>
+<tr><td><strong>derive</strong></td><td><code>#[derive(MyTrait)]</code></td><td><code>#[derive(Serialize)]</code></td><td>구조체 정의로부터 트레잇 impl 생성</td></tr>
+<tr><td><strong>attribute</strong></td><td><code>#[my_attr]</code></td><td><code>#[tokio::main]</code>, <code>#[instrument]</code></td><td>붙은 아이템을 변환</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="이미-proc-macro를-써-봤다"><a class="header" href="#이미-proc-macro를-써-봤다">이미 proc macro를 써 봤다</a></h3>
+<ul>
+<li><code>thiserror</code>의 <code>#[derive(Error)]</code> - 에러 enum용 <code>Display</code>와 <code>From</code> impl을 생성합니다</li>
+<li><code>serde</code>의 <code>#[derive(Serialize, Deserialize)]</code> - 직렬화 코드를 생성합니다</li>
+<li><code>#[tokio::main]</code> - <code>async fn main()</code>을 런타임 설정 + <code>block_on</code> 호출로 변환합니다</li>
+<li><code>#[test]</code> - 테스트 하네스가 등록하는 내장 proc macro입니다</li>
+</ul>
+<h3 id="직접-proc-macro를-작성해야-하는-경우"><a class="header" href="#직접-proc-macro를-작성해야-하는-경우">직접 proc macro를 작성해야 하는 경우</a></h3>
+<p>이 과정에서 직접 proc macro를 작성할 일은 아마 많지 않을 겁니다. 다만 다음과 같은 경우에는 유용합니다:</p>
+<ul>
+<li>컴파일 타임에 구조체 필드나 enum variant를 살펴봐야 할 때(derive 매크로)</li>
+<li>도메인 특화 언어(DSL)를 만들 때(함수형 매크로)</li>
+<li>함수 시그니처를 변형해야 할 때(attribute 매크로)</li>
+</ul>
+<p>대부분의 경우에는 <code>macro_rules!</code>나 일반 함수만으로 충분합니다.</p>
+<blockquote>
+<p><strong>C++ 비교:</strong> 프로시저 매크로는 C++에서 코드 생성기, 템플릿 메타프로그래밍, <code>protoc</code> 같은 외부 도구가 맡던 역할을 채웁니다. 차이는 proc macro가 Cargo 빌드 파이프라인 안에 들어 있다는 점입니다. 외부 빌드 단계도, CMake custom command도 필요 없습니다.</p>
+</blockquote>
+<hr>
+<p><a id="when-to-use-what-macros-vs-functions-vs-generics"></a></p>
+<h2 id="언제-무엇을-써야-하나-매크로-vs-함수-vs-제네릭"><a class="header" href="#언제-무엇을-써야-하나-매크로-vs-함수-vs-제네릭">언제 무엇을 써야 하나: 매크로 vs 함수 vs 제네릭</a></h2>
+<pre><code class="language-text">코드를 생성해야 하는가?
+  │
+  ├── 아니오 → 함수 또는 제네릭 함수를 써라
+  │             (더 단순하고, 에러 메시지가 낫고, IDE 지원도 좋다)
+  │
+  └── 예 ─┬── 인자 개수가 가변적인가?
+            │     └── 예 → macro_rules! (예: println!, vec!)
+            │
+            ├── 많은 타입에 대해 반복적인 impl 블록이 필요한가?
+            │     └── 예 → 반복을 사용하는 macro_rules!
+            │
+            ├── 구조체 필드를 살펴봐야 하는가?
+            │     └── 예 → derive 매크로(proc macro)
+            │
+            ├── 커스텀 문법(DSL)이 필요한가?
+            │     └── 예 → 함수형 proc macro
+            │
+            └── 함수/구조체를 변형해야 하는가?
+                  └── 예 → attribute proc macro
+</code></pre>
+<p><strong>일반 원칙:</strong> 함수나 제네릭으로 할 수 있다면 매크로를 쓰지 마세요. 매크로는 에러 메시지가 더 불친절하고, 매크로 본문 안에서는 IDE 자동 완성이 잘 되지 않으며, 디버깅도 더 어렵습니다.</p>
+<hr>
+<p><a id="exercises"></a></p>
+<h2 id="연습문제"><a class="header" href="#연습문제">연습문제</a></h2>
+<p><a id="exercise-1-min-macro"></a></p>
+<h3 id="-연습문제-1-min-매크로"><a class="header" href="#-연습문제-1-min-매크로">🟢 연습문제 1: <code>min!</code> 매크로</a></h3>
+<p>다음 조건을 만족하는 <code>min!</code> 매크로를 작성하세요:</p>
+<ul>
+<li><code>min!(a, b)</code>는 두 값 중 더 작은 값을 반환</li>
+<li><code>min!(a, b, c)</code>는 세 값 중 가장 작은 값을 반환</li>
+<li><code>PartialOrd</code>를 구현한 어떤 타입에도 동작</li>
+</ul>
+<p><strong>힌트:</strong> <code>macro_rules!</code>에 두 개의 match arm이 필요합니다.</p>
+<details><summary>해답 (클릭하여 펼치기)</summary>
+<pre class="playground"><code class="language-rust">macro_rules! min {
+    ($a:expr, $b:expr) =&gt; {
+        if $a &lt; $b { $a } else { $b }
+    };
+    ($a:expr, $b:expr, $c:expr) =&gt; {
+        min!(min!($a, $b), $c)
+    };
+}
+
+fn main() {
+    println!("{}", min!(3, 7));        // 3
+    println!("{}", min!(9, 2, 5));     // 2
+    println!("{}", min!(1.5, 0.3));    // 0.3
+}</code></pre>
+<p><strong>참고:</strong> 프로덕션 코드에서는 <code>std::cmp::min</code>이나 <code>a.min(b)</code>를 우선 고려하세요. 이 연습문제의 목적은 여러 arm을 가진 매크로의 동작 방식을 보여 주는 것입니다.</p>
+</details>
+<p><a id="exercise-2-hashmap-from-scratch"></a></p>
+<h3 id="-연습문제-2-처음부터-hashmap-만들기"><a class="header" href="#-연습문제-2-처음부터-hashmap-만들기">🟡 연습문제 2: 처음부터 <code>hashmap!</code> 만들기</a></h3>
+<p>위 예제를 보지 않고, 다음 조건을 만족하는 <code>hashmap!</code> 매크로를 작성하세요:</p>
+<ul>
+<li><code>key =&gt; value</code> 쌍으로부터 <code>HashMap</code>을 생성</li>
+<li>마지막 쉼표를 지원</li>
+<li>해시 가능한 어떤 키 타입에도 동작</li>
+</ul>
+<p>다음으로 테스트하세요:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let m = hashmap! {
+    "name" =&gt; "Alice",
+    "role" =&gt; "Engineer",
+};
+assert_eq!(m["name"], "Alice");
+assert_eq!(m.len(), 2);
+<span class="boring">}</span></code></pre>
+<details><summary>해답 (클릭하여 펼치기)</summary>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+macro_rules! hashmap {
+    ( $( $key:expr =&gt; $val:expr ),* $(,)? ) =&gt; {{
+        let mut map = HashMap::new();
+        $( map.insert($key, $val); )*
+        map
+    }};
+}
+
+fn main() {
+    let m = hashmap! {
+        "name" =&gt; "Alice",
+        "role" =&gt; "Engineer",
+    };
+    assert_eq!(m["name"], "Alice");
+    assert_eq!(m.len(), 2);
+    println!("Tests passed!");
+}</code></pre>
+</details>
+<p><a id="exercise-3-assert_approx_eq-for-floating-point-comparison"></a></p>
+<h3 id="-연습문제-3-부동소수점-비교용-assert_approx_eq"><a class="header" href="#-연습문제-3-부동소수점-비교용-assert_approx_eq">🟡 연습문제 3: 부동소수점 비교용 <code>assert_approx_eq!</code></a></h3>
+<p><code>|a - b| &gt; epsilon</code>이면 panic하도록 <code>assert_approx_eq!(a, b, epsilon)</code> 매크로를 작성하세요. 정확한 동등 비교가 실패하는 부동소수점 계산을 테스트할 때 유용합니다.</p>
+<p>다음으로 테스트하세요:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>assert_approx_eq!(0.1 + 0.2, 0.3, 1e-10);        // 성공해야 함
+assert_approx_eq!(3.14159, std::f64::consts::PI, 1e-4); // 성공해야 함
+// assert_approx_eq!(1.0, 2.0, 0.5);              // panic해야 함
+<span class="boring">}</span></code></pre>
+<details><summary>해답 (클릭하여 펼치기)</summary>
+<pre class="playground"><code class="language-rust">macro_rules! assert_approx_eq {
+    ($a:expr, $b:expr, $eps:expr) =&gt; {
+        let (a, b, eps) = ($a as f64, $b as f64, $eps as f64);
+        let diff = (a - b).abs();
+        if diff &gt; eps {
+            panic!(
+                "assertion failed: |{} - {}| = {} &gt; {} (epsilon)",
+                a, b, diff, eps
+            );
+        }
+    };
+}
+
+fn main() {
+    assert_approx_eq!(0.1 + 0.2, 0.3, 1e-10);
+    assert_approx_eq!(3.14159, std::f64::consts::PI, 1e-4);
+    println!("All float comparisons passed!");
+}</code></pre>
+</details>
+<p><a id="exercise-4-impl_display_for_enum"></a></p>
+<h3 id="-연습문제-4-impl_display_for_enum"><a class="header" href="#-연습문제-4-impl_display_for_enum">🔴 연습문제 4: <code>impl_display_for_enum!</code></a></h3>
+<p>단순한 C 스타일 enum에 대한 <code>Display</code> 구현을 생성하는 매크로를 작성하세요. 다음 입력이 주어졌을 때:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl_display_for_enum! {
+    enum Color {
+        Red =&gt; "red",
+        Green =&gt; "green",
+        Blue =&gt; "blue",
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>이 매크로는 <code>enum Color { Red, Green, Blue }</code> 정의와, 각 variant를 대응 문자열로 매핑하는 <code>impl Display for Color</code>를 모두 생성해야 합니다.</p>
+<p><strong>힌트:</strong> <code>$( ... ),*</code> 반복과 여러 프래그먼트 지정자를 함께 써야 합니다.</p>
+<details><summary>해답 (클릭하여 펼치기)</summary>
+<pre class="playground"><code class="language-rust">use std::fmt;
+
+macro_rules! impl_display_for_enum {
+    (enum $name:ident { $( $variant:ident =&gt; $display:expr ),* $(,)? }) =&gt; {
+        #[derive(Debug, Clone, Copy, PartialEq)]
+        enum $name {
+            $( $variant ),*
+        }
+
+        impl fmt::Display for $name {
+            fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+                match self {
+                    $( $name::$variant =&gt; write!(f, "{}", $display), )*
+                }
+            }
+        }
+    };
+}
+
+impl_display_for_enum! {
+    enum Color {
+        Red =&gt; "red",
+        Green =&gt; "green",
+        Blue =&gt; "blue",
+    }
+}
+
+fn main() {
+    let c = Color::Green;
+    println!("Color: {c}");          // "Color: green"
+    println!("Debug: {c:?}");        // "Debug: Green"
+    assert_eq!(format!("{}", Color::Red), "red");
+    println!("All tests passed!");
+}</code></pre>
+</details>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch18-cpp-rust-semantic-deep-dives.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch18-cpp-rust-semantic-deep-dives.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

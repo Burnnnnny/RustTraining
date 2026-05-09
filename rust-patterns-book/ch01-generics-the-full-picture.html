@@ -1,0 +1,630 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>1. 제네릭 — 전체 그림 - Rust 패턴과 엔지니어링 활용 가이드</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-414debd0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-34cb9765.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 패턴과 엔지니어링 활용 가이드</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="1-제네릭--전체-그림-"><a class="header" href="#1-제네릭--전체-그림-">1. 제네릭 — 전체 그림 🟢</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong></p>
+<ul>
+<li>단형성화가 제로 코스트 제네릭을 주는 방식과, 코드 팽창을 일으키는 경우</li>
+<li>선택 기준: 제네릭 vs 열거형 vs 트레잇 객체</li>
+<li>컴파일 타임 배열 크기와 <code>const fn</code> 컴파일 타임 평가를 위한 const 제네릭</li>
+<li>콜드 경로에서 정적 디스패치를 동적 디스패치로 바꿀 때</li>
+</ul>
+</blockquote>
+<p><a id="monomorphization-and-zero-cost"></a></p>
+<h2 id="단형성화와-제로-코스트"><a class="header" href="#단형성화와-제로-코스트">단형성화와 제로 코스트</a></h2>
+<p>Rust의 제네릭은 **단형성(monomorphize)**됩니다 — 컴파일러가 제네릭 함수마다 사용된 구체 타입별로 전문화된 사본을 생성합니다. Java/C#처럼 런타임에 지워지는 것과 반대입니다.</p>
+<pre class="playground"><code class="language-rust">fn max_of&lt;T: PartialOrd&gt;(a: T, b: T) -&gt; T {
+    if a &gt;= b { a } else { b }
+}
+
+fn main() {
+    max_of(3_i32, 5_i32);     // 컴파일러가 max_of_i32 생성
+    max_of(2.0_f64, 7.0_f64); // 컴파일러가 max_of_f64 생성
+    max_of("a", "z");         // 컴파일러가 max_of_str 생성
+}</code></pre>
+<p><strong>컴파일러가 실제로 만드는 것</strong>(개념적으로):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 서로 다른 함수 세 개 — 런타임 디스패치 없음, vtable 없음:
+fn max_of_i32(a: i32, b: i32) -&gt; i32 { if a &gt;= b { a } else { b } }
+fn max_of_f64(a: f64, b: f64) -&gt; f64 { if a &gt;= b { a } else { b } }
+fn max_of_str&lt;'a&gt;(a: &amp;'a str, b: &amp;'a str) -&gt; &amp;'a str { if a &gt;= b { a } else { b } }
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong><code>max_of_str</code>에는 왜 <code>&lt;'a&gt;</code>가 필요하고 <code>max_of_i32</code>에는 없나?</strong> <code>i32</code>와 <code>f64</code>는
+<code>Copy</code> 타입이라 함수가 소유 값을 반환합니다. 하지만 <code>&amp;str</code>은 참조이므로
+컴파일러는 반환 참조의 라이프타임을 알아야 합니다. <code>&lt;'a&gt;</code> 주석은
+“반환되는 <code>&amp;str</code>이 두 입력만큼은 오래 산다”는 뜻입니다.</p>
+</blockquote>
+<p><strong>장점</strong>: 런타임 비용 제로 — 손으로 쓴 전문화 코드와 동일합니다. 옵티마이저가 각 사본을 인라인·벡터화·전문화할 수 있습니다.</p>
+<p><strong>C++와 비교</strong>: Rust 제네릭은 C++ 템플릿과 비슷하지만 <strong>한 가지 결정적 차이</strong>가 있습니다 — <strong>바운드 검사는 인스턴스화가 아니라 정의 시점</strong>에 일어납니다. C++에서는 특정 타입으로 쓸 때까지 템플릿이 컴파일되지 않아 라이브러리 깊숙이 난해한 에러가 납니다. Rust에서는 <code>T: PartialOrd</code>가 함수 정의 시 검사되므로 일찍 잡히고 메시지도 명확합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust: 정의 지점에서 에러 — "T가 Display를 구현하지 않음"
+fn broken&lt;T&gt;(val: T) {
+    println!("{val}"); // ❌ Error: T doesn't implement Display
+}
+
+// 수정: 바운드 추가
+fn fixed&lt;T: std::fmt::Display&gt;(val: T) {
+    println!("{val}"); // ✅
+}
+<span class="boring">}</span></code></pre>
+<p><a id="when-generics-hurt-code-bloat"></a></p>
+<h3 id="제네릭이-아플-때-코드-팽창"><a class="header" href="#제네릭이-아플-때-코드-팽창">제네릭이 아플 때: 코드 팽창</a></h3>
+<p>단형성화에는 비용이 있습니다 — 바이너리 크기입니다. 고유 인스턴스마다 함수 본문이 복제됩니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이런 단순한 함수가...
+fn serialize&lt;T: serde::Serialize&gt;(value: &amp;T) -&gt; Vec&lt;u8&gt; {
+    serde_json::to_vec(value).unwrap()
+}
+
+// ...50가지 타입에 쓰이면 → 바이너리에 사본 50개.
+<span class="boring">}</span></code></pre>
+<p><strong>완화 전략</strong>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 1. 비제네릭 핵심 추출("outline" 패턴)
+fn serialize&lt;T: serde::Serialize&gt;(value: &amp;T) -&gt; Result&lt;Vec&lt;u8&gt;, serde_json::Error&gt; {
+    // 제네릭 부분: 직렬화 호출만
+    let json_value = serde_json::to_value(value)?;
+    // 비제네릭 부분: 별도 함수로 분리
+    serialize_value(json_value)
+}
+
+fn serialize_value(value: serde_json::Value) -&gt; Result&lt;Vec&lt;u8&gt;, serde_json::Error&gt; {
+    // 이 함수는 바이너리에 딱 한 번만 존재
+    serde_json::to_vec(&amp;value)
+}
+
+// 2. 인라인이 중요하지 않을 때 트레잇 객체(동적 디스패치) 사용
+fn log_item(item: &amp;dyn std::fmt::Display) {
+    // 사본 하나 — vtable로 디스패치
+    println!("[LOG] {item}");
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>경험 법칙</strong>: 인라인이 중요한 핫 경로에는 제네릭을 쓰고,
+vtable 호출이 사소한 콜드 경로(에러 처리, 로깅, 설정)에는
+<code>dyn Trait</code>를 쓰세요.</p>
+</blockquote>
+<p><a id="generics-vs-enums-vs-trait-objects-decision-guide"></a></p>
+<h3 id="제네릭-vs-열거형-vs-트레잇-객체--선택-가이드"><a class="header" href="#제네릭-vs-열거형-vs-트레잇-객체--선택-가이드">제네릭 vs 열거형 vs 트레잇 객체 — 선택 가이드</a></h3>
+<p>Rust에서 “다른 타입, 같은 인터페이스”를 다루는 세 가지 방법:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>접근</th><th>디스패치</th><th>알려지는 시점</th><th>확장 가능?</th><th>오버헤드</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>제네릭</strong> (<code>impl Trait</code> / <code>&lt;T: Trait&gt;</code>)</td><td>정적(단형성)</td><td>컴파일 타임</td><td>✅ (열린 집합)</td><td>제로 — 인라인</td></tr>
+<tr><td><strong>열거형</strong></td><td>match 분기</td><td>컴파일 타임</td><td>❌ (닫힌 집합)</td><td>제로 — vtable 없음</td></tr>
+<tr><td><strong>트레잇 객체</strong> (<code>dyn Trait</code>)</td><td>동적(vtable)</td><td>런타임</td><td>✅ (열린 집합)</td><td>vtable 포인터 + 간접 호출</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// --- 제네릭: 열린 집합, 제로 코스트, 컴파일 타임 ---
+fn process&lt;H: Handler&gt;(handler: H, request: Request) -&gt; Response {
+    handler.handle(request) // 단형성 — H마다 사본 하나
+}
+
+// --- 열거형: 닫힌 집합, 제로 코스트, 전수 매칭 ---
+enum Shape {
+    Circle(f64),
+    Rect(f64, f64),
+    Triangle(f64, f64, f64),
+}
+
+impl Shape {
+    fn area(&amp;self) -&gt; f64 {
+        match self {
+            Shape::Circle(r) =&gt; std::f64::consts::PI * r * r,
+            Shape::Rect(w, h) =&gt; w * h,
+            Shape::Triangle(a, b, c) =&gt; {
+                let s = (a + b + c) / 2.0;
+                (s * (s - a) * (s - b) * (s - c)).sqrt()
+            }
+        }
+    }
+}
+// 변형을 추가하면 모든 match 팔을 갱신해야 함 — 컴파일러가
+// 전수성을 강제합니다. "모든 변형을 내가 통제한다"에 적합합니다.
+
+// --- 트레잇 객체: 열린 집합, 런타임 비용, 확장 가능 ---
+fn log_all(items: &amp;[Box&lt;dyn std::fmt::Display&gt;]) {
+    for item in items {
+        println!("{item}"); // vtable 디스패치
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>의사결정 플로차트</strong>:</p>
+<pre class="mermaid">flowchart TD
+    A["컴파일 타임에 가능한&lt;br&gt;타입을 전부&lt;br&gt;알고 있나?"]
+    A --&gt;|"예, 작은&lt;br&gt;닫힌 집합"| B["열거형"]
+    A --&gt;|"예, 하지만 집합이&lt;br&gt;열림"| C["제네릭&lt;br&gt;(단형성)"]
+    A --&gt;|"아니오 — 런타임에&lt;br&gt;타입이 정해짐"| D["dyn Trait"]
+
+    C --&gt; E{"핫 경로?&lt;br&gt;(수백만 번 호출)"}
+    E --&gt;|예| F["제네릭&lt;br&gt;(인라인 가능)"]
+    E --&gt;|아니오| G["dyn Trait&lt;br&gt;로 충분"]
+
+    D --&gt; H{"한 컬렉션에&lt;br&gt;혼합 타입이&lt;br&gt;필요한가?"}
+    H --&gt;|예| I["Vec&amp;lt;Box&amp;lt;dyn Trait&amp;gt;&amp;gt;"]
+    H --&gt;|아니오| C
+
+    style A fill:#e8f4f8,stroke:#2980b9,color:#000
+    style B fill:#d4efdf,stroke:#27ae60,color:#000
+    style C fill:#d4efdf,stroke:#27ae60,color:#000
+    style D fill:#fdebd0,stroke:#e67e22,color:#000
+    style F fill:#d4efdf,stroke:#27ae60,color:#000
+    style G fill:#fdebd0,stroke:#e67e22,color:#000
+    style I fill:#fdebd0,stroke:#e67e22,color:#000
+    style E fill:#fef9e7,stroke:#f1c40f,color:#000
+    style H fill:#fef9e7,stroke:#f1c40f,color:#000
+</pre>
+
+<p><a id="const-generics"></a></p>
+<h3 id="const-제네릭"><a class="header" href="#const-제네릭">Const 제네릭</a></h3>
+<p>Rust 1.51부터 타입과 함수를 타입뿐 아니라 <em>상수 값</em>으로도 매개변수화할 수 있습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 크기로 매개변수화된 배열 래퍼
+struct Matrix&lt;const ROWS: usize, const COLS: usize&gt; {
+    data: [[f64; COLS]; ROWS],
+}
+
+impl&lt;const ROWS: usize, const COLS: usize&gt; Matrix&lt;ROWS, COLS&gt; {
+    fn new() -&gt; Self {
+        Matrix { data: [[0.0; COLS]; ROWS] }
+    }
+
+    fn transpose(&amp;self) -&gt; Matrix&lt;COLS, ROWS&gt; {
+        let mut result = Matrix::&lt;COLS, ROWS&gt;::new();
+        for r in 0..ROWS {
+            for c in 0..COLS {
+                result.data[c][r] = self.data[r][c];
+            }
+        }
+        result
+    }
+}
+
+// 컴파일러가 차원 일치를 강제:
+fn multiply&lt;const M: usize, const N: usize, const P: usize&gt;(
+    a: &amp;Matrix&lt;M, N&gt;,
+    b: &amp;Matrix&lt;N, P&gt;, // N이 맞아야 함!
+) -&gt; Matrix&lt;M, P&gt; {
+    let mut result = Matrix::&lt;M, P&gt;::new();
+    for i in 0..M {
+        for j in 0..P {
+            for k in 0..N {
+                result.data[i][j] += a.data[i][k] * b.data[k][j];
+            }
+        }
+    }
+    result
+}
+
+// 사용:
+let a = Matrix::&lt;2, 3&gt;::new(); // 2×3
+let b = Matrix::&lt;3, 4&gt;::new(); // 3×4
+let c = multiply(&amp;a, &amp;b);      // 2×4 ✅
+
+// let d = Matrix::&lt;5, 5&gt;::new();
+// multiply(&amp;a, &amp;d); // ❌ 컴파일 에러: Matrix&lt;3, _&gt; 기대, Matrix&lt;5, 5&gt; 받음
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>C++ 비교</strong>: C++의 <code>template&lt;int N&gt;</code>과 비슷하지만 Rust const 제네릭은
+이른 타입 검사를 하고 SFINAE 복잡도에 시달리지 않습니다.</p>
+</blockquote>
+<p><a id="const-functions-const-fn"></a></p>
+<h3 id="const-함수const-fn"><a class="header" href="#const-함수const-fn">Const 함수(const fn)</a></h3>
+<p><code>const fn</code>은 함수를 컴파일 타임에 평가 가능하다고 표시합니다 — C++ <code>constexpr</code>에 해당합니다. 결과는 <code>const</code>·<code>static</code> 맥락에 쓸 수 있습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 기본 const fn — const 맥락에서 쓰이면 컴파일 타임에 평가
+const fn celsius_to_fahrenheit(c: f64) -&gt; f64 {
+    c * 9.0 / 5.0 + 32.0
+}
+
+const BOILING_F: f64 = celsius_to_fahrenheit(100.0); // 컴파일 타임 계산
+const FREEZING_F: f64 = celsius_to_fahrenheit(0.0);  // 32.0
+
+// Const 생성자 — lazy_static 없이 static 생성!
+struct BitMask(u32);
+
+impl BitMask {
+    const fn new(bit: u32) -&gt; Self {
+        BitMask(1 &lt;&lt; bit)
+    }
+
+    const fn or(self, other: BitMask) -&gt; Self {
+        BitMask(self.0 | other.0)
+    }
+
+    const fn contains(&amp;self, bit: u32) -&gt; bool {
+        self.0 &amp; (1 &lt;&lt; bit) != 0
+    }
+}
+
+// 정적 룩업 테이블 — 런타임 비용 없음, 지연 초기화 없음
+const GPIO_INPUT:  BitMask = BitMask::new(0);
+const GPIO_OUTPUT: BitMask = BitMask::new(1);
+const GPIO_IRQ:    BitMask = BitMask::new(2);
+const GPIO_IO:     BitMask = GPIO_INPUT.or(GPIO_OUTPUT);
+
+// 레지스터 맵을 const 배열로:
+const SENSOR_THRESHOLDS: [u16; 4] = {
+    let mut table = [0u16; 4];
+    table[0] = 50;   // 경고
+    table[1] = 70;   // 높음
+    table[2] = 85;   // 위험
+    table[3] = 100;  // 종료
+    table
+};
+// 테이블 전체가 바이너리에 — 힙 없음, 런타임 초기화 없음.
+<span class="boring">}</span></code></pre>
+<p><strong><code>const fn</code>에서 할 수 있는 것</strong>(Rust 1.79+ 기준):</p>
+<ul>
+<li>산술, 비트 연산, 비교</li>
+<li><code>if</code>/<code>else</code>, <code>match</code>, <code>loop</code>, <code>while</code> (제어 흐름)</li>
+<li>지역 변수 생성·수정 (<code>let mut</code>)</li>
+<li>다른 <code>const fn</code> 호출</li>
+<li>참조 (<code>&amp;</code>, <code>&amp;mut</code> — const 맥락 안에서)</li>
+<li><code>panic!()</code> (컴파일 타임에 도달하면 컴파일 에러)</li>
+</ul>
+<p><strong>아직 할 수 없는 것</strong>:</p>
+<ul>
+<li>힙 할당 (<code>Box</code>, <code>Vec</code>, <code>String</code>)</li>
+<li>트레잇 메서드 호출(고유 메서드만)</li>
+<li>일부 맥락의 부동소수(기본 연산은 안정화됨)</li>
+<li>I/O나 부수 효과</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// panic이 있는 const fn — 컴파일 타임 에러가 됨:
+const fn checked_div(a: u32, b: u32) -&gt; u32 {
+    if b == 0 {
+        panic!("division by zero"); // b가 const 시간에 0이면 컴파일 에러
+    }
+    a / b
+}
+
+const RESULT: u32 = checked_div(100, 4);  // ✅ 25
+// const BAD: u32 = checked_div(100, 0);  // ❌ 컴파일 에러: "division by zero"
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>C++ 비교</strong>: <code>const fn</code>은 Rust의 <code>constexpr</code>입니다. 핵심 차이:
+Rust 버전은 옵트인이고 컴파일러가 const 호환 연산만 쓰였는지 엄격히 검증합니다.
+C++에서는 <code>constexpr</code> 함수가 조용히 런타임 평가로 떨어질 수 있지만 — Rust에서는 <code>const</code> 맥락이
+<em>반드시</em> 컴파일 타임 평가이거나 하드 에러입니다.</p>
+</blockquote>
+<blockquote>
+<p><strong>실무 조언</strong>: 생성자와 단순 유틸은 가능하면 <code>const fn</code>으로 — 비용 없이 호출부가 const 맥락에서 쓸 수 있습니다. 하드웨어 진단 코드에서는 레지스터 정의, 비트마스크, 임계값 테이블에 이상적입니다.</p>
+</blockquote>
+<blockquote>
+<p><strong>핵심 정리 — 제네릭</strong></p>
+<ul>
+<li>단형성화는 제로 코스트 추상화를 주지만 코드 팽창을 일으킬 수 있음 — 콜드 경로에는 <code>dyn Trait</code></li>
+<li>Const 제네릭(<code>[T; N]</code>)은 C++ 템플릿 트릭 대신 컴파일 타임에 검사되는 배열 크기</li>
+<li><code>const fn</code>은 컴파일 타임에 계산 가능한 값에 대해 <code>lazy_static!</code>를 없앰</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>더 보기:</strong> 트레잇 바운드, 연관 타입, 트레잇 객체는 <a href="ch02-traits-in-depth.html">2장 — 트레잇 심화</a>. 제로 크기 제네릭 마커는 <a href="ch04-phantomdata-types-that-carry-no-data.html">4장 — PhantomData</a>.</p>
+</blockquote>
+<hr>
+<p><a id="exercise-generic-cache-with-eviction"></a></p>
+<h3 id="연습-제거-정책이-있는-제네릭-캐시--30분"><a class="header" href="#연습-제거-정책이-있는-제네릭-캐시--30분">연습: 제거 정책이 있는 제네릭 캐시 ★★ (~30분)</a></h3>
+<p>설정 가능한 최대 용량으로 키-값을 저장하는 제네릭 <code>Cache&lt;K, V&gt;</code>를 만드세요. 가득 차면 가장 오래된 항목이 제거됩니다(FIFO). 요구사항:</p>
+<ul>
+<li><code>fn new(capacity: usize) -&gt; Self</code></li>
+<li><code>fn insert(&amp;mut self, key: K, value: V)</code> — 용량이 차면 가장 오래된 항목 제거</li>
+<li><code>fn get(&amp;self, key: &amp;K) -&gt; Option&lt;&amp;V&gt;</code></li>
+<li><code>fn len(&amp;self) -&gt; usize</code></li>
+<li><code>K: Eq + Hash + Clone</code> 제약</li>
+</ul>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust">use std::collections::{HashMap, VecDeque};
+use std::hash::Hash;
+
+struct Cache&lt;K, V&gt; {
+    map: HashMap&lt;K, V&gt;,
+    order: VecDeque&lt;K&gt;,
+    capacity: usize,
+}
+
+impl&lt;K: Eq + Hash + Clone, V&gt; Cache&lt;K, V&gt; {
+    fn new(capacity: usize) -&gt; Self {
+        Cache {
+            map: HashMap::with_capacity(capacity),
+            order: VecDeque::with_capacity(capacity),
+            capacity,
+        }
+    }
+
+    fn insert(&amp;mut self, key: K, value: V) {
+        if self.map.contains_key(&amp;key) {
+            self.map.insert(key, value);
+            return;
+        }
+        if self.map.len() &gt;= self.capacity {
+            if let Some(oldest) = self.order.pop_front() {
+                self.map.remove(&amp;oldest);
+            }
+        }
+        self.order.push_back(key.clone());
+        self.map.insert(key, value);
+    }
+
+    fn get(&amp;self, key: &amp;K) -&gt; Option&lt;&amp;V&gt; {
+        self.map.get(key)
+    }
+
+    fn len(&amp;self) -&gt; usize {
+        self.map.len()
+    }
+}
+
+fn main() {
+    let mut cache = Cache::new(3);
+    cache.insert("a", 1);
+    cache.insert("b", 2);
+    cache.insert("c", 3);
+    assert_eq!(cache.len(), 3);
+
+    cache.insert("d", 4); // "a" 제거
+    assert_eq!(cache.get(&amp;"a"), None);
+    assert_eq!(cache.get(&amp;"d"), Some(&amp;4));
+    println!("Cache works! len = {}", cache.len());
+}</code></pre>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch00-introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch02-traits-in-depth.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch00-introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch02-traits-in-depth.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

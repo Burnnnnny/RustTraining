@@ -1,0 +1,977 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>임베디드 심화 - C/C++ 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-316e143c.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-30fc96c1.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C/C++ 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="embedded-deep-dive"></a>
+<a id="mmio-and-volatile-register-access"></a></p>
+<h2 id="mmio와-volatile-레지스터-접근"><a class="header" href="#mmio와-volatile-레지스터-접근">MMIO와 volatile 레지스터 접근</a></h2>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> 임베디드 Rust에서 하드웨어 레지스터를 타입 안전하게 다루는 방법, 즉 volatile MMIO 패턴, 레지스터 추상화 크레이트, 그리고 C의 <code>volatile</code> 키워드만으로는 표현할 수 없는 레지스터 권한을 Rust의 타입 시스템이 어떻게 인코딩하는지 배웁니다.</p>
+</blockquote>
+<p>C 펌웨어에서는 특정 메모리 주소에 대한 <code>volatile</code> 포인터를 통해 하드웨어 레지스터에 접근합니다. Rust에도 이에 대응하는 메커니즘이 있지만, 여기에 타입 안전성이 더해집니다.</p>
+<p><a id="c-volatile-vs-rust-volatile"></a></p>
+<h3 id="c의-volatile-vs-rust의-volatile-접근"><a class="header" href="#c의-volatile-vs-rust의-volatile-접근">C의 <code>volatile</code> vs Rust의 volatile 접근</a></h3>
+<pre><code class="language-c">// C - 전형적인 MMIO 레지스터 접근
+#define GPIO_BASE     0x40020000
+#define GPIO_MODER    (*(volatile uint32_t*)(GPIO_BASE + 0x00))
+#define GPIO_ODR      (*(volatile uint32_t*)(GPIO_BASE + 0x14))
+
+void toggle_led(void) {
+    GPIO_ODR ^= (1 &lt;&lt; 5);  // 5번 핀 토글
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - raw volatile (저수준, 직접 쓰는 경우는 드묾)
+use core::ptr;
+
+const GPIO_BASE: usize = 0x4002_0000;
+const GPIO_ODR: *mut u32 = (GPIO_BASE + 0x14) as *mut u32;
+
+/// # Safety
+/// 호출자는 GPIO_BASE가 유효하게 매핑된 주변장치 주소임을 보장해야 한다.
+unsafe fn toggle_led() {
+    let current = unsafe { ptr::read_volatile(GPIO_ODR) };
+    unsafe { ptr::write_volatile(GPIO_ODR, current ^ (1 &lt;&lt; 5)) };
+}
+<span class="boring">}</span></code></pre>
+<p><a id="svd2rust-type-safe-register-access-the-rust-way"></a></p>
+<h3 id="svd2rust---타입-안전한-레지스터-접근rust-방식"><a class="header" href="#svd2rust---타입-안전한-레지스터-접근rust-방식"><code>svd2rust</code> - 타입 안전한 레지스터 접근(Rust 방식)</a></h3>
+<p>실전에서는 raw volatile 포인터를 <strong>직접 거의 작성하지 않습니다</strong>. 대신 <code>svd2rust</code>가 칩의 SVD 파일(IDE 디버그 뷰에서도 쓰는 같은 XML 파일)로부터 <strong>PAC(Peripheral Access Crate)</strong> 를 생성합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 생성된 PAC 코드(svd2rust가 만들어 준다 - 직접 작성하지 않음)
+// PAC 덕분에 잘못된 레지스터 접근은 컴파일 에러가 된다
+
+// PAC 사용 예:
+use stm32f4::stm32f401;  // 대상 칩용 PAC 크레이트
+
+fn configure_gpio(dp: stm32f401::Peripherals) {
+    // GPIOA 클록 활성화 - 타입 안전, 매직 넘버 없음
+    dp.RCC.ahb1enr.modify(|_, w| w.gpioaen().enabled());
+
+    // 5번 핀을 출력으로 설정 - 읽기 전용 필드에 실수로 쓸 수 없음
+    dp.GPIOA.moder.modify(|_, w| w.moder5().output());
+
+    // 5번 핀 토글 - 필드 접근도 타입 검사됨
+    dp.GPIOA.odr.modify(|r, w| {
+        unsafe { w.bits(r.bits() ^ (1 &lt;&lt; 5)) }
+    });
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C 레지스터 접근</th><th>Rust PAC 대응</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#define REG (*(volatile uint32_t*)ADDR)</code></td><td><code>svd2rust</code>가 생성한 PAC 크레이트</td></tr>
+<tr><td>`REG</td><td>= BITMASK;`</td></tr>
+<tr><td><code>value = REG;</code></td><td><code>let val = periph.reg.read().field().bits()</code></td></tr>
+<tr><td>잘못된 레지스터 필드 -&gt; 조용한 UB</td><td>컴파일 에러 - 그런 필드가 없음</td></tr>
+<tr><td>잘못된 레지스터 폭 -&gt; 조용한 UB</td><td>타입 검사 - <code>u8</code> vs <code>u16</code> vs <code>u32</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="interrupt-handling-and-critical-sections"></a></p>
+<h2 id="인터럽트-처리와-임계-구역"><a class="header" href="#인터럽트-처리와-임계-구역">인터럽트 처리와 임계 구역</a></h2>
+<p>C 펌웨어에서는 <code>__disable_irq()</code> / <code>__enable_irq()</code>와 <code>void</code> 시그니처 ISR 함수를 사용합니다. Rust는 이에 대한 타입 안전한 대응 수단을 제공합니다.</p>
+<p><a id="c-vs-rust-interrupt-patterns"></a></p>
+<h3 id="c-vs-rust-인터럽트-패턴"><a class="header" href="#c-vs-rust-인터럽트-패턴">C vs Rust: 인터럽트 패턴</a></h3>
+<pre><code class="language-c">// C - 전통적인 인터럽트 핸들러
+volatile uint32_t tick_count = 0;
+
+void SysTick_Handler(void) {   // 이름 규약이 매우 중요하다 - 틀리면 HardFault
+    tick_count++;
+}
+
+uint32_t get_ticks(void) {
+    __disable_irq();
+    uint32_t t = tick_count;   // 임계 구역 안에서 읽기
+    __enable_irq();
+    return t;
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - cortex-m과 critical section 사용
+use core::cell::Cell;
+use cortex_m::interrupt::{self, Mutex};
+
+// 임계 구역 Mutex로 보호되는 공유 상태
+static TICK_COUNT: Mutex&lt;Cell&lt;u32&gt;&gt; = Mutex::new(Cell::new(0));
+
+#[cortex_m_rt::exception]     // 올바른 벡터 테이블 위치를 보장하는 속성
+fn SysTick() {                // 유효한 예외 이름이 아니면 컴파일 에러
+    interrupt::free(|cs| {    // cs = 임계 구역 토큰(IRQ가 비활성화됐다는 증명)
+        let count = TICK_COUNT.borrow(cs).get();
+        TICK_COUNT.borrow(cs).set(count + 1);
+    });
+}
+
+fn get_ticks() -&gt; u32 {
+    interrupt::free(|cs| TICK_COUNT.borrow(cs).get())
+}
+<span class="boring">}</span></code></pre>
+<p><a id="rtic-real-time-interrupt-driven-concurrency"></a></p>
+<h3 id="rtic---실시간-인터럽트-기반-동시성"><a class="header" href="#rtic---실시간-인터럽트-기반-동시성">RTIC - 실시간 인터럽트 기반 동시성</a></h3>
+<p>인터럽트 우선순위가 여러 개인 복잡한 펌웨어에서는 RTIC(구 RTFM)이 <strong>제로 오버헤드의 컴파일 타임 태스크 스케줄링</strong>을 제공합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[rtic::app(device = stm32f4xx_hal::pac, dispatchers = [USART1])]
+mod app {
+    use stm32f4xx_hal::prelude::*;
+
+    #[shared]
+    struct Shared {
+        temperature: f32,   // 태스크 간 공유 상태 - RTIC가 락을 관리함
+    }
+
+    #[local]
+    struct Local {
+        led: stm32f4xx_hal::gpio::Pin&lt;'A', 5, stm32f4xx_hal::gpio::Output&gt;,
+    }
+
+    #[init]
+    fn init(cx: init::Context) -&gt; (Shared, Local) {
+        let dp = cx.device;
+        let gpioa = dp.GPIOA.split();
+        let led = gpioa.pa5.into_push_pull_output();
+        (Shared { temperature: 25.0 }, Local { led })
+    }
+
+    // 하드웨어 태스크: SysTick 인터럽트에서 실행
+    #[task(binds = SysTick, shared = [temperature], local = [led])]
+    fn tick(mut cx: tick::Context) {
+        cx.local.led.toggle();
+        cx.shared.temperature.lock(|temp| {
+            // 여기서는 RTIC가 배타적 접근을 보장한다 - 수동 락 불필요
+            *temp += 0.1;
+        });
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>C 펌웨어 개발자에게 RTIC가 중요한 이유:</strong></p>
+<ul>
+<li><code>#[shared]</code> 애너테이션이 수동 mutex 관리 코드를 대체합니다.</li>
+<li>우선순위 기반 선점은 컴파일 타임에 구성되므로 런타임 오버헤드가 없습니다.</li>
+<li>구조적으로 데드락이 발생하지 않습니다(프레임워크가 컴파일 타임에 증명).</li>
+<li>ISR 이름 실수는 런타임 HardFault가 아니라 컴파일 에러가 됩니다.</li>
+</ul>
+<p><a id="panic-handler-strategies"></a></p>
+<h2 id="panic-handler-전략"><a class="header" href="#panic-handler-전략">panic handler 전략</a></h2>
+<p>C에서는 펌웨어에서 문제가 생기면 보통 리셋하거나 LED를 깜빡입니다. Rust의 panic handler는 이 동작을 구조적으로 제어하게 해 줍니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 전략 1: Halt(디버깅용 - 디버거를 붙여 상태를 조사)
+use panic_halt as _;  // panic 시 무한 루프
+
+// 전략 2: MCU 리셋
+use panic_reset as _;  // 시스템 리셋 트리거
+
+// 전략 3: 프로브로 로그 전송(개발용)
+use panic_probe as _;  // 디버그 프로브로 panic 정보 전송(defmt와 함께)
+
+// 전략 4: defmt로 로그를 남긴 뒤 halt
+use defmt_panic as _;  // ITM/RTT로 풍부한 panic 메시지 전송
+
+// 전략 5: 커스텀 핸들러(프로덕션 펌웨어)
+use core::panic::PanicInfo;
+
+#[panic_handler]
+fn panic(info: &amp;PanicInfo) -&gt; ! {
+    // 1. 추가 손상을 막기 위해 인터럽트 비활성화
+    cortex_m::interrupt::disable();
+
+    // 2. panic 정보를 예약된 RAM 영역에 기록(리셋 후에도 유지)
+    // Safety: PANIC_LOG는 링커 스크립트에 정의된 예약 메모리 영역이다
+    unsafe {
+        let log = 0x2000_0000 as *mut [u8; 256];
+        // 잘린 panic 메시지 기록
+        use core::fmt::Write;
+        let mut writer = FixedWriter::new(&amp;mut *log);
+        let _ = write!(writer, "{}", info);
+    }
+
+    // 3. watchdog 리셋 트리거(또는 에러 LED 점멸)
+    loop {
+        cortex_m::asm::wfi();  // 인터럽트를 기다림(멈춘 동안 저전력)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="linker-scripts-and-memory-layout"></a></p>
+<h2 id="링커-스크립트와-메모리-레이아웃"><a class="header" href="#링커-스크립트와-메모리-레이아웃">링커 스크립트와 메모리 레이아웃</a></h2>
+<p>C 펌웨어 개발자는 FLASH/RAM 영역을 정의하기 위해 링커 스크립트를 작성합니다. Rust 임베디드에서도 같은 개념을 <code>memory.x</code>로 사용합니다.</p>
+<pre><code class="language-ld">/* memory.x - 크레이트 루트에 두고, cortex-m-rt가 사용 */
+MEMORY
+{
+  /* MCU에 맞게 조정 - 아래 값은 STM32F401 예시 */
+  FLASH : ORIGIN = 0x08000000, LENGTH = 512K
+  RAM   : ORIGIN = 0x20000000, LENGTH = 96K
+}
+
+/* 선택 사항: panic 로그용 공간 예약(위 panic handler 참고) */
+_panic_log_start = ORIGIN(RAM);
+_panic_log_size  = 256;
+</code></pre>
+<pre><code class="language-toml"># .cargo/config.toml - 타깃과 링커 플래그 설정
+[target.thumbv7em-none-eabihf]
+runner = "probe-rs run --chip STM32F401RE"  # 디버그 프로브로 플래시 후 실행
+rustflags = [
+    "-C", "link-arg=-Tlink.x",              # cortex-m-rt 링커 스크립트
+]
+
+[build]
+target = "thumbv7em-none-eabihf"            # 하드웨어 FPU가 있는 Cortex-M4F
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C 링커 스크립트</th><th>Rust 대응</th></tr>
+</thead>
+<tbody>
+<tr><td><code>MEMORY { FLASH ..., RAM ... }</code></td><td>크레이트 루트의 <code>memory.x</code></td></tr>
+<tr><td><code>__attribute__((section(".data")))</code></td><td><code>#[link_section = ".data"]</code></td></tr>
+<tr><td>Makefile의 <code>-T linker.ld</code></td><td><code>.cargo/config.toml</code>의 <code>-C link-arg=-Tlink.x</code></td></tr>
+<tr><td><code>__bss_start__</code>, <code>__bss_end__</code></td><td><code>cortex-m-rt</code>가 자동 처리</td></tr>
+<tr><td>시작 어셈블리(<code>startup.s</code>)</td><td><code>cortex-m-rt</code>의 <code>#[entry]</code> 매크로</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="writing-embedded-hal-drivers"></a></p>
+<h2 id="embedded-hal-드라이버-작성하기"><a class="header" href="#embedded-hal-드라이버-작성하기"><code>embedded-hal</code> 드라이버 작성하기</a></h2>
+<p><code>embedded-hal</code> 크레이트는 SPI, I2C, GPIO, UART 등의 트레잇을 정의합니다. 이 트레잇에 맞춰 작성한 드라이버는 <strong>어떤 MCU에서든</strong> 동작합니다. 이것이 임베디드 재사용 측면에서 Rust의 결정적 장점입니다.</p>
+<p><a id="c-vs-rust-a-temperature-sensor-driver"></a></p>
+<h3 id="c-vs-rust-온도-센서-드라이버"><a class="header" href="#c-vs-rust-온도-센서-드라이버">C vs Rust: 온도 센서 드라이버</a></h3>
+<pre><code class="language-c">// C - STM32 HAL에 강하게 결합된 드라이버
+#include "stm32f4xx_hal.h"
+
+float read_temperature(I2C_HandleTypeDef* hi2c, uint8_t addr) {
+    uint8_t buf[2];
+    HAL_I2C_Mem_Read(hi2c, addr &lt;&lt; 1, 0x00, I2C_MEMADD_SIZE_8BIT,
+                     buf, 2, HAL_MAX_DELAY);
+    int16_t raw = ((int16_t)buf[0] &lt;&lt; 4) | (buf[1] &gt;&gt; 4);
+    return raw * 0.0625;
+}
+// 문제: 이 드라이버는 STM32 HAL에서만 동작한다. Nordic으로 포팅하려면 다시 작성해야 한다.
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - embedded-hal을 구현한 어떤 MCU에서도 동작하는 드라이버
+use embedded_hal::i2c::I2c;
+
+pub struct Tmp102&lt;I2C&gt; {
+    i2c: I2C,
+    address: u8,
+}
+
+impl&lt;I2C: I2c&gt; Tmp102&lt;I2C&gt; {
+    pub fn new(i2c: I2C, address: u8) -&gt; Self {
+        Self { i2c, address }
+    }
+
+    pub fn read_temperature(&amp;mut self) -&gt; Result&lt;f32, I2C::Error&gt; {
+        let mut buf = [0u8; 2];
+        self.i2c.write_read(self.address, &amp;[0x00], &amp;mut buf)?;
+        let raw = ((buf[0] as i16) &lt;&lt; 4) | ((buf[1] as i16) &gt;&gt; 4);
+        Ok(raw as f32 * 0.0625)
+    }
+}
+
+// STM32, Nordic nRF, ESP32, RP2040 등 embedded-hal I2C 구현이 있는 어떤 칩에서도 동작
+<span class="boring">}</span></code></pre>
+<pre class="mermaid">graph TD
+    subgraph "C 드라이버 아키텍처"
+        CD["온도 드라이버"]
+        CD --&gt; STM["STM32 HAL"]
+        CD -.-&gt;|"포팅 = 재작성"| NRF["Nordic HAL"]
+        CD -.-&gt;|"포팅 = 재작성"| ESP["ESP-IDF"]
+    end
+    
+    subgraph "Rust embedded-hal 아키텍처"
+        RD["온도 드라이버&lt;br/&gt;impl&amp;lt;I2C: I2c&amp;gt;"]
+        RD --&gt; EHAL["embedded-hal::I2c trait"]
+        EHAL --&gt; STM2["stm32f4xx-hal"]
+        EHAL --&gt; NRF2["nrf52-hal"]
+        EHAL --&gt; ESP2["esp-hal"]
+        EHAL --&gt; RP2["rp2040-hal"]
+        NOTE["드라이버를 한 번만 작성하면&lt;br/&gt;모든 칩에서 동작"]
+    end
+    
+    style CD fill:#ffa07a,color:#000
+    style RD fill:#91e5a3,color:#000
+    style EHAL fill:#91e5a3,color:#000
+    style NOTE fill:#91e5a3,color:#000
+</pre>
+
+<p><a id="global-allocator-setup"></a></p>
+<h2 id="전역-할당자-설정"><a class="header" href="#전역-할당자-설정">전역 할당자 설정</a></h2>
+<p><code>alloc</code> 크레이트는 <code>Vec</code>, <code>String</code>, <code>Box</code>를 제공하지만, 힙 메모리를 어디서 가져올지 Rust에 알려 줘야 합니다. 이는 플랫폼별 <code>malloc()</code>을 구현하는 것과 대응됩니다.</p>
+<pre class="playground"><code class="language-rust">#![no_std]
+extern crate alloc;
+
+use alloc::vec::Vec;
+use alloc::string::String;
+use embedded_alloc::LlffHeap as Heap;
+
+#[global_allocator]
+static HEAP: Heap = Heap::empty();
+
+#[cortex_m_rt::entry]
+fn main() -&gt; ! {
+    // 메모리 영역으로 할당자 초기화
+    // (보통 스택이나 정적 데이터가 쓰지 않는 RAM 일부)
+    {
+        const HEAP_SIZE: usize = 4096;
+        static mut HEAP_MEM: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
+        // Safety: HEAP_MEM은 초기화 단계에서, 어떤 할당보다 먼저 여기서만 접근된다
+        unsafe { HEAP.init(HEAP_MEM.as_ptr() as usize, HEAP_SIZE) }
+    }
+
+    // 이제 힙 타입을 사용할 수 있다!
+    let mut log_buffer: Vec&lt;u8&gt; = Vec::with_capacity(256);
+    let name: String = String::from("sensor_01");
+    // ...
+
+    loop {}
+}</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C 힙 설정</th><th>Rust 대응</th></tr>
+</thead>
+<tbody>
+<tr><td><code>_sbrk()</code> / 커스텀 <code>malloc()</code></td><td><code>#[global_allocator]</code> + <code>Heap::init()</code></td></tr>
+<tr><td><code>configTOTAL_HEAP_SIZE</code> (FreeRTOS)</td><td><code>HEAP_SIZE</code> 상수</td></tr>
+<tr><td><code>pvPortMalloc()</code></td><td><code>alloc::vec::Vec::new()</code> - 자동</td></tr>
+<tr><td>힙 고갈 -&gt; 정의되지 않은 동작</td><td><code>alloc_error_handler</code> -&gt; 제어된 panic</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="mixed-no_std-std-workspaces"></a></p>
+<h2 id="no_std--std-혼합-워크스페이스"><a class="header" href="#no_std--std-혼합-워크스페이스"><code>no_std</code> + <code>std</code> 혼합 워크스페이스</a></h2>
+<p>실제 프로젝트(예: 큰 Rust 워크스페이스)에서는 흔히 다음 구성을 봅니다.</p>
+<ul>
+<li>하드웨어 이식 가능한 로직을 담은 <code>no_std</code> 라이브러리 크레이트</li>
+<li>Linux 애플리케이션 계층을 담당하는 <code>std</code> 바이너리 크레이트</li>
+</ul>
+<pre><code class="language-text">workspace_root/
+├── Cargo.toml              # [workspace] members = [...]
+├── protocol/               # no_std - 와이어 프로토콜, 파싱
+│   ├── Cargo.toml          # default-features 없음, std 없음
+│   └── src/lib.rs          # #![no_std]
+├── driver/                 # no_std - 하드웨어 추상화
+│   ├── Cargo.toml
+│   └── src/lib.rs          # #![no_std], embedded-hal 트레잇 사용
+├── firmware/               # no_std - MCU 바이너리
+│   ├── Cargo.toml          # protocol, driver에 의존
+│   └── src/main.rs         # #![no_std] #![no_main]
+└── host_tool/              # std - Linux CLI 도구
+    ├── Cargo.toml          # protocol에 의존(같은 크레이트!)
+    └── src/main.rs         # std::fs, std::net 등 사용
+</code></pre>
+<p>핵심 패턴은 이렇습니다. <code>protocol</code> 크레이트가 <code>#![no_std]</code>를 사용하므로 MCU 펌웨어와 Linux 호스트 도구 <strong>둘 다</strong>에서 컴파일됩니다. 코드는 공유되고, 중복은 없습니다.</p>
+<pre><code class="language-toml"># protocol/Cargo.toml
+[package]
+name = "protocol"
+
+[features]
+default = []
+std = []  # 호스트 빌드 시 std 전용 기능을 켜는 선택적 기능 플래그
+
+[dependencies]
+serde = { version = "1", default-features = false, features = ["derive"] }
+# 참고: default-features = false로 serde의 std 의존성을 제거
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// protocol/src/lib.rs
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature = "std")]
+extern crate std;
+
+extern crate alloc;
+use alloc::vec::Vec;
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DiagPacket {
+    pub sensor_id: u16,
+    pub value: i32,
+    pub fault_code: u16,
+}
+
+// 이 함수는 no_std와 std 환경 양쪽에서 동작한다
+pub fn parse_packet(data: &amp;[u8]) -&gt; Result&lt;DiagPacket, &amp;'static str&gt; {
+    if data.len() &lt; 8 {
+        return Err("packet too short");
+    }
+    Ok(DiagPacket {
+        sensor_id: u16::from_le_bytes([data[0], data[1]]),
+        value: i32::from_le_bytes([data[2], data[3], data[4], data[5]]),
+        fault_code: u16::from_le_bytes([data[6], data[7]]),
+    })
+}
+<span class="boring">}</span></code></pre>
+<p><a id="exercise-hardware-abstraction-layer-driver"></a></p>
+<h2 id="연습문제-하드웨어-추상화-계층-드라이버"><a class="header" href="#연습문제-하드웨어-추상화-계층-드라이버">연습문제: 하드웨어 추상화 계층 드라이버</a></h2>
+<p>SPI로 통신하는 가상의 LED 컨트롤러를 위한 <code>no_std</code> 드라이버를 작성해 보세요. 드라이버는 <code>embedded-hal</code>을 사용하는 어떤 SPI 구현에도 제네릭해야 합니다.</p>
+<p><strong>요구 사항:</strong></p>
+<ol>
+<li><code>LedController&lt;SPI&gt;</code> struct를 정의한다</li>
+<li><code>new()</code>, <code>set_brightness(led: u8, brightness: u8)</code>, <code>all_off()</code>를 구현한다</li>
+<li>SPI 프로토콜: <code>[led_index, brightness_value]</code>를 2바이트 트랜잭션으로 전송한다</li>
+<li>mock SPI 구현으로 테스트를 작성한다</li>
+</ol>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 시작 코드
+#![no_std]
+use embedded_hal::spi::SpiDevice;
+
+pub struct LedController&lt;SPI&gt; {
+    spi: SPI,
+    num_leds: u8,
+}
+
+// TODO: new(), set_brightness(), all_off() 구현
+// TODO: 테스트용 MockSpi 작성
+<span class="boring">}</span></code></pre>
+<details><summary>해답 (클릭하여 펼치기)</summary>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>#![no_std]
+<span class="boring">fn main() {
+</span>use embedded_hal::spi::SpiDevice;
+
+pub struct LedController&lt;SPI&gt; {
+    spi: SPI,
+    num_leds: u8,
+}
+
+impl&lt;SPI: SpiDevice&gt; LedController&lt;SPI&gt; {
+    pub fn new(spi: SPI, num_leds: u8) -&gt; Self {
+        Self { spi, num_leds }
+    }
+
+    pub fn set_brightness(&amp;mut self, led: u8, brightness: u8) -&gt; Result&lt;(), SPI::Error&gt; {
+        if led &gt;= self.num_leds {
+            return Ok(()); // 범위를 벗어난 LED는 조용히 무시
+        }
+        self.spi.write(&amp;[led, brightness])
+    }
+
+    pub fn all_off(&amp;mut self) -&gt; Result&lt;(), SPI::Error&gt; {
+        for led in 0..self.num_leds {
+            self.spi.write(&amp;[led, 0])?;
+        }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // 모든 트랜잭션을 기록하는 Mock SPI
+    struct MockSpi {
+        transactions: Vec&lt;Vec&lt;u8&gt;&gt;,
+    }
+
+    // mock용 최소 에러 타입
+    #[derive(Debug)]
+    struct MockError;
+    impl embedded_hal::spi::Error for MockError {
+        fn kind(&amp;self) -&gt; embedded_hal::spi::ErrorKind {
+            embedded_hal::spi::ErrorKind::Other
+        }
+    }
+
+    impl embedded_hal::spi::ErrorType for MockSpi {
+        type Error = MockError;
+    }
+
+    impl SpiDevice for MockSpi {
+        fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;(), Self::Error&gt; {
+            self.transactions.push(buf.to_vec());
+            Ok(())
+        }
+        fn read(&amp;mut self, _buf: &amp;mut [u8]) -&gt; Result&lt;(), Self::Error&gt; { Ok(()) }
+        fn transfer(&amp;mut self, _r: &amp;mut [u8], _w: &amp;[u8]) -&gt; Result&lt;(), Self::Error&gt; { Ok(()) }
+        fn transfer_in_place(&amp;mut self, _buf: &amp;mut [u8]) -&gt; Result&lt;(), Self::Error&gt; { Ok(()) }
+        fn transaction(&amp;mut self, _ops: &amp;mut [embedded_hal::spi::Operation&lt;'_, u8&gt;]) -&gt; Result&lt;(), Self::Error&gt; { Ok(()) }
+    }
+
+    #[test]
+    fn test_set_brightness() {
+        let mock = MockSpi { transactions: vec![] };
+        let mut ctrl = LedController::new(mock, 4);
+        ctrl.set_brightness(2, 128).unwrap();
+        assert_eq!(ctrl.spi.transactions, vec![vec![2, 128]]);
+    }
+
+    #[test]
+    fn test_all_off() {
+        let mock = MockSpi { transactions: vec![] };
+        let mut ctrl = LedController::new(mock, 3);
+        ctrl.all_off().unwrap();
+        assert_eq!(ctrl.spi.transactions, vec![
+            vec![0, 0], vec![1, 0], vec![2, 0],
+        ]);
+    }
+
+    #[test]
+    fn test_out_of_range_led() {
+        let mock = MockSpi { transactions: vec![] };
+        let mut ctrl = LedController::new(mock, 2);
+        ctrl.set_brightness(5, 255).unwrap(); // 범위 밖 - 무시됨
+        assert!(ctrl.spi.transactions.is_empty());
+    }
+}
+<span class="boring">}</span></code></pre>
+</details>
+<p><a id="debugging-embedded-rust-probe-rs-defmt-and-vs-code"></a></p>
+<h2 id="임베디드-rust-디버깅---probe-rs-defmt-vs-code"><a class="header" href="#임베디드-rust-디버깅---probe-rs-defmt-vs-code">임베디드 Rust 디버깅 - <code>probe-rs</code>, <code>defmt</code>, VS Code</a></h2>
+<p>C 펌웨어 개발자는 보통 OpenOCD + GDB나 벤더 전용 IDE(Keil, IAR, Segger Ozone)로 디버깅합니다. Rust 임베디드 생태계는 <strong>probe-rs</strong>를 공통 디버그 프로브 인터페이스로 수렴했고, OpenOCD + GDB 스택을 Rust 네이티브 단일 도구로 대체하고 있습니다.</p>
+<p><a id="probe-rs-the-all-in-one-debug-probe-tool"></a></p>
+<h3 id="probe-rs---올인원-디버그-프로브-도구"><a class="header" href="#probe-rs---올인원-디버그-프로브-도구"><code>probe-rs</code> - 올인원 디버그 프로브 도구</a></h3>
+<p><code>probe-rs</code>는 OpenOCD + GDB 조합을 대체합니다. CMSIS-DAP, ST-Link, J-Link 등 다양한 디버그 프로브를 바로 지원합니다.</p>
+<pre><code class="language-bash"># probe-rs 설치(cargo-flash와 cargo-embed 포함)
+cargo install probe-rs-tools
+
+# 펌웨어 플래시 후 실행
+cargo flash --chip STM32F401RE --release
+
+# 플래시, 실행, RTT(Real-Time Transfer) 콘솔 열기
+cargo embed --chip STM32F401RE
+</code></pre>
+<p><strong><code>probe-rs</code> vs OpenOCD + GDB</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>항목</th><th>OpenOCD + GDB</th><th><code>probe-rs</code></th></tr>
+</thead>
+<tbody>
+<tr><td>설치</td><td>패키지 2개 + 스크립트</td><td><code>cargo install probe-rs-tools</code></td></tr>
+<tr><td>설정</td><td>보드/프로브별 <code>.cfg</code> 파일</td><td><code>--chip</code> 플래그 또는 <code>Embed.toml</code></td></tr>
+<tr><td>콘솔 출력</td><td>Semihosting(매우 느림)</td><td>RTT(~10배 빠름)</td></tr>
+<tr><td>로깅 프레임워크</td><td><code>printf</code></td><td><code>defmt</code>(구조화, zero-cost)</td></tr>
+<tr><td>플래시 알고리즘</td><td>XML pack 파일</td><td>1000개 이상 칩 내장 지원</td></tr>
+<tr><td>GDB 지원</td><td>기본 제공</td><td><code>probe-rs gdb</code> 어댑터</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="embedtoml-project-configuration"></a></p>
+<h3 id="embedtoml---프로젝트-설정"><a class="header" href="#embedtoml---프로젝트-설정"><code>Embed.toml</code> - 프로젝트 설정</a></h3>
+<p><code>.cfg</code>와 <code>.gdbinit</code> 파일을 따로 관리하는 대신, probe-rs는 단일 설정 파일을 사용합니다.</p>
+<pre><code class="language-toml"># Embed.toml - 프로젝트 루트에 둔다
+[default.general]
+chip = "STM32F401RETx"
+
+[default.rtt]
+enabled = true           # Real-Time Transfer 콘솔 활성화
+channels = [
+    { up = 0, mode = "BlockIfFull", name = "Terminal" },
+]
+
+[default.flashing]
+enabled = true           # 실행 전에 플래시
+restore_unwritten_bytes = false
+
+[default.reset]
+halt_afterwards = false  # 플래시 + 리셋 뒤 바로 실행
+
+[default.gdb]
+enabled = false          # true로 바꾸면 :1337에 GDB 서버 노출
+gdb_connection_string = "127.0.0.1:1337"
+</code></pre>
+<pre><code class="language-bash"># Embed.toml이 있으면 이렇게만 실행하면 된다:
+cargo embed              # 플래시 + RTT 콘솔 - 플래그 불필요
+cargo embed --release    # 릴리스 빌드
+</code></pre>
+<p><a id="defmt-deferred-formatting-for-embedded-logging"></a></p>
+<h3 id="defmt---임베디드-로깅을-위한-지연-포매팅"><a class="header" href="#defmt---임베디드-로깅을-위한-지연-포매팅"><code>defmt</code> - 임베디드 로깅을 위한 지연 포매팅</a></h3>
+<p><code>defmt</code>(deferred formatting)는 <code>printf</code> 기반 디버깅을 대체합니다. 포맷 문자열은 flash가 아니라 ELF 파일에 저장되고, 타깃의 로그 호출은 인덱스 + 인자 바이트만 전송합니다. 그래서 로깅이 <code>printf</code>보다 <strong>10-100배 빠르고</strong> flash 공간도 훨씬 적게 사용합니다.</p>
+<pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+use defmt::{info, warn, error, debug, trace};
+use defmt_rtt as _; // RTT 전송 계층 - defmt 출력을 probe-rs에 연결
+
+#[cortex_m_rt::entry]
+fn main() -&gt; ! {
+    info!("Boot complete, firmware v{}", env!("CARGO_PKG_VERSION"));
+
+    let sensor_id: u16 = 0x4A;
+    let temperature: f32 = 23.5;
+
+    // 포맷 문자열은 flash가 아니라 ELF에 남는다 - 오버헤드가 거의 없음
+    debug!("Sensor {:#06X}: {:.1}°C", sensor_id, temperature);
+
+    if temperature &gt; 80.0 {
+        warn!("Overtemp on sensor {:#06X}: {:.1}°C", sensor_id, temperature);
+    }
+
+    loop {
+        cortex_m::asm::wfi(); // 인터럽트를 기다림
+    }
+}
+
+// 커스텀 타입 - Debug 대신 defmt::Format derive 사용
+#[derive(defmt::Format)]
+struct SensorReading {
+    id: u16,
+    value: i32,
+    status: SensorStatus,
+}
+
+#[derive(defmt::Format)]
+enum SensorStatus {
+    Ok,
+    Warning,
+    Fault(u8),
+}
+
+// 사용 예:
+// info!("Reading: {:?}", reading);  // &lt;-- std Debug가 아니라 defmt::Format 사용</code></pre>
+<p><strong><code>defmt</code> vs <code>printf</code> vs <code>log</code></strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>항목</th><th>C <code>printf</code> (semihosting)</th><th>Rust <code>log</code> 크레이트</th><th><code>defmt</code></th></tr>
+</thead>
+<tbody>
+<tr><td>속도</td><td>호출당 ~100ms</td><td>N/A (<code>std</code> 필요)</td><td>호출당 ~1μs</td></tr>
+<tr><td>flash 사용량</td><td>전체 포맷 문자열</td><td>전체 포맷 문자열</td><td>인덱스만(바이트 수준)</td></tr>
+<tr><td>전송 방식</td><td>Semihosting(CPU 정지)</td><td>Serial/UART</td><td>RTT(논블로킹)</td></tr>
+<tr><td>구조화 출력</td><td>없음</td><td>텍스트만</td><td>타입 정보가 있는 바이너리 인코딩</td></tr>
+<tr><td><code>no_std</code></td><td>Semihosting 경유</td><td>파사드만 제공(백엔드는 <code>std</code> 필요)</td><td>✅ 네이티브</td></tr>
+<tr><td>필터 레벨</td><td>수동 <code>#ifdef</code></td><td><code>RUST_LOG=debug</code></td><td><code>defmt::println</code> + features</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="vs-code-debug-configuration"></a></p>
+<h3 id="vs-code-디버그-설정"><a class="header" href="#vs-code-디버그-설정">VS Code 디버그 설정</a></h3>
+<p><code>probe-rs</code> VS Code 확장을 사용하면 브레이크포인트, 변수 조회, 콜 스택, 레지스터 뷰를 포함한 완전한 그래픽 디버깅을 사용할 수 있습니다.</p>
+<pre><code class="language-jsonc">// .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "probe-rs-debug",
+            "request": "launch",
+            "name": "Flash &amp; Debug (probe-rs)",
+            "chip": "STM32F401RETx",
+            "coreConfigs": [
+                {
+                    "programBinary": "target/thumbv7em-none-eabihf/debug/${workspaceFolderBasename}",
+                    "rttEnabled": true,
+                    "rttChannelFormats": [
+                        {
+                            "channelNumber": 0,
+                            "dataFormat": "Defmt",
+                            "showTimestamps": true
+                        }
+                    ]
+                }
+            ],
+            "connectUnderReset": true,
+            "speed": 4000
+        }
+    ]
+}
+</code></pre>
+<p>확장 설치:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>ext install probe-rs.probe-rs-debugger
+<span class="boring">}</span></code></pre>
+<p><a id="c-debugger-workflow-vs-rust-embedded-debugging"></a></p>
+<h3 id="c-디버거-워크플로-vs-rust-임베디드-디버깅"><a class="header" href="#c-디버거-워크플로-vs-rust-임베디드-디버깅">C 디버거 워크플로 vs Rust 임베디드 디버깅</a></h3>
+<pre class="mermaid">graph LR
+    subgraph "C 워크플로(전통적)"
+        C1["코드 작성"] --&gt; C2["make flash"]
+        C2 --&gt; C3["openocd -f board.cfg"]
+        C3 --&gt; C4["arm-none-eabi-gdb&lt;br/&gt;target remote :3333"]
+        C4 --&gt; C5["semihosting 기반 printf&lt;br/&gt;(호출당 ~100ms, CPU 정지)"]
+    end
+    
+    subgraph "Rust 워크플로(probe-rs)"
+        R1["코드 작성"] --&gt; R2["cargo embed"]
+        R2 --&gt; R3["한 명령으로 플래시 + RTT 콘솔"]
+        R3 --&gt; R4["defmt 로그가 실시간으로 스트리밍&lt;br/&gt;(~1μs)"]
+        R2 -.-&gt;|"또는"| R5["VS Code F5&lt;br/&gt;전체 GUI 디버거"]
+    end
+    
+    style C5 fill:#ffa07a,color:#000
+    style R3 fill:#91e5a3,color:#000
+    style R4 fill:#91e5a3,color:#000
+    style R5 fill:#91e5a3,color:#000
+</pre>
+
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C 디버그 동작</th><th>Rust 대응</th></tr>
+</thead>
+<tbody>
+<tr><td><code>openocd -f board/st_nucleo_f4.cfg</code></td><td><code>probe-rs info</code> (프로브 + 칩 자동 감지)</td></tr>
+<tr><td><code>arm-none-eabi-gdb -x .gdbinit</code></td><td><code>probe-rs gdb --chip STM32F401RE</code></td></tr>
+<tr><td><code>target remote :3333</code></td><td>GDB가 <code>localhost:1337</code>에 연결</td></tr>
+<tr><td><code>monitor reset halt</code></td><td><code>probe-rs reset --chip ...</code></td></tr>
+<tr><td><code>load firmware.elf</code></td><td><code>cargo flash --chip ...</code></td></tr>
+<tr><td><code>printf("debug: %d\n", val)</code> (semihosting)</td><td><code>defmt::info!("debug: {}", val)</code> (RTT)</td></tr>
+<tr><td>Keil/IAR GUI 디버거</td><td>VS Code + <code>probe-rs-debugger</code> 확장</td></tr>
+<tr><td>Segger SystemView</td><td><code>defmt</code> + <code>probe-rs</code> RTT 뷰어</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>교차 참조:</strong> 임베디드 드라이버에서 쓰는 고급 unsafe 패턴
+(pin projection, 커스텀 arena/slab allocator)은 <em>Rust Patterns</em> 가이드의
+“Pin Projections — Structural Pinning” 및
+“Custom Allocators — Arena and Slab Patterns” 섹션을 참고하세요.</p>
+</blockquote>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch15-no_std-rust-without-the-standard-library.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch16-case-studies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch15-no_std-rust-without-the-standard-library.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch16-case-studies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

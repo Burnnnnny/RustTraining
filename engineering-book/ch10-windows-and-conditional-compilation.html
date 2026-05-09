@@ -1,0 +1,686 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>10. Windows와 조건부 컴파일 - Rust 엔지니어링 실무 — cargo build를 넘어서</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-997ff77b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-04fe246c.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 엔지니어링 실무 — cargo build를 넘어서</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="windows-and-conditional-compilation"></a></p>
+<h1 id="windows와-조건부-컴파일-"><a class="header" href="#windows와-조건부-컴파일-">Windows와 조건부 컴파일 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong></p>
+<ul>
+<li>Windows 지원 패턴: <code>windows-sys</code>/<code>windows</code> 크레이트, <code>cargo-xwin</code></li>
+<li><code>#[cfg]</code>로 하는 조건부 컴파일 — 전처리기가 아니라 컴파일러가 검사</li>
+<li>플랫폼 추상화 아키텍처: <code>#[cfg]</code> 블록으로 충분할 때 vs 트레잇이 필요할 때</li>
+<li>Linux에서 Windows용 크로스 컴파일</li>
+</ul>
+<p><strong>교차 참고:</strong> <a href="ch09-no-std-and-feature-verification.html"><code>no_std</code>와 Features</a> — <code>cargo-hack</code>과 feature 검증 · <a href="ch02-cross-compilation-one-source-many-target.html">크로스 컴파일</a> — 일반 크로스 빌드 설정 · <a href="ch01-build-scripts-buildrs-in-depth.html">빌드 스크립트</a> — <code>build.rs</code>가 내보내는 <code>cfg</code> 플래그</p>
+</blockquote>
+<p><a id="windows-support-platform-abstractions"></a></p>
+<h3 id="windows-지원--플랫폼-추상화"><a class="header" href="#windows-지원--플랫폼-추상화">Windows 지원 — 플랫폼 추상화</a></h3>
+<p>Rust의 <code>#[cfg()]</code> 속성과 Cargo feature로 단일 코드베이스에서 Linux와 Windows를 깔끔하게 타깃할 수 있습니다. 프로젝트는 이미 <code>platform::run_command</code>에서 이 패턴을 보여 줍니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 프로젝트의 실제 패턴 — 플랫폼별 셸 호출
+pub fn exec_cmd(cmd: &amp;str, timeout_secs: Option&lt;u64&gt;) -&gt; Result&lt;CommandResult, CommandError&gt; {
+    #[cfg(windows)]
+    let mut child = Command::new("cmd")
+        .args(["/C", cmd])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
+
+    #[cfg(not(windows))]
+    let mut child = Command::new("sh")
+        .args(["-c", cmd])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
+
+    // ... 나머지는 플랫폼 독립 ...
+}
+<span class="boring">}</span></code></pre>
+<p><strong>사용 가능한 <code>cfg</code> 술어:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 운영체제
+#[cfg(target_os = "linux")]         // Linux만
+#[cfg(target_os = "windows")]       // Windows
+#[cfg(target_os = "macos")]         // macOS
+#[cfg(unix)]                        // Linux, macOS, BSD 등
+#[cfg(windows)]                     // Windows(약칭)
+
+// 아키텍처
+#[cfg(target_arch = "x86_64")]      // x86 64비트
+#[cfg(target_arch = "aarch64")]     // ARM 64비트
+#[cfg(target_arch = "x86")]         // x86 32비트
+
+// 포인터 너비(아키텍처 대신 쓸 수 있는 이식 가능한 대안)
+#[cfg(target_pointer_width = "64")] // 임의 64비트 플랫폼
+#[cfg(target_pointer_width = "32")] // 임의 32비트 플랫폼
+
+// 환경 / C 라이브러리
+#[cfg(target_env = "gnu")]          // glibc
+#[cfg(target_env = "musl")]         // musl libc
+#[cfg(target_env = "msvc")]         // Windows의 MSVC
+
+// 엔디안
+#[cfg(target_endian = "little")]
+#[cfg(target_endian = "big")]
+
+// any(), all(), not() 조합
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+#[cfg(not(windows))]
+<span class="boring">}</span></code></pre>
+<p><a id="the-windows-sys-and-windows-crates"></a></p>
+<h3 id="windows-sys와-windows-크레이트"><a class="header" href="#windows-sys와-windows-크레이트"><code>windows-sys</code>와 <code>windows</code> 크레이트</a></h3>
+<p>Windows API를 직접 호출할 때:</p>
+<pre><code class="language-toml"># Cargo.toml — raw FFI에는 windows-sys(가볍고 추상화 없음)
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_System_Services",
+    "Win32_System_Registry",
+    "Win32_System_Power",
+] }
+# 참고: windows-sys는 semver 비호환 릴리스를 씀(0.48 → 0.52 → 0.59).
+# 단일 마이너 버전에 고정 — 릴리스마다 API 바인딩이 바뀌거나 사라질 수 있음.
+# 새 프로젝트 전에 https://github.com/microsoft/windows-rs 에서 최신 버전 확인.
+
+# 또는 안전한 래퍼에는 windows 크레이트( heavier, 더 인체공학적)
+# windows = { version = "0.59", features = [...] }
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// src/platform/windows.rs
+#[cfg(windows)]
+mod win {
+    use windows_sys::Win32::System::Power::{
+        GetSystemPowerStatus, SYSTEM_POWER_STATUS,
+    };
+
+    pub fn get_battery_status() -&gt; Option&lt;u8&gt; {
+        let mut status = SYSTEM_POWER_STATUS::default();
+        // SAFETY: GetSystemPowerStatus가 제공한 버퍼에 씀.
+        // 버퍼 크기와 정렬이 올바름.
+        let ok = unsafe { GetSystemPowerStatus(&amp;mut status) };
+        if ok != 0 {
+            Some(status.BatteryLifePercent)
+        } else {
+            None
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong><code>windows-sys</code> vs <code>windows</code> 크레이트:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>측면</th><th><code>windows-sys</code></th><th><code>windows</code></th></tr>
+</thead>
+<tbody>
+<tr><td>API 스타일</td><td>Raw FFI(<code>unsafe</code> 호출)</td><td>안전한 Rust 래퍼</td></tr>
+<tr><td>바이너리 크기</td><td>최소(extern 선언만)</td><td>더 큼(래퍼 코드)</td></tr>
+<tr><td>컴파일 시간</td><td>빠름</td><td>느림</td></tr>
+<tr><td>인체공학</td><td>C 스타일, 수동 안전</td><td>Rust다운 사용감</td></tr>
+<tr><td>에러 처리</td><td>Raw <code>BOOL</code> / <code>HRESULT</code></td><td><code>Result&lt;T, windows::core::Error&gt;</code></td></tr>
+<tr><td>쓸 때</td><td>성능 중요, 얇은 래퍼</td><td>앱 코드, 사용 편의</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="cross-compiling-for-windows-from-linux"></a></p>
+<h3 id="linux에서-windows용-크로스-컴파일"><a class="header" href="#linux에서-windows용-크로스-컴파일">Linux에서 Windows용 크로스 컴파일</a></h3>
+<pre><code class="language-bash"># 옵션 1: MinGW(GNU ABI)
+rustup target add x86_64-pc-windows-gnu
+sudo apt install gcc-mingw-w64-x86-64
+cargo build --target x86_64-pc-windows-gnu
+# .exe 생성 — Windows에서 실행, msvcrt에 링크
+
+# 옵션 2: xwin으로 MSVC ABI(완전한 MSVC 호환)
+cargo install cargo-xwin
+cargo xwin build --target x86_64-pc-windows-msvc
+# Microsoft CRT와 SDK 헤더/라이브러리를 자동 다운로드
+
+# 옵션 3: Zig 기반 크로스 컴파일
+cargo zigbuild --target x86_64-pc-windows-gnu
+</code></pre>
+<p><strong>Windows에서 GNU vs MSVC ABI:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>측면</th><th><code>x86_64-pc-windows-gnu</code></th><th><code>x86_64-pc-windows-msvc</code></th></tr>
+</thead>
+<tbody>
+<tr><td>링커</td><td>MinGW <code>ld</code></td><td>MSVC <code>link.exe</code> 또는 <code>lld-link</code></td></tr>
+<tr><td>C 런타임</td><td><code>msvcrt.dll</code>(범용)</td><td><code>ucrtbase.dll</code>(모던)</td></tr>
+<tr><td>C++ 상호운용</td><td>GCC ABI</td><td>MSVC ABI</td></tr>
+<tr><td>Linux에서 크로스</td><td>쉬움(MinGW)</td><td>가능(<code>cargo-xwin</code>)</td></tr>
+<tr><td>Windows API 지원</td><td>전체</td><td>전체</td></tr>
+<tr><td>디버그 정보 형식</td><td>DWARF</td><td>PDB</td></tr>
+<tr><td>권장</td><td>단순 도구, CI 빌드</td><td>완전한 Windows 통합</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="conditional-compilation-patterns"></a></p>
+<h3 id="조건부-컴파일-패턴"><a class="header" href="#조건부-컴파일-패턴">조건부 컴파일 패턴</a></h3>
+<p><strong>패턴 1: 플랫폼 모듈 선택</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// src/platform/mod.rs — OS마다 다른 모듈 컴파일
+#[cfg(target_os = "linux")]
+mod linux;
+#[cfg(target_os = "linux")]
+pub use linux::*;
+
+#[cfg(target_os = "windows")]
+mod windows;
+#[cfg(target_os = "windows")]
+pub use windows::*;
+
+// 두 모듈 모두 동일한 공개 API 구현:
+// pub fn get_cpu_temperature() -&gt; Result&lt;f64, PlatformError&gt;
+// pub fn list_pci_devices() -&gt; Result&lt;Vec&lt;PciDevice&gt;, PlatformError&gt;
+<span class="boring">}</span></code></pre>
+<p><strong>패턴 2: feature로 게이트한 플랫폼 지원</strong></p>
+<pre><code class="language-toml"># Cargo.toml
+[features]
+default = ["linux"]
+linux = []              # Linux 전용 하드웨어 접근
+windows = ["dep:windows-sys"]  # Windows 전용 API
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [...], optional = true }
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// feature 없이 Windows 빌드하려 하면 컴파일 오류:
+#[cfg(all(target_os = "windows", not(feature = "windows")))]
+compile_error!("Enable the 'windows' feature to build for Windows");
+<span class="boring">}</span></code></pre>
+<p><strong>패턴 3: 트레잇 기반 플랫폼 추상화</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 하드웨어 접근용 플랫폼 독립 인터페이스.
+pub trait HardwareAccess {
+    type Error: std::error::Error;
+
+    fn read_cpu_temperature(&amp;self) -&gt; Result&lt;f64, Self::Error&gt;;
+    fn read_gpu_temperature(&amp;self, gpu_index: u32) -&gt; Result&lt;f64, Self::Error&gt;;
+    fn list_pci_devices(&amp;self) -&gt; Result&lt;Vec&lt;PciDevice&gt;, Self::Error&gt;;
+    fn send_ipmi_command(&amp;self, cmd: &amp;IpmiCmd) -&gt; Result&lt;IpmiResponse, Self::Error&gt;;
+}
+
+#[cfg(target_os = "linux")]
+pub struct LinuxHardware;
+
+#[cfg(target_os = "linux")]
+impl HardwareAccess for LinuxHardware {
+    type Error = LinuxHwError;
+
+    fn read_cpu_temperature(&amp;self) -&gt; Result&lt;f64, Self::Error&gt; {
+        // /sys/class/thermal/thermal_zone0/temp 에서 읽기
+        let raw = std::fs::read_to_string("/sys/class/thermal/thermal_zone0/temp")?;
+        Ok(raw.trim().parse::&lt;f64&gt;()? / 1000.0)
+    }
+    // ...
+}
+
+#[cfg(target_os = "windows")]
+pub struct WindowsHardware;
+
+#[cfg(target_os = "windows")]
+impl HardwareAccess for WindowsHardware {
+    type Error = WindowsHwError;
+
+    fn read_cpu_temperature(&amp;self) -&gt; Result&lt;f64, Self::Error&gt; {
+        // WMI(Win32_TemperatureProbe) 또는 Open Hardware Monitor로 읽기
+        todo!("WMI temperature query")
+    }
+    // ...
+}
+
+/// 플랫폼에 맞는 구현체 생성
+pub fn create_hardware() -&gt; impl HardwareAccess {
+    #[cfg(target_os = "linux")]
+    { LinuxHardware }
+    #[cfg(target_os = "windows")]
+    { WindowsHardware }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="platform-abstraction-architecture"></a></p>
+<h3 id="플랫폼-추상화-아키텍처"><a class="header" href="#플랫폼-추상화-아키텍처">플랫폼 추상화 아키텍처</a></h3>
+<p>여러 플랫폼을 타깃하는 프로젝트는 코드를 세 층으로 나눕니다:</p>
+<pre><code class="language-text">┌──────────────────────────────────────────────────┐
+│ 애플리케이션 로직(플랫폼 독립)                     │
+│  diag_tool, accel_diag, network_diag, event_log 등  │
+│  플랫폼 추상화 트레잇만 사용                         │
+├──────────────────────────────────────────────────┤
+│ 플랫폼 추상화 층(트레잇 정의)                      │
+│  trait HardwareAccess { ... }                     │
+│  trait CommandRunner { ... }                      │
+│  trait FileSystem { ... }                         │
+├──────────────────────────────────────────────────┤
+│ 플랫폼 구현(cfg로 게이트)                         │
+│  ┌──────────────┐  ┌──────────────┐              │
+│  │ Linux 구현   │  │ Windows 구현 │              │
+│  │ /sys, /proc  │  │ WMI, Registry│              │
+│  │ ipmitool     │  │ ipmiutil     │              │
+│  │ lspci        │  │ devcon       │              │
+│  └──────────────┘  └──────────────┘              │
+└──────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>추상화 테스트</strong>: 단위 테스트에서 플랫폼 트레잇을 모의(mock)하세요:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockHardware {
+        cpu_temp: f64,
+        gpu_temps: Vec&lt;f64&gt;,
+    }
+
+    impl HardwareAccess for MockHardware {
+        type Error = std::io::Error;
+
+        fn read_cpu_temperature(&amp;self) -&gt; Result&lt;f64, Self::Error&gt; {
+            Ok(self.cpu_temp)
+        }
+
+        fn read_gpu_temperature(&amp;self, index: u32) -&gt; Result&lt;f64, Self::Error&gt; {
+            self.gpu_temps.get(index as usize)
+                .copied()
+                .ok_or_else(|| std::io::Error::new(
+                    std::io::ErrorKind::NotFound,
+                    format!("GPU {index} not found")
+                ))
+        }
+
+        fn list_pci_devices(&amp;self) -&gt; Result&lt;Vec&lt;PciDevice&gt;, Self::Error&gt; {
+            Ok(vec![]) // 모의는 빈 목록
+        }
+
+        fn send_ipmi_command(&amp;self, _cmd: &amp;IpmiCmd) -&gt; Result&lt;IpmiResponse, Self::Error&gt; {
+            Ok(IpmiResponse::default())
+        }
+    }
+
+    #[test]
+    fn test_thermal_check_with_mock() {
+        let hw = MockHardware {
+            cpu_temp: 75.0,
+            gpu_temps: vec![82.0, 84.0],
+        };
+        let result = run_thermal_diagnostic(&amp;hw);
+        assert!(result.is_ok());
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="application-linux-first-windows-ready"></a></p>
+<h3 id="적용-linux-우선-windows-대비"><a class="header" href="#적용-linux-우선-windows-대비">적용: Linux 우선, Windows 대비</a></h3>
+<p>프로젝트는 이미 부분적으로 Windows 대비가 되어 있습니다. 모든 feature 조합은 <a href="ch09-no-std-and-feature-verification.html"><code>cargo-hack</code></a>으로 검증하고, Linux에서 Windows를 <a href="ch02-cross-compilation-one-source-many-target.html">크로스 컴파일</a>해 테스트하세요:</p>
+<p><strong>이미 완료된 것:</strong></p>
+<ul>
+<li><code>platform::run_command</code>가 셸 선택에 <code>#[cfg(windows)]</code> 사용</li>
+<li>테스트가 <code>#[cfg(windows)]</code> / <code>#[cfg(not(windows))]</code>로 플랫폼에 맞는 명령 사용</li>
+</ul>
+<p><strong>Windows 지원을 위한 권장 진화 경로:</strong></p>
+<pre><code class="language-text">1단계: 플랫폼 추상화 트레잇 추출(현재 → 약 2주)
+  ├─ core_lib에 HardwareAccess 트레잇 정의
+  ├─ 기존 Linux 코드를 LinuxHardware impl 뒤로 감쌈
+  └─ 모든 진단 모듈이 Linux 세부가 아니라 트레잇에 의존
+
+2단계: Windows 스텁 추가(약 2주)
+  ├─ TODO 스텁으로 WindowsHardware 구현
+  ├─ CI에서 x86_64-pc-windows-msvc 빌드(컴파일 검사만)
+  └─ 모든 플랫폼에서 MockHardware로 테스트 통과
+
+3단계: Windows 구현(지속)
+  ├─ IPMI는 ipmiutil.exe 또는 OpenIPMI Windows 드라이버
+  ├─ GPU는 accel-mgmt(accel-api.dll) — Linux와 동일 API
+  ├─ PCIe는 Windows Setup API(SetupDiEnumDeviceInfo)
+  └─ NIC는 WMI(Win32_NetworkAdapter)
+</code></pre>
+<p><strong>크로스 플랫폼 CI 추가:</strong></p>
+<pre><code class="language-yaml"># CI 매트릭스에 추가
+- target: x86_64-pc-windows-msvc
+  os: windows-latest
+  name: windows-x86_64
+</code></pre>
+<p>전체 Windows 구현 전에도 코드베이스가 Windows에서 컴파일되게 해 <code>cfg</code> 실수를 일찍 잡습니다.</p>
+<blockquote>
+<p><strong>핵심</strong>: 추상화가 첫날부터 완벽할 필요는 없습니다. <code>exec_cmd</code>처럼 리프 함수에 <code>#[cfg]</code> 블록으로 시작하고, 플랫폼 구현이 둘 이상 생기면 트레잇으로 리팩터하세요. 때 이른 추상화는 <code>#[cfg]</code> 블록보다 나쁩니다.</p>
+</blockquote>
+<p><a id="conditional-compilation-decision-tree"></a></p>
+<h3 id="조건부-컴파일-의사결정-트리"><a class="header" href="#조건부-컴파일-의사결정-트리">조건부 컴파일 의사결정 트리</a></h3>
+<pre class="mermaid">flowchart TD
+    START["플랫폼별 코드?"] --&gt; HOW_MANY{"플랫폼 수?"}
+    
+    HOW_MANY --&gt;|"2 (Linux + Windows)"| CFG_BLOCKS["리프 함수의\n#[cfg] 블록"]
+    HOW_MANY --&gt;|"3+"| TRAIT_APPROACH["플랫폼 트레잇\n+ 플랫폼별 impl"]
+    
+    CFG_BLOCKS --&gt; WINAPI{"Windows API\n필요?"}
+    WINAPI --&gt;|"최소"| WIN_SYS["windows-sys\nRaw FFI 바인딩"]
+    WINAPI --&gt;|"풍부(COM 등)"| WIN_RS["windows 크레이트\n안전한 래퍼"]
+    WINAPI --&gt;|"없음\n(#[cfg]만)"| NATIVE["cfg(windows)\ncfg(unix)"]
+    
+    TRAIT_APPROACH --&gt; CI_CHECK["cargo-hack\n--each-feature"]
+    CFG_BLOCKS --&gt; CI_CHECK
+    CI_CHECK --&gt; XCOMPILE["CI에서 크로스 컴파일\ncargo-xwin 또는\n네이티브 러너"]
+    
+    style CFG_BLOCKS fill:#91e5a3,color:#000
+    style TRAIT_APPROACH fill:#ffd43b,color:#000
+    style WIN_SYS fill:#e3f2fd,color:#000
+    style WIN_RS fill:#e3f2fd,color:#000
+</pre>
+
+<h3 id="-연습문제"><a class="header" href="#-연습문제">🏋️ 연습문제</a></h3>
+<h4 id="-연습-1-플랫폼-조건부-모듈"><a class="header" href="#-연습-1-플랫폼-조건부-모듈">🟢 연습 1: 플랫폼 조건부 모듈</a></h4>
+<p><code>#[cfg(unix)]</code>와 <code>#[cfg(windows)]</code>로 <code>get_hostname()</code> 구현을 나눈 모듈을 만드세요. <code>cargo check</code>와 <code>cargo check --target x86_64-pc-windows-msvc</code> 둘 다 컴파일되는지 확인하세요.</p>
+<details>
+<summary>해답</summary>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// src/hostname.rs
+#[cfg(unix)]
+pub fn get_hostname() -&gt; String {
+    use std::fs;
+    fs::read_to_string("/etc/hostname")
+        .unwrap_or_else(|_| "unknown".to_string())
+        .trim()
+        .to_string()
+}
+
+#[cfg(windows)]
+pub fn get_hostname() -&gt; String {
+    use std::env;
+    env::var("COMPUTERNAME").unwrap_or_else(|_| "unknown".to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hostname_is_not_empty() {
+        let name = get_hostname();
+        assert!(!name.is_empty());
+    }
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-bash"># Linux 컴파일 확인
+cargo check
+
+# Windows 컴파일 확인(크로스)
+rustup target add x86_64-pc-windows-msvc
+cargo check --target x86_64-pc-windows-msvc
+</code></pre>
+</details>
+<h4 id="-연습-2-cargo-xwin으로-windows-크로스-컴파일"><a class="header" href="#-연습-2-cargo-xwin으로-windows-크로스-컴파일">🟡 연습 2: cargo-xwin으로 Windows 크로스 컴파일</a></h4>
+<p><code>cargo-xwin</code>을 설치하고 Linux에서 <code>x86_64-pc-windows-msvc</code>용 단순 바이너리를 빌드하세요. 출력이 <code>.exe</code>인지 확인하세요.</p>
+<details>
+<summary>해답</summary>
+<pre><code class="language-bash">cargo install cargo-xwin
+rustup target add x86_64-pc-windows-msvc
+
+cargo xwin build --release --target x86_64-pc-windows-msvc
+# Windows SDK 헤더/라이브러리를 자동 다운로드
+
+file target/x86_64-pc-windows-msvc/release/my-binary.exe
+# 출력: PE32+ executable (console) x86-64, for MS Windows
+
+# Wine으로도 테스트 가능:
+wine target/x86_64-pc-windows-msvc/release/my-binary.exe
+</code></pre>
+</details>
+<h3 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h3>
+<ul>
+<li>리프 함수부터 <code>#[cfg]</code> 블록으로 시작하고, 플랫폼이 셋 이상 갈라질 때만 트레잇으로 리팩터하세요</li>
+<li><code>windows-sys</code>는 raw FFI용, <code>windows</code> 크레이트는 안전하고 익숙한 래퍼용</li>
+<li><code>cargo-xwin</code>은 Linux에서 Windows MSVC ABI로 크로스 컴파일 — Windows 머신 없이 가능</li>
+<li>Linux만 배포해도 CI에서 <code>x86_64-pc-windows-msvc</code>를 확인하세요</li>
+<li>선택적 플랫폼 지원에는 <code>#[cfg]</code>와 Cargo feature를 함께 쓰세요(예: <code>feature = "windows"</code>)</li>
+</ul>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch09-no-std-and-feature-verification.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch11-putting-it-all-together-a-production-cic.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch09-no-std-and-feature-verification.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch11-putting-it-all-together-a-production-cic.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

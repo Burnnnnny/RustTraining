@@ -1,0 +1,476 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3. Poll은 어떻게 동작하는가 - Async Rust: Future부터 프로덕션까지</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-2505fb89.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-55c9c436.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Async Rust: Future부터 프로덕션까지</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="how-poll-works"></a></p>
+<h1 id="3-poll은-어떻게-동작하는가-"><a class="header" href="#3-poll은-어떻게-동작하는가-">3. Poll은 어떻게 동작하는가 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong></p>
+<ul>
+<li>executor의 poll 루프: poll → pending → wake → 다시 poll</li>
+<li>최소 executor를 처음부터 직접 만드는 방법</li>
+<li>허위 깨우기(spurious wake) 규칙과 그것이 중요한 이유</li>
+<li>유용한 도구 함수: <code>poll_fn()</code>과 <code>yield_now()</code></li>
+</ul>
+</blockquote>
+<p><a id="the-polling-state-machine"></a></p>
+<h2 id="polling-상태-머신"><a class="header" href="#polling-상태-머신">Polling 상태 머신</a></h2>
+<p>Executor는 루프를 돌면서 future를 poll합니다. 결과가 <code>Pending</code>이면 waker가 불릴 때까지 대기하고, 이후 다시 poll합니다. 이 점이 커널이 스케줄링을 맡는 OS 스레드와의 근본적인 차이입니다.</p>
+<pre class="mermaid">stateDiagram-v2
+    state "대기" as Idle
+    state "poll 중" as Polling
+    state "대기 중" as Waiting
+    state "완료" as Complete
+
+    [*] --&gt; Idle : Future 생성
+    Idle --&gt; Polling : executor가 poll() 호출
+    Polling --&gt; Complete : Ready(value)
+    Polling --&gt; Waiting : Pending
+    Waiting --&gt; Polling : waker.wake() 호출
+    Complete --&gt; [*] : 값 반환
+</pre>
+
+<blockquote>
+<p><strong>중요:</strong> future가 <em>대기 중</em> 상태에 들어갔다면, 그 전에 반드시 I/O 소스에 waker를 등록해 두어야 합니다. 등록이 없으면 영원히 멈춥니다.</p>
+</blockquote>
+<p><a id="a-minimal-executor"></a></p>
+<h3 id="최소-executor"><a class="header" href="#최소-executor">최소 Executor</a></h3>
+<p>Executor의 정체를 더 분명히 보기 위해, 가장 단순한 형태부터 직접 만들어 보겠습니다:</p>
+<pre class="playground"><code class="language-rust">use std::future::Future;
+use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
+use std::pin::Pin;
+
+/// 가장 단순한 executor: Ready가 될 때까지 바쁘게 poll 반복
+fn block_on&lt;F: Future&gt;(mut future: F) -&gt; F::Output {
+    // future를 스택에 pin한다
+    // SAFETY: 이 지점 이후 `future`는 이동하지 않는다.
+    // 완료될 때까지 pinned reference를 통해서만 접근한다.
+    let mut future = unsafe { Pin::new_unchecked(&amp;mut future) };
+
+    // no-op waker 생성(그냥 계속 poll만 한다 — 비효율적이지만 단순함)
+    fn noop_raw_waker() -&gt; RawWaker {
+        fn no_op(_: *const ()) {}
+        fn clone(_: *const ()) -&gt; RawWaker { noop_raw_waker() }
+        let vtable = &amp;RawWakerVTable::new(clone, no_op, no_op, no_op);
+        RawWaker::new(std::ptr::null(), vtable)
+    }
+
+    let waker = unsafe { Waker::from_raw(noop_raw_waker()) };
+    let mut cx = Context::from_waker(&amp;waker);
+
+    // future가 완료될 때까지 바쁜 루프
+    loop {
+        match future.as_mut().poll(&amp;mut cx) {
+            Poll::Ready(value) =&gt; return value,
+            Poll::Pending =&gt; {
+                // 실제 executor라면 여기서 스레드를 재우고
+                // waker.wake()를 기다린다 — 우리는 그냥 돈다
+                std::thread::yield_now();
+            }
+        }
+    }
+}
+
+// 사용 예시:
+fn main() {
+    let result = block_on(async {
+        println!("Hello from our mini executor!");
+        42
+    });
+    println!("Got: {result}");
+}</code></pre>
+<blockquote>
+<p><strong>이 코드를 프로덕션에 쓰면 안 됩니다!</strong> 바쁜 루프를 돌기 때문에 CPU를 낭비합니다. 실제 executor(tokio, smol)는 <code>epoll</code>/<code>kqueue</code>/<code>io_uring</code>을 사용해 I/O 준비가 될 때까지 잠듭니다. 하지만 이 예제는 핵심 아이디어를 잘 보여 줍니다. executor는 결국 <code>poll()</code>을 호출하는 루프일 뿐입니다.</p>
+</blockquote>
+<p><a id="wake-up-notifications"></a></p>
+<h3 id="깨우기-알림"><a class="header" href="#깨우기-알림">깨우기 알림</a></h3>
+<p>실제 executor는 이벤트 기반입니다. 모든 future가 <code>Pending</code>이면 executor는 잠듭니다. waker는 그 잠든 executor를 다시 깨우는 인터럽트 메커니즘입니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 실제 executor 메인 루프의 개념적 모델:
+fn executor_loop(tasks: &amp;mut TaskQueue) {
+    loop {
+        // 1. 깨어난 모든 task를 poll한다
+        while let Some(task) = tasks.get_woken_task() {
+            match task.poll() {
+                Poll::Ready(result) =&gt; task.complete(result),
+                Poll::Pending =&gt; { /* task는 큐에 남아 wake를 기다린다 */ }
+            }
+        }
+
+        // 2. 무언가가 우리를 깨울 때까지 잠든다(epoll_wait, kevent 등)
+        //    여기서 mio/polling 같은 라이브러리가 큰 역할을 한다
+        tasks.wait_for_events(); // I/O 이벤트나 waker가 올 때까지 대기
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="spurious-wakes"></a></p>
+<h3 id="허위-깨우기"><a class="header" href="#허위-깨우기">허위 깨우기</a></h3>
+<p>I/O가 아직 준비되지 않았더라도 future가 poll될 수 있습니다. 이를 *허위 깨우기(spurious wake)*라고 합니다. future 구현은 이 상황을 올바르게 처리해야 합니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Future for MyFuture {
+    type Output = Data;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Data&gt; {
+        // ✅ 올바른 방식: 실제 조건을 항상 다시 확인한다
+        if let Some(data) = self.try_read_data() {
+            Poll::Ready(data)
+        } else {
+            // waker를 다시 등록한다(중간에 바뀌었을 수 있다!)
+            self.register_waker(cx.waker());
+            Poll::Pending
+        }
+
+        // ❌ 잘못된 방식: poll되었다고 바로 준비되었다고 가정함
+        // let data = self.read_data(); // block되거나 panic할 수 있다
+        // Poll::Ready(data)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong><code>poll()</code> 구현 규칙</strong>:</p>
+<ol>
+<li><strong>절대 block하지 말 것</strong> — 준비되지 않았다면 즉시 <code>Pending</code>을 반환한다</li>
+<li><strong>항상 waker를 다시 등록할 것</strong> — poll 사이에 바뀌었을 수 있다</li>
+<li><strong>허위 깨우기를 처리할 것</strong> — 실제 조건을 다시 확인하고, 준비되었다고 추정하지 않는다</li>
+<li><strong><code>Ready</code> 이후 다시 poll하지 말 것</strong> — 동작은 <strong>정의되지 않음</strong>(panic할 수도 있고, <code>Pending</code>을 돌려줄 수도 있고, 다시 <code>Ready</code>를 돌려줄 수도 있다). 완료 후 재poll이 안전하다고 보장하는 것은 <code>FusedFuture</code>뿐이다</li>
+</ol>
+<p><a id="exercise-implement-a-countdownfuture"></a></p>
+<details>
+<summary><strong>🏋️ 연습문제: CountdownFuture 구현하기</strong> (클릭해서 펼치기)</summary>
+<p><strong>과제</strong>: <code>CountdownFuture</code>를 구현해 보세요. 이 future는 N에서 0까지 카운트다운하며, poll될 때마다 현재 숫자를 <em>출력</em>하는 부작용을 일으킵니다. 0에 도달하면 <code>Ready("Liftoff!")</code>로 완료되어야 합니다. (주의: <code>Future</code>는 최종 값 <strong>하나만</strong> 만들어 냅니다. 출력은 yield된 값이 아니라 부작용입니다. 여러 비동기 값을 다루려면 11장의 <code>Stream</code>을 보세요.)</p>
+<p><em>힌트</em>: 실제 I/O 소스가 필요하지는 않습니다. 매번 감소시킨 뒤 <code>cx.waker().wake_by_ref()</code>를 호출해 자기 자신을 즉시 다시 깨우면 됩니다.</p>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::future::Future;
+use std::pin::Pin;
+use std::task::{Context, Poll};
+
+struct CountdownFuture {
+    count: u32,
+}
+
+impl CountdownFuture {
+    fn new(start: u32) -&gt; Self {
+        CountdownFuture { count: start }
+    }
+}
+
+impl Future for CountdownFuture {
+    type Output = &amp;'static str;
+
+    fn poll(mut self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        if self.count == 0 {
+            Poll::Ready("Liftoff!")
+        } else {
+            println!("{}...", self.count);
+            self.count -= 1;
+            // 즉시 깨워서 항상 다음 단계로 진행할 수 있게 한다
+            cx.waker().wake_by_ref();
+            Poll::Pending
+        }
+    }
+}
+
+// 우리 미니 executor나 tokio에서의 사용 예시:
+// let msg = block_on(CountdownFuture::new(5));
+// 출력: 5... 4... 3... 2... 1...
+// msg == "Liftoff!"
+<span class="boring">}</span></code></pre>
+<p><strong>핵심 포인트</strong>: 이 future는 항상 다음 단계로 진행할 준비가 되어 있지만, 각 단계 사이에 제어권을 넘기기 위해 <code>Pending</code>을 반환합니다. 그리고 <code>wake_by_ref()</code>를 즉시 호출해 executor가 곧바로 다시 poll하게 만듭니다. 이것이 협력적 멀티태스킹의 기본입니다. 각 future가 자발적으로 양보하는 것입니다.</p>
+</details>
+</details>
+<p><a id="handy-utilities-poll_fn-and-yield_now"></a></p>
+<h3 id="유용한-도구-poll_fn과-yield_now"><a class="header" href="#유용한-도구-poll_fn과-yield_now">유용한 도구: <code>poll_fn</code>과 <code>yield_now</code></a></h3>
+<p>표준 라이브러리와 tokio에는 전체 <code>Future</code> 구현을 직접 쓰지 않고도 쓸 수 있는 유용한 도구가 두 가지 있습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::future::poll_fn;
+use std::task::Poll;
+
+// poll_fn: 클로저 하나로 일회성 future 만들기
+let value = poll_fn(|cx| {
+    // cx.waker()를 사용해 무언가를 하고 Ready 또는 Pending 반환
+    Poll::Ready(42)
+}).await;
+
+// 실전 용도: 콜백 기반 API를 async로 연결하기
+async fn read_when_ready(source: &amp;MySource) -&gt; Data {
+    poll_fn(|cx| source.poll_read(cx)).await
+}
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// yield_now: executor에 자발적으로 제어권을 양보
+// CPU 비중이 큰 async 루프에서 다른 task를 굶기지 않도록 도와준다
+async fn cpu_heavy_work(items: &amp;[Item]) {
+    for (i, item) in items.iter().enumerate() {
+        process(item); // CPU 작업
+
+        // 100개마다 한 번씩 양보해서 다른 task도 실행되게 한다
+        if i % 100 == 0 {
+            tokio::task::yield_now().await;
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong><code>yield_now()</code>를 써야 하는 경우:</strong> async 함수가 루프 안에서 CPU 작업만 계속하고 <code>.await</code> 지점이 하나도 없다면 executor 스레드를 독점하게 됩니다. 이럴 때 <code>yield_now().await</code>를 주기적으로 넣어 협력적 멀티태스킹이 가능하게 하세요.</p>
+</blockquote>
+<blockquote>
+<p><strong>핵심 정리 — Poll은 어떻게 동작하는가</strong></p>
+<ul>
+<li>executor는 깨어난 future들에 대해 <code>poll()</code>을 반복 호출한다</li>
+<li>future는 <strong>허위 깨우기</strong>를 처리해야 한다 — 실제 조건을 항상 다시 확인하라</li>
+<li><code>poll_fn()</code>을 사용하면 클로저로 즉석 future를 만들 수 있다</li>
+<li><code>yield_now()</code>는 CPU 비중이 큰 async 코드에서 협력적 스케줄링을 위한 탈출구다</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>참고:</strong> <a href="ch02-the-future-trait.html">2장 — Future 트레잇</a>, <a href="ch05-the-state-machine-reveal.html">5장 — 상태 머신의 정체</a></p>
+</blockquote>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch02-the-future-trait.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch04-pin-and-unpin.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch02-the-future-trait.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch04-pin-and-unpin.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

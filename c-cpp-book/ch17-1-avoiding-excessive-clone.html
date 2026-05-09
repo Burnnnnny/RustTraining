@@ -1,0 +1,758 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>과도한 clone() 피하기 - C/C++ 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-316e143c.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-30fc96c1.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C/C++ 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="avoiding-excessive-clone"></a></p>
+<h2 id="과도한-clone-피하기"><a class="header" href="#과도한-clone-피하기">과도한 <code>clone()</code> 피하기</a></h2>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> 왜 <code>.clone()</code>이 Rust에서 코드 냄새가 될 수 있는지, 불필요한 복사를 없애기 위해 소유권을 어떻게 재구성하는지, 그리고 어떤 패턴이 소유권 설계 문제를 드러내는 신호인지 살펴봅니다.</p>
+</blockquote>
+<ul>
+<li>C++에서 오면 <code>.clone()</code>이 “그냥 복사하면 되지” 같은 안전한 기본값처럼 느껴집니다. 하지만 과도한 clone은 소유권 문제를 가리고 성능을 해칩니다.</li>
+<li><strong>경험칙</strong>: borrow checker를 만족시키기 위해 clone하고 있다면, 대개는 소유권 구조를 다시 짜야 합니다.</li>
+</ul>
+<p><a id="when-clone-is-wrong"></a></p>
+<h3 id="clone이-잘못된-경우"><a class="header" href="#clone이-잘못된-경우"><code>clone()</code>이 잘못된 경우</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 나쁨: 단지 읽기만 하는 함수에 넘기려고 String을 clone한다
+fn log_message(msg: String) {  // 불필요하게 소유권을 가져간다
+    println!("[LOG] {}", msg);
+}
+let message = String::from("GPU test passed");
+log_message(message.clone());  // 낭비: String 전체를 새로 할당한다
+log_message(message);           // 원본도 소비된다 — 앞선 clone은 무의미했다
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 좋음: 대여를 받는다 — 할당이 전혀 없다
+fn log_message(msg: &amp;str) {    // 소유하지 않고 빌려 쓴다
+    println!("[LOG] {}", msg);
+}
+let message = String::from("GPU test passed");
+log_message(&amp;message);          // clone 없음, 할당 없음
+log_message(&amp;message);          // 다시 호출 가능 — message가 소비되지 않음
+<span class="boring">}</span></code></pre>
+<p><a id="real-example-returning-str-instead-of-cloning"></a></p>
+<h3 id="실제-예-clone-대신-str-반환하기"><a class="header" href="#실제-예-clone-대신-str-반환하기">실제 예: clone 대신 <code>&amp;str</code> 반환하기</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: healthcheck.rs — 빌린 뷰를 반환한다, 할당 없음
+pub fn serial_or_unknown(&amp;self) -&gt; &amp;str {
+    self.serial.as_deref().unwrap_or(UNKNOWN_VALUE)
+}
+
+pub fn model_or_unknown(&amp;self) -&gt; &amp;str {
+    self.model.as_deref().unwrap_or(UNKNOWN_VALUE)
+}
+<span class="boring">}</span></code></pre>
+<p>C++에서 대응되는 코드는 <code>const std::string&amp;</code>나 <code>std::string_view</code>를 반환할 것입니다. 하지만 C++에서는 둘 다 라이프타임 검사를 받지 않습니다. Rust에서는 borrow checker가 반환된 <code>&amp;str</code>가 <code>self</code>보다 오래 살 수 없음을 보장합니다.</p>
+<p><a id="real-example-static-string-slices--no-heap-at-all"></a></p>
+<h3 id="실제-예-static-문자열-슬라이스--힙-자체가-없음"><a class="header" href="#실제-예-static-문자열-슬라이스--힙-자체가-없음">실제 예: static 문자열 슬라이스 — 힙 자체가 없음</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: healthcheck.rs — 컴파일 시점 문자열 테이블
+const HBM_SCREEN_RECIPES: &amp;[&amp;str] = &amp;[
+    "hbm_ds_ntd", "hbm_ds_ntd_gfx", "hbm_dt_ntd", "hbm_dt_ntd_gfx",
+    "hbm_burnin_8h", "hbm_burnin_24h",
+];
+<span class="boring">}</span></code></pre>
+<p>C++에서는 보통 이런 코드를 <code>std::vector&lt;std::string&gt;</code>로 작성합니다(첫 사용 시 힙 할당). Rust의 <code>&amp;'static [&amp;'static str]</code>는 읽기 전용 메모리에 놓이므로 런타임 비용이 0입니다.</p>
+<p><a id="when-clone-is-appropriate"></a></p>
+<h3 id="clone이-적절한-경우"><a class="header" href="#clone이-적절한-경우"><code>clone()</code>이 적절한 경우</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><strong>상황</strong></th><th><strong>왜 clone이 괜찮은가</strong></th><th><strong>예시</strong></th></tr>
+</thead>
+<tbody>
+<tr><td>스레드용 <code>Arc::clone()</code></td><td>참조 카운트만 증가시킴(약 1ns), 데이터를 복사하지 않음</td><td><code>let flag = stop_flag.clone();</code></td></tr>
+<tr><td>데이터를 생성한 스레드로 옮길 때</td><td>스레드가 자기 사본을 가져야 함</td><td><code>let ctx = ctx.clone(); thread::spawn(move || { ... })</code></td></tr>
+<tr><td><code>&amp;self</code> 필드에서 값을 꺼낼 때</td><td>빌린 값에서 move할 수 없음</td><td><code>String</code>을 반환할 때 <code>self.name.clone()</code></td></tr>
+<tr><td><code>Option</code>에 감싼 작은 <code>Copy</code> 타입</td><td><code>.clone()</code>보다 <code>.copied()</code>가 더 명확함</td><td><code>Option&lt;&amp;u32&gt;</code> → <code>Option&lt;u32&gt;</code>에 <code>opt.get(0).copied()</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="real-example-arcclone-for-thread-sharing"></a></p>
+<h3 id="실제-예-스레드-공유를-위한-arcclone"><a class="header" href="#실제-예-스레드-공유를-위한-arcclone">실제 예: 스레드 공유를 위한 <code>Arc::clone</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: workload.rs — Arc::clone은 싸다(참조 카운트 증가만 수행)
+let stop_flag = Arc::new(AtomicBool::new(false));
+let stop_flag_clone = stop_flag.clone();   // 약 1ns, 데이터 복사 없음
+let ctx_clone = ctx.clone();               // 스레드로 move하기 위해 context를 clone
+
+let sensor_handle = thread::spawn(move || {
+    // ...stop_flag_clone과 ctx_clone 사용
+});
+<span class="boring">}</span></code></pre>
+<p><a id="checklist-should-i-clone"></a></p>
+<h3 id="체크리스트-지금-clone해야-할까"><a class="header" href="#체크리스트-지금-clone해야-할까">체크리스트: 지금 clone해야 할까?</a></h3>
+<ol>
+<li><strong><code>String</code> / <code>T</code> 대신 <code>&amp;str</code> / <code>&amp;T</code>를 받을 수 있는가?</strong> → clone하지 말고 대여하세요.</li>
+<li><strong>소유자가 둘 필요 없도록 구조를 바꿀 수 있는가?</strong> → 참조로 전달하거나 스코프를 활용하세요.</li>
+<li><strong>이게 <code>Arc::clone()</code>인가?</strong> → 괜찮습니다. O(1)입니다.</li>
+<li><strong>데이터를 스레드/클로저로 move하고 있는가?</strong> → clone이 필요합니다.</li>
+<li><strong>뜨거운 루프 안에서 clone하고 있는가?</strong> → 프로파일링하고, 대여나 <code>Cow&lt;T&gt;</code>를 고려하세요.</li>
+</ol>
+<hr>
+<p><a id="cowa-t-clone-on-write--borrow-when-you-can-clone-when-you-must"></a></p>
+<h2 id="cowa-t-clone-on-write--가능하면-대여하고-꼭-필요할-때만-clone하기"><a class="header" href="#cowa-t-clone-on-write--가능하면-대여하고-꼭-필요할-때만-clone하기"><code>Cow&lt;'a, T&gt;</code>: Clone-on-Write — 가능하면 대여하고, 꼭 필요할 때만 clone하기</a></h2>
+<p><code>Cow</code>(Clone on Write)는 <strong>빌린 참조</strong> 또는 <strong>소유한 값</strong> 중 하나를 담는 enum입니다. Rust에서 “가능하면 할당을 피하고, 수정이 필요할 때만 할당하라“를 표현하는 도구입니다. C++에는 정확히 같은 개념이 없고, 가장 가까운 비유는 어떤 함수가 때로는 <code>const std::string&amp;</code>를, 때로는 <code>std::string</code>을 반환하는 경우입니다.</p>
+<p><a id="why-cow-exists"></a></p>
+<h3 id="왜-cow가-필요한가"><a class="header" href="#왜-cow가-필요한가">왜 <code>Cow</code>가 필요한가</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Cow가 없으면 둘 중 하나를 골라야 한다: 항상 빌리거나, 항상 clone하거나
+fn normalize(s: &amp;str) -&gt; String {          // 항상 할당한다!
+    if s.contains(' ') {
+        s.replace(' ', "_")               // 새 String (할당 필요)
+    } else {
+        s.to_string()                     // 불필요한 할당!
+    }
+}
+
+// Cow를 쓰면 바뀌지 않을 때는 빌리고, 수정될 때만 할당한다
+use std::borrow::Cow;
+
+fn normalize(s: &amp;str) -&gt; Cow&lt;'_, str&gt; {
+    if s.contains(' ') {
+        Cow::Owned(s.replace(' ', "_"))    // 할당함(수정 필요)
+    } else {
+        Cow::Borrowed(s)                   // 할당 없음(그대로 통과)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="how-cow-works"></a></p>
+<h3 id="cow는-어떻게-동작하는가"><a class="header" href="#cow는-어떻게-동작하는가"><code>Cow</code>는 어떻게 동작하는가</a></h3>
+<pre class="playground"><code class="language-rust">use std::borrow::Cow;
+
+// Cow&lt;'a, str&gt;는 개념적으로 대략 다음과 같다:
+// enum Cow&lt;'a, str&gt; {
+//     Borrowed(&amp;'a str),     // 비용 없는 참조
+//     Owned(String),          // 힙에 할당된 소유 값
+// }
+
+fn greet(name: &amp;str) -&gt; Cow&lt;'_, str&gt; {
+    if name.is_empty() {
+        Cow::Borrowed("stranger")         // static 문자열 — 할당 없음
+    } else if name.starts_with(' ') {
+        Cow::Owned(name.trim().to_string()) // 수정되므로 할당 필요
+    } else {
+        Cow::Borrowed(name)               // 그대로 통과 — 할당 없음
+    }
+}
+
+fn main() {
+    let g1 = greet("Alice");     // Cow::Borrowed("Alice")
+    let g2 = greet("");          // Cow::Borrowed("stranger")
+    let g3 = greet(" Bob ");     // Cow::Owned("Bob")
+    
+    // Cow&lt;str&gt;는 Deref&lt;Target = str&gt;를 구현하므로 &amp;str처럼 사용할 수 있다
+    println!("Hello, {g1}!");    // 가능함 — Cow가 자동으로 &amp;str로 deref된다
+    println!("Hello, {g2}!");
+    println!("Hello, {g3}!");
+}</code></pre>
+<p><a id="real-world-use-case-config-value-normalization"></a></p>
+<h3 id="실전-사용-예-설정-값-정규화"><a class="header" href="#실전-사용-예-설정-값-정규화">실전 사용 예: 설정 값 정규화</a></h3>
+<pre class="playground"><code class="language-rust">use std::borrow::Cow;
+
+/// SKU 이름을 정규화한다: 공백 제거 후 소문자화.
+/// 이미 정규화되어 있으면 Cow::Borrowed를 반환한다(할당 없음).
+fn normalize_sku(sku: &amp;str) -&gt; Cow&lt;'_, str&gt; {
+    let trimmed = sku.trim();
+    if trimmed == sku &amp;&amp; sku.chars().all(|c| c.is_lowercase() || !c.is_alphabetic()) {
+        Cow::Borrowed(sku)   // 이미 정규화됨 — 할당 없음
+    } else {
+        Cow::Owned(trimmed.to_lowercase())  // 수정 필요 — 할당
+    }
+}
+
+fn main() {
+    let s1 = normalize_sku("server-x1");   // Borrowed — zero alloc
+    let s2 = normalize_sku("  Server-X1 "); // Owned — must allocate
+    println!("{s1}, {s2}"); // "server-x1, server-x1"
+}</code></pre>
+<p><a id="when-to-use-cow"></a></p>
+<h3 id="cow를-언제-써야-하는가"><a class="header" href="#cow를-언제-써야-하는가"><code>Cow</code>를 언제 써야 하는가</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><strong>상황</strong></th><th><strong><code>Cow</code>를 쓸까?</strong></th></tr>
+</thead>
+<tbody>
+<tr><td>함수가 대부분의 경우 입력을 그대로 반환함</td><td>✅ 예 — 불필요한 clone을 피할 수 있음</td></tr>
+<tr><td>문자열 파싱/정규화(trim, lowercase, replace)</td><td>✅ 예 — 입력이 이미 유효한 경우가 많음</td></tr>
+<tr><td>항상 수정해서 모든 경로가 할당함</td><td>❌ 아니오 — 그냥 <code>String</code>을 반환하세요</td></tr>
+<tr><td>단순 패스스루(절대 수정하지 않음)</td><td>❌ 아니오 — 그냥 <code>&amp;str</code>를 반환하세요</td></tr>
+<tr><td>구조체에 오래 저장할 데이터</td><td>❌ 아니오 — 소유 타입인 <code>String</code>을 사용하세요</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>C++ 비교</strong>: <code>Cow&lt;str&gt;</code>는 <code>std::variant&lt;std::string_view, std::string&gt;</code>를 반환하는 함수와 비슷합니다.
+다만 Rust에서는 자동 deref가 되고, 값에 접근하기 위한 보일러플레이트도 없습니다.</p>
+</blockquote>
+<hr>
+<p><a id="weakt-breaking-reference-cycles--rusts-weak_ptr"></a></p>
+<h2 id="weakt-참조-사이클-끊기--rust의-weak_ptr"><a class="header" href="#weakt-참조-사이클-끊기--rust의-weak_ptr"><code>Weak&lt;T&gt;</code>: 참조 사이클 끊기 — Rust의 <code>weak_ptr</code></a></h2>
+<p><code>Weak&lt;T&gt;</code>는 C++의 <code>std::weak_ptr&lt;T&gt;</code>에 해당하는 Rust 타입입니다. <code>Rc&lt;T&gt;</code> 또는 <code>Arc&lt;T&gt;</code> 값을 비소유 참조로 가리킵니다. <code>Weak</code> 참조가 남아 있어도 실제 값은 해제될 수 있고, 이때 <code>upgrade()</code>를 호출하면 <code>None</code>이 반환됩니다.</p>
+<p><a id="why-weak-exists"></a></p>
+<h3 id="왜-weak가-필요한가"><a class="header" href="#왜-weak가-필요한가">왜 <code>Weak</code>가 필요한가</a></h3>
+<p><code>Rc&lt;T&gt;</code>와 <code>Arc&lt;T&gt;</code>는 두 값이 서로를 가리키면 참조 사이클을 만듭니다. 그러면 어느 쪽도 refcount 0이 되지 않아서 drop되지 않습니다(메모리 누수). <code>Weak</code>는 이 사이클을 끊어 줍니다.</p>
+<pre class="playground"><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+#[derive(Debug)]
+struct Node {
+    value: String,
+    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,      // Weak — 부모를 drop하지 못하게 막지 않음
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,  // Strong — 부모가 자식을 소유
+}
+
+impl Node {
+    fn new(value: &amp;str) -&gt; Rc&lt;Node&gt; {
+        Rc::new(Node {
+            value: value.to_string(),
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(Vec::new()),
+        })
+    }
+
+    fn add_child(parent: &amp;Rc&lt;Node&gt;, child: &amp;Rc&lt;Node&gt;) {
+        // 자식은 부모에 대한 약한 참조를 가진다(사이클 없음)
+        *child.parent.borrow_mut() = Rc::downgrade(parent);
+        // 부모는 자식에 대한 강한 참조를 가진다
+        parent.children.borrow_mut().push(Rc::clone(child));
+    }
+}
+
+fn main() {
+    let root = Node::new("root");
+    let child = Node::new("child");
+    Node::add_child(&amp;root, &amp;child);
+
+    // upgrade()로 자식에서 부모 접근
+    if let Some(parent) = child.parent.borrow().upgrade() {
+        println!("Child's parent: {}", parent.value); // "root"
+    }
+    
+    println!("Root strong count: {}", Rc::strong_count(&amp;root));  // 1
+    println!("Root weak count: {}", Rc::weak_count(&amp;root));      // 1
+}</code></pre>
+<p><a id="c-comparison"></a></p>
+<h3 id="c-비교"><a class="header" href="#c-비교">C++ 비교</a></h3>
+<pre><code class="language-cpp">// C++ — shared_ptr 사이클을 끊기 위한 weak_ptr
+struct Node {
+    std::string value;
+    std::weak_ptr&lt;Node&gt; parent;                  // Weak — 비소유
+    std::vector&lt;std::shared_ptr&lt;Node&gt;&gt; children;  // Strong — 자식을 소유
+
+    static auto create(const std::string&amp; v) {
+        return std::make_shared&lt;Node&gt;(Node{v, {}, {}});
+    }
+};
+
+auto root = Node::create("root");
+auto child = Node::create("child");
+child-&gt;parent = root;          // weak_ptr 대입
+root-&gt;children.push_back(child);
+
+if (auto p = child-&gt;parent.lock()) {   // lock() → shared_ptr 또는 null
+    std::cout &lt;&lt; "Parent: " &lt;&lt; p-&gt;value &lt;&lt; std::endl;
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C++</th><th>Rust</th><th>설명</th></tr>
+</thead>
+<tbody>
+<tr><td><code>shared_ptr&lt;T&gt;</code></td><td><code>Rc&lt;T&gt;</code> (단일 스레드) / <code>Arc&lt;T&gt;</code> (멀티스레드)</td><td>의미가 같다</td></tr>
+<tr><td><code>weak_ptr&lt;T&gt;</code></td><td><code>Rc::downgrade()</code> / <code>Arc::downgrade()</code>로 얻는 <code>Weak&lt;T&gt;</code></td><td>의미가 같다</td></tr>
+<tr><td><code>weak_ptr::lock()</code> → <code>shared_ptr</code> 또는 null</td><td><code>Weak::upgrade()</code> → <code>Option&lt;Rc&lt;T&gt;&gt;</code></td><td>이미 drop되었으면 <code>None</code></td></tr>
+<tr><td><code>shared_ptr::use_count()</code></td><td><code>Rc::strong_count()</code></td><td>의미가 같다</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="when-to-use-weak"></a></p>
+<h3 id="weak를-언제-써야-하는가"><a class="header" href="#weak를-언제-써야-하는가"><code>Weak</code>를 언제 써야 하는가</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><strong>상황</strong></th><th><strong>패턴</strong></th></tr>
+</thead>
+<tbody>
+<tr><td>부모 ↔ 자식 트리 관계</td><td>부모는 <code>Rc&lt;Child&gt;</code>, 자식은 <code>Weak&lt;Parent&gt;</code></td></tr>
+<tr><td>Observer 패턴 / 이벤트 리스너</td><td>이벤트 소스는 <code>Weak&lt;Observer&gt;</code>, observer는 <code>Rc&lt;Source&gt;</code></td></tr>
+<tr><td>해제를 막지 않는 캐시</td><td><code>HashMap&lt;Key, Weak&lt;Value&gt;&gt;</code> — 항목이 자연스럽게 stale해짐</td></tr>
+<tr><td>그래프 구조에서 사이클 끊기</td><td>교차 링크는 <code>Weak</code>, 트리 간선은 <code>Rc</code>/<code>Arc</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>새 코드에서는 트리 구조에 <code>Rc/Weak</code>보다 arena 패턴(사례 연구 2)을 우선하세요.</strong>
+<code>Vec&lt;T&gt;</code> + 인덱스가 더 단순하고 더 빠르며, 참조 카운팅 오버헤드도 없습니다.
+동적 라이프타임을 가진 공유 소유권이 정말 필요할 때만 <code>Rc/Weak</code>를 쓰세요.</p>
+</blockquote>
+<hr>
+<p><a id="copy-vs-clone-partialeq-vs-eq--when-to-derive-what"></a></p>
+<h2 id="copy-vs-clone-partialeq-vs-eq--무엇을-derive해야-할까"><a class="header" href="#copy-vs-clone-partialeq-vs-eq--무엇을-derive해야-할까"><code>Copy</code> vs <code>Clone</code>, <code>PartialEq</code> vs <code>Eq</code> — 무엇을 derive해야 할까?</a></h2>
+<ul>
+<li><strong><code>Copy</code> ≈ C++의 trivially copyable 타입(커스텀 copy ctor/dtor 없음)</strong> 입니다. <code>int</code>, <code>enum</code>, 단순 POD 구조체 같은 타입은 컴파일러가 비트 단위 <code>memcpy</code>를 자동으로 생성합니다. Rust의 <code>Copy</code>도 같은 개념으로, <code>let b = a;</code> 대입 시 암시적 비트 복사가 일어나고 두 변수 모두 계속 유효합니다.</li>
+<li><strong><code>Clone</code> ≈ C++의 copy constructor / <code>operator=</code> 깊은 복사</strong> 입니다. 예를 들어 <code>std::vector</code> 멤버를 깊게 복사하는 커스텀 copy constructor가 있는 C++ 클래스라면, Rust에서 대응되는 개념은 <code>Clone</code> 구현입니다. 다만 Rust에서는 반드시 <code>.clone()</code>을 명시적으로 호출해야 합니다. 비싼 복사가 <code>=</code> 뒤에 숨지 않습니다.</li>
+<li><strong>핵심 차이</strong>: C++에서는 trivial copy와 deep copy가 모두 같은 <code>=</code> 문법으로 암시적으로 일어납니다. Rust는 선택을 강제합니다. <code>Copy</code> 타입은 조용히 복사되고(싸다), <code>Copy</code>가 아닌 타입은 기본적으로 <strong>move</strong>되며, 비싼 복제가 필요하면 <code>.clone()</code>으로 명시적으로 요청해야 합니다.</li>
+<li>비슷하게, C++의 <code>operator==</code>는 <code>a == a</code>가 항상 성립하는 타입(정수 등)과 그렇지 않은 타입(NaN을 가진 <code>float</code>)을 구분하지 않습니다. Rust는 이를 <code>PartialEq</code>와 <code>Eq</code>로 타입 시스템에 반영합니다.</li>
+</ul>
+<p><a id="copy-vs-clone"></a></p>
+<h3 id="copy-vs-clone"><a class="header" href="#copy-vs-clone"><code>Copy</code> vs <code>Clone</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th><strong>Copy</strong></th><th><strong>Clone</strong></th></tr>
+</thead>
+<tbody>
+<tr><td><strong>동작 방식</strong></td><td>비트 단위 memcpy(암시적)</td><td>커스텀 로직(명시적 <code>.clone()</code>)</td></tr>
+<tr><td><strong>언제 일어나는가</strong></td><td>대입 시: <code>let b = a;</code></td><td><code>.clone()</code>을 호출할 때만</td></tr>
+<tr><td><strong>이후 상태</strong></td><td><code>a</code>와 <code>b</code> 모두 유효</td><td><code>a</code>와 <code>b</code> 모두 유효</td></tr>
+<tr><td><strong>둘 다 없으면</strong></td><td><code>let b = a;</code>가 <code>a</code>를 <strong>move</strong>함(<code>a</code>는 사라짐)</td><td><code>let b = a;</code>가 <code>a</code>를 <strong>move</strong>함(<code>a</code>는 사라짐)</td></tr>
+<tr><td><strong>허용 대상</strong></td><td>힙 데이터를 갖지 않는 타입</td><td>모든 타입</td></tr>
+<tr><td><strong>C++ 비유</strong></td><td>trivially copyable / POD 타입(커스텀 copy ctor 없음)</td><td>커스텀 copy constructor(깊은 복사)</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="real-example-copy--simple-enums"></a></p>
+<h3 id="실제-예-copy--단순-enum"><a class="header" href="#실제-예-copy--단순-enum">실제 예: <code>Copy</code> — 단순 enum</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// fan_diag/src/sensor.rs에서 발췌 — 모든 variant가 unit이고 1바이트에 들어간다
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum FanStatus {
+    #[default]
+    Normal,
+    Low,
+    High,
+    Missing,
+    Failed,
+    Unknown,
+}
+
+let status = FanStatus::Normal;
+let copy = status;   // 암시적 복사 — status는 여전히 유효
+println!("{:?} {:?}", status, copy);  // 둘 다 사용 가능
+<span class="boring">}</span></code></pre>
+<p><a id="real-example-copy--enum-with-integer-payloads"></a></p>
+<h3 id="실제-예-copy--정수-payload를-가진-enum"><a class="header" href="#실제-예-copy--정수-payload를-가진-enum">실제 예: <code>Copy</code> — 정수 payload를 가진 enum</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: healthcheck.rs — u32 payload는 Copy이므로 enum 전체도 Copy가 될 수 있다
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum HealthcheckStatus {
+    Pass,
+    ProgramError(u32),
+    DmesgError(u32),
+    RasError(u32),
+    OtherError(u32),
+    Unknown,
+}
+<span class="boring">}</span></code></pre>
+<p><a id="real-example-clone-only--struct-with-heap-data"></a></p>
+<h3 id="실제-예-clone만-가능--힙-데이터를-가진-구조체"><a class="header" href="#실제-예-clone만-가능--힙-데이터를-가진-구조체">실제 예: <code>Clone</code>만 가능 — 힙 데이터를 가진 구조체</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: components.rs — String 때문에 Copy가 불가능하다
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FruData {
+    pub technology: DeviceTechnology,
+    pub physical_location: String,      // ← String: 힙 할당 타입이므로 Copy 불가
+    pub expected: bool,
+    pub removable: bool,
+}
+// let a = fru_data;   → MOVE (fru_data는 사라짐)
+// let a = fru_data.clone();  → CLONE (fru_data는 계속 유효, 새 힙 할당 발생)
+<span class="boring">}</span></code></pre>
+<p><a id="the-rule-can-it-be-copy"></a></p>
+<h3 id="규칙-이-타입은-copy가-될-수-있는가"><a class="header" href="#규칙-이-타입은-copy가-될-수-있는가">규칙: 이 타입은 <code>Copy</code>가 될 수 있는가?</a></h3>
+<pre><code class="language-text">이 타입이 String, Vec, Box, HashMap,
+Rc, Arc 또는 다른 힙 소유 타입을 포함하는가?
+    YES → Clone만 가능 (Copy는 불가)
+    NO  → Copy를 derive할 수 있음 (작다면 보통 하는 편이 좋음)
+</code></pre>
+<p><a id="partialeq-vs-eq"></a></p>
+<h3 id="partialeq-vs-eq"><a class="header" href="#partialeq-vs-eq"><code>PartialEq</code> vs <code>Eq</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th><strong>PartialEq</strong></th><th><strong>Eq</strong></th></tr>
+</thead>
+<tbody>
+<tr><td><strong>무엇을 제공하나</strong></td><td><code>==</code>와 <code>!=</code> 연산자</td><td>마커: “동등성이 반사적이다”</td></tr>
+<tr><td><strong>반사적인가? (<code>a == a</code>)</strong></td><td>보장되지 않음</td><td><strong>보장됨</strong></td></tr>
+<tr><td><strong>왜 중요한가</strong></td><td><code>f32::NAN != f32::NAN</code></td><td><code>HashMap</code> 키는 <strong><code>Eq</code>가 필요함</strong></td></tr>
+<tr><td><strong>언제 derive하나</strong></td><td>거의 항상</td><td><code>f32</code>/<code>f64</code> 필드가 없을 때</td></tr>
+<tr><td><strong>C++ 비유</strong></td><td><code>operator==</code></td><td>직접 대응 개념 없음(C++는 검사하지 않음)</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="real-example-eq--used-as-hashmap-key"></a></p>
+<h3 id="실제-예-eq--hashmap-키로-사용"><a class="header" href="#실제-예-eq--hashmap-키로-사용">실제 예: <code>Eq</code> — <code>HashMap</code> 키로 사용</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// hms_trap/src/cpu_handler.rs에서 발췌 — Hash에는 Eq가 필요하다
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum CpuFaultType {
+    InvalidFaultType,
+    CpuCperFatalErr,
+    CpuLpddr5UceErr,
+    CpuC2CUceFatalErr,
+    // ...
+}
+// 사용 예: HashMap&lt;CpuFaultType, FaultHandler&gt;
+// HashMap 키는 Eq + Hash가 필요하다 — PartialEq만으로는 컴파일되지 않는다
+<span class="boring">}</span></code></pre>
+<p><a id="real-example-no-eq-possible--type-contains-f32"></a></p>
+<h3 id="실제-예-eq-불가--타입에-f32가-포함됨"><a class="header" href="#실제-예-eq-불가--타입에-f32가-포함됨">실제 예: <code>Eq</code> 불가 — 타입에 <code>f32</code>가 포함됨</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: types.rs — f32 때문에 Eq 불가
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct TemperatureSensors {
+    pub warning_threshold: Option&lt;f32&gt;,   // ← f32는 NaN ≠ NaN
+    pub critical_threshold: Option&lt;f32&gt;,  // ← Eq를 derive할 수 없음
+    pub sensor_names: Vec&lt;String&gt;,
+}
+// HashMap 키로 쓸 수 없다. Eq를 derive할 수 없다.
+// 이유: f32::NAN == f32::NAN 이 false라서 반사성을 깨뜨린다.
+<span class="boring">}</span></code></pre>
+<p><a id="partialord-vs-ord"></a></p>
+<h3 id="partialord-vs-ord"><a class="header" href="#partialord-vs-ord"><code>PartialOrd</code> vs <code>Ord</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th><strong>PartialOrd</strong></th><th><strong>Ord</strong></th></tr>
+</thead>
+<tbody>
+<tr><td><strong>무엇을 제공하나</strong></td><td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></td><td><code>.sort()</code>, <code>BTreeMap</code> 키</td></tr>
+<tr><td><strong>전체 순서인가?</strong></td><td>아니오(비교 불가능한 쌍이 있을 수 있음)</td><td><strong>예</strong>(모든 쌍이 비교 가능)</td></tr>
+<tr><td><strong><code>f32</code>/<code>f64</code>는?</strong></td><td>PartialOrd만 가능(NaN이 순서를 깨뜨림)</td><td>Ord derive 불가</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="real-example-ord--severity-ranking"></a></p>
+<h3 id="실제-예-ord--심각도-순위"><a class="header" href="#실제-예-ord--심각도-순위">실제 예: <code>Ord</code> — 심각도 순위</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// hms_trap/src/fault.rs에서 발췌 — variant 순서가 심각도를 정의한다
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum FaultSeverity {
+    Info,      // lowest  (discriminant 0)
+    Warning,   //         (discriminant 1)
+    Error,     //         (discriminant 2)
+    Critical,  // highest (discriminant 3)
+}
+// FaultSeverity::Info &lt; FaultSeverity::Critical → true
+// 가능해지는 코드: if severity &gt;= FaultSeverity::Error { escalate(); }
+<span class="boring">}</span></code></pre>
+<p><a id="real-example-ord--diagnostic-levels-for-comparison"></a></p>
+<h3 id="실제-예-ord--비교-가능한-진단-레벨"><a class="header" href="#실제-예-ord--비교-가능한-진단-레벨">실제 예: <code>Ord</code> — 비교 가능한 진단 레벨</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 예시: orchestration.rs
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+pub enum GpuDiagLevel {
+    #[default]
+    Quick,     // lowest
+    Standard,
+    Extended,
+    Full,      // highest
+}
+// 가능해지는 코드: if requested_level &gt;= GpuDiagLevel::Extended { run_extended_tests(); }
+<span class="boring">}</span></code></pre>
+<p><a id="derive-decision-tree"></a></p>
+<h3 id="derive-결정-트리"><a class="header" href="#derive-결정-트리">derive 결정 트리</a></h3>
+<pre><code class="language-text">                        새로 만든 타입
+                            │
+                 String/Vec/Box를 포함하는가?
+                      /              \
+                    YES                NO
+                     │                  │
+               Clone만 가능       Clone + Copy
+                     │                  │
+               f32/f64 포함?       f32/f64 포함?
+                /          \         /          \
+              YES           NO     YES           NO
+               │             │      │             │
+         PartialEq만     PartialEq  PartialEq  PartialEq
+                         + Eq       만         + Eq
+                          │                      │
+                    정렬이 필요한가?        정렬이 필요한가?
+                      /       \               /       \
+                    YES        NO            YES        NO
+                     │          │              │          │
+               PartialOrd    끝          PartialOrd    끝
+               + Ord                     + Ord
+                     │                        │
+               맵 키로                  맵 키로
+               쓸 것인가?              쓸 것인가?
+                  │                        │
+                + Hash                   + Hash
+</code></pre>
+<p><a id="quick-reference-common-derive-combos-from-production-rust-code"></a></p>
+<h3 id="빠른-참고-프로덕션-rust-코드에서-자주-보는-derive-조합"><a class="header" href="#빠른-참고-프로덕션-rust-코드에서-자주-보는-derive-조합">빠른 참고: 프로덕션 Rust 코드에서 자주 보는 derive 조합</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><strong>타입 범주</strong></th><th><strong>전형적인 derive</strong></th><th><strong>예시</strong></th></tr>
+</thead>
+<tbody>
+<tr><td>단순 상태 enum</td><td><code>Copy, Clone, PartialEq, Eq, Default</code></td><td><code>FanStatus</code></td></tr>
+<tr><td><code>HashMap</code> 키로 쓰는 enum</td><td><code>Copy, Clone, PartialEq, Eq, Hash</code></td><td><code>CpuFaultType</code>, <code>SelComponent</code></td></tr>
+<tr><td>정렬 가능한 심각도 enum</td><td><code>Copy, Clone, PartialEq, Eq, PartialOrd, Ord</code></td><td><code>FaultSeverity</code>, <code>GpuDiagLevel</code></td></tr>
+<tr><td>문자열을 담는 데이터 구조체</td><td><code>Clone, Debug, Serialize, Deserialize</code></td><td><code>FruData</code>, <code>OverallSummary</code></td></tr>
+<tr><td>직렬화 가능한 설정 구조체</td><td><code>Clone, Debug, Default, Serialize, Deserialize</code></td><td><code>DiagConfig</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch17-best-practices.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch17-2-avoiding-unchecked-indexing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch17-best-practices.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch17-2-avoiding-unchecked-indexing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

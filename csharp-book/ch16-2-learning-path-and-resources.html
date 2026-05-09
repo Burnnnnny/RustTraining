@@ -1,0 +1,602 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>학습 경로와 자료 - C# 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-89f02b98.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-00223320.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C# 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="learning-path-and-next-steps"></a></p>
+<h2 id="학습-경로와-다음-단계"><a class="header" href="#학습-경로와-다음-단계">학습 경로와 다음 단계</a></h2>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong> 구조화된 학습 로드맵(1-2주차, 1-3개월+), 추천 도서와 자료,
+C# 개발자가 흔히 부딪히는 함정(소유권 혼란, borrow checker와 씨름하기),
+그리고 <code>ILogger</code>와 비교한 <code>tracing</code> 기반 구조화된 관측 가능성을 정리합니다.</p>
+<p><strong>난이도:</strong> 🟢 기초</p>
+</blockquote>
+<h3 id="바로-시작할-다음-단계-1-2주차"><a class="header" href="#바로-시작할-다음-단계-1-2주차">바로 시작할 다음 단계 (1-2주차)</a></h3>
+<ol>
+<li>
+<p><strong>환경을 설정하세요</strong></p>
+<ul>
+<li><a href="https://rustup.rs/">rustup.rs</a>로 Rust 설치</li>
+<li>VS Code에 <code>rust-analyzer</code> 확장 설치 및 설정</li>
+<li>첫 <code>cargo new hello_world</code> 프로젝트 만들기</li>
+</ul>
+</li>
+<li>
+<p><strong>기초를 확실히 다지세요</strong></p>
+<ul>
+<li>간단한 연습문제로 소유권 감각 익히기</li>
+<li>서로 다른 매개변수 타입(<code>&amp;str</code>, <code>String</code>, <code>&amp;mut</code>)으로 함수 작성해보기</li>
+<li>기본 구조체와 메서드 구현해보기</li>
+</ul>
+</li>
+<li>
+<p><strong>에러 처리 연습을 하세요</strong></p>
+<ul>
+<li>C# <code>try-catch</code> 코드를 <code>Result</code> 기반 패턴으로 바꿔보기</li>
+<li><code>?</code> 연산자와 <code>match</code> 구문 사용해보기</li>
+<li>커스텀 에러 타입 구현해보기</li>
+</ul>
+</li>
+</ol>
+<h3 id="중간-목표-1-2개월차"><a class="header" href="#중간-목표-1-2개월차">중간 목표 (1-2개월차)</a></h3>
+<ol>
+<li>
+<p><strong>컬렉션과 이터레이터</strong></p>
+<ul>
+<li><code>Vec&lt;T&gt;</code>, <code>HashMap&lt;K,V&gt;</code>, <code>HashSet&lt;T&gt;</code>에 익숙해지기</li>
+<li><code>map</code>, <code>filter</code>, <code>collect</code>, <code>fold</code> 같은 이터레이터 메서드 익히기</li>
+<li><code>for</code> 루프와 이터레이터 체인을 비교하며 연습하기</li>
+</ul>
+</li>
+<li>
+<p><strong>트레잇과 제네릭</strong></p>
+<ul>
+<li><code>Debug</code>, <code>Clone</code>, <code>PartialEq</code> 같은 흔한 트레잇 구현해보기</li>
+<li>제네릭 함수와 구조체 작성해보기</li>
+<li>트레잇 바운드와 <code>where</code> 절 이해하기</li>
+</ul>
+</li>
+<li>
+<p><strong>프로젝트 구조</strong></p>
+<ul>
+<li>코드를 모듈로 나누어 구성하기</li>
+<li><code>pub</code> 가시성 이해하기</li>
+<li>crates.io의 외부 크레이트 사용해보기</li>
+</ul>
+</li>
+</ol>
+<h3 id="고급-주제-3개월차"><a class="header" href="#고급-주제-3개월차">고급 주제 (3개월차+)</a></h3>
+<ol>
+<li>
+<p><strong>동시성</strong></p>
+<ul>
+<li><code>Send</code>와 <code>Sync</code> 트레잇 이해하기</li>
+<li>기본 병렬성을 위해 <code>std::thread</code> 사용해보기</li>
+<li>async 프로그래밍을 위해 <code>tokio</code> 탐구하기</li>
+</ul>
+</li>
+<li>
+<p><strong>메모리 관리</strong></p>
+<ul>
+<li>공유 소유권을 위한 <code>Rc&lt;T&gt;</code>와 <code>Arc&lt;T&gt;</code> 이해하기</li>
+<li>힙 할당이 필요할 때 <code>Box&lt;T&gt;</code>를 언제 쓰는지 익히기</li>
+<li>복잡한 시나리오를 위해 라이프타임 숙달하기</li>
+</ul>
+</li>
+<li>
+<p><strong>실전 프로젝트</strong></p>
+<ul>
+<li><code>clap</code>으로 CLI 도구 만들기</li>
+<li><code>axum</code>이나 <code>warp</code>로 웹 API 만들기</li>
+<li>라이브러리를 작성해 crates.io에 배포해보기</li>
+</ul>
+</li>
+</ol>
+<h3 id="추천-학습-자료"><a class="header" href="#추천-학습-자료">추천 학습 자료</a></h3>
+<h4 id="책"><a class="header" href="#책">책</a></h4>
+<ul>
+<li><strong>“The Rust Programming Language”</strong> (온라인 무료) - 공식 입문서</li>
+<li><strong>“Rust by Example”</strong> (온라인 무료) - 손으로 따라치는 실습 예제</li>
+<li><strong>“Programming Rust”</strong> by Jim Blandy - 깊이 있는 기술 해설</li>
+</ul>
+<h4 id="온라인-자료"><a class="header" href="#온라인-자료">온라인 자료</a></h4>
+<ul>
+<li><a href="https://play.rust-lang.org/">Rust Playground</a> - 브라우저에서 바로 코드 실행</li>
+<li><a href="https://github.com/rust-lang/rustlings">Rustlings</a> - 상호작용형 연습 문제</li>
+<li><a href="https://doc.rust-lang.org/rust-by-example/">Rust by Example</a> - 실전 예제 모음</li>
+</ul>
+<h4 id="연습-프로젝트"><a class="header" href="#연습-프로젝트">연습 프로젝트</a></h4>
+<ol>
+<li><strong>명령줄 계산기</strong> - enum과 패턴 매칭 연습</li>
+<li><strong>파일 정리 도구</strong> - 파일 시스템과 에러 처리 연습</li>
+<li><strong>JSON 처리기</strong> - <code>serde</code>와 데이터 변환 익히기</li>
+<li><strong>HTTP 서버</strong> - async 프로그래밍과 네트워킹 이해하기</li>
+<li><strong>데이터베이스 라이브러리</strong> - 트레잇, 제네릭, 에러 처리 숙달하기</li>
+</ol>
+<p><a id="common-pitfalls-for-c-developers"></a></p>
+<h3 id="c-개발자가-흔히-겪는-함정"><a class="header" href="#c-개발자가-흔히-겪는-함정">C# 개발자가 흔히 겪는 함정</a></h3>
+<h4 id="소유권-혼란"><a class="header" href="#소유권-혼란">소유권 혼란</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [ERROR] move된 값을 다시 사용하려고 함
+fn wrong_way() {
+    let s = String::from("hello");
+    takes_ownership(s);
+    // println!("{}", s); // ERROR: s가 move됨
+}
+
+// [OK] 필요할 때 참조나 clone 사용
+fn right_way() {
+    let s = String::from("hello");
+    borrows_string(&amp;s);
+    println!("{}", s); // OK: 여기서는 여전히 s를 소유하고 있음
+}
+
+fn takes_ownership(s: String) { /* s is moved here */ }
+fn borrows_string(s: &amp;str) { /* s is borrowed here */ }
+<span class="boring">}</span></code></pre>
+<h4 id="borrow-checker와-싸우기"><a class="header" href="#borrow-checker와-싸우기">borrow checker와 싸우기</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [ERROR] 여러 개의 mutable 참조를 동시에 만드려고 함
+fn wrong_borrowing() {
+    let mut v = vec![1, 2, 3];
+    let r1 = &amp;mut v;
+    // let r2 = &amp;mut v; // ERROR: mutable로 두 번 이상 빌릴 수 없음
+}
+
+// [OK] mutable 대여의 스코프를 좁히기
+fn right_borrowing() {
+    let mut v = vec![1, 2, 3];
+    {
+        let r1 = &amp;mut v;
+        r1.push(4);
+    } // 여기서 r1 스코프 종료
+    
+    let r2 = &amp;mut v; // OK: 다른 mutable 대여가 없음
+    r2.push(5);
+}
+<span class="boring">}</span></code></pre>
+<h4 id="null-값을-기대하기"><a class="header" href="#null-값을-기대하기"><code>null</code> 값을 기대하기</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [ERROR] null 같은 동작을 기대함
+fn no_null_in_rust() {
+    // let s: String = null; // Rust에는 null이 없습니다!
+}
+
+// [OK] Option&lt;T&gt;를 명시적으로 사용
+fn use_option_instead() {
+    let maybe_string: Option&lt;String&gt; = None;
+    
+    match maybe_string {
+        Some(s) =&gt; println!("Got string: {}", s),
+        None =&gt; println!("No string available"),
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="마지막-팁"><a class="header" href="#마지막-팁">마지막 팁</a></h3>
+<ol>
+<li><strong>컴파일러를 믿으세요</strong> - Rust의 컴파일 에러는 적대적이 아니라 도움이 됩니다</li>
+<li><strong>작게 시작하세요</strong> - 단순한 프로그램부터 만들고 조금씩 복잡도를 올리세요</li>
+<li><strong>다른 사람의 코드를 읽으세요</strong> - GitHub의 인기 크레이트를 살펴보세요</li>
+<li><strong>도움을 요청하세요</strong> - Rust 커뮤니티는 친절하고 도움을 잘 줍니다</li>
+<li><strong>꾸준히 연습하세요</strong> - Rust의 개념은 반복할수록 자연스러워집니다</li>
+</ol>
+<p>기억하세요. Rust는 학습 곡선이 있지만, 그 대가로 메모리 안전성, 성능, 그리고 두려움 없는 동시성을 제공합니다. 처음에는 답답하게 느껴지는 소유권 시스템도 익숙해지면 올바르고 효율적인 프로그램을 쓰게 해주는 강력한 도구가 됩니다.</p>
+<hr>
+<p><strong>축하합니다!</strong> 이제 C#에서 Rust로 넘어가기 위한 탄탄한 기초를 갖추었습니다. 단순한 프로젝트부터 시작하고, 학습 과정에서 조급해하지 말고, 점차 더 복잡한 애플리케이션으로 나아가세요. Rust의 안전성과 성능은 초기 학습 투자 이상의 가치를 돌려줍니다.</p>
+<!-- ch16.2a: Structured Observability with tracing -->
+<p><a id="structured-observability-tracing-vs-ilogger-and-serilog"></a></p>
+<h2 id="구조화된-관측-가능성-tracing-vs-ilogger와-serilog"><a class="header" href="#구조화된-관측-가능성-tracing-vs-ilogger와-serilog">구조화된 관측 가능성: <code>tracing</code> vs ILogger와 Serilog</a></h2>
+<p>C# 개발자는 <code>ILogger</code>, <code>Serilog</code>, <code>NLog</code>를 통한 <strong>구조화된 로깅</strong>에 익숙합니다. 이런 도구는 로그 메시지에 타입이 있는 키-값 속성을 함께 실어 보냅니다. Rust의 <code>log</code> 크레이트는 기본적인 레벨 기반 로깅을 제공하지만, span, async 인식, 분산 트레이싱 지원까지 포함한 <strong>구조화된 관측 가능성</strong>의 사실상 표준은 <strong><code>tracing</code></strong> 입니다.</p>
+<h3 id="왜-log보다-tracing인가"><a class="header" href="#왜-log보다-tracing인가">왜 <code>log</code>보다 <code>tracing</code>인가</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>기능</th><th><code>log</code> 크레이트</th><th><code>tracing</code> 크레이트</th><th>C# 대응 개념</th></tr>
+</thead>
+<tbody>
+<tr><td>레벨 기반 메시지</td><td>✅ <code>info!()</code>, <code>error!()</code></td><td>✅ <code>info!()</code>, <code>error!()</code></td><td><code>ILogger.LogInformation()</code></td></tr>
+<tr><td>구조화된 필드</td><td>❌ 문자열 보간만 가능</td><td>✅ 타입이 있는 키-값 필드</td><td>Serilog <code>Log.Information("{User}", user)</code></td></tr>
+<tr><td>Span (스코프 문맥)</td><td>❌</td><td>✅ <code>#[instrument]</code>, <code>span!()</code></td><td><code>ILogger.BeginScope()</code></td></tr>
+<tr><td>async 인식</td><td>❌ <code>.await</code>를 지나면 문맥 손실</td><td>✅ span이 <code>.await</code>를 따라감</td><td><code>Activity</code> / <code>DiagnosticSource</code></td></tr>
+<tr><td>분산 트레이싱</td><td>❌</td><td>✅ OpenTelemetry 연동</td><td><code>System.Diagnostics.Activity</code></td></tr>
+<tr><td>다양한 출력 형식</td><td>기본 수준</td><td>JSON, pretty, compact, OTLP</td><td>Serilog sink</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="시작하기"><a class="header" href="#시작하기">시작하기</a></h3>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+</code></pre>
+<h3 id="기본-사용법-구조화된-로깅"><a class="header" href="#기본-사용법-구조화된-로깅">기본 사용법: 구조화된 로깅</a></h3>
+<pre><code class="language-csharp">// C# Serilog
+Log.Information("Processing order {OrderId} for {Customer}, total {Total:C}",
+    orderId, customer.Name, order.Total);
+// 출력: Processing order 12345 for Alice, total $99.95
+// JSON: {"OrderId": 12345, "Customer": "Alice", "Total": 99.95, ...}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tracing::{info, warn, error, debug, instrument};
+
+// 구조화된 필드: 문자열 보간이 아니라 타입이 있는 필드
+info!(order_id = 12345, customer = "Alice", total = 99.95,
+      "Processing order");
+// 출력: INFO Processing order order_id=12345 customer="Alice" total=99.95
+// JSON: {"order_id": 12345, "customer": "Alice", "total": 99.95, ...}
+
+// 동적 값
+let order_id = 12345;
+info!(order_id, "Order received");  // field 이름 = 변수 이름 축약형
+
+// 조건부 필드
+if let Some(promo) = promo_code {
+    info!(order_id, promo_code = %promo, "Promo applied");
+    //                        ^ %는 Display 포매팅 사용
+    //                        ?는 Debug 포매팅 사용
+}
+<span class="boring">}</span></code></pre>
+<h3 id="span-async-코드에서-특히-강력한-기능"><a class="header" href="#span-async-코드에서-특히-강력한-기능">Span: async 코드에서 특히 강력한 기능</a></h3>
+<p>Span은 함수 호출과 <code>.await</code> 지점을 넘어 필드를 이어서 들고 가는 스코프 문맥입니다. <code>ILogger.BeginScope()</code>와 비슷하지만 async 환경에서 안전하게 동작합니다.</p>
+<pre><code class="language-csharp">// C# - Activity / BeginScope
+using var activity = new Activity("ProcessOrder").Start();
+activity.SetTag("order_id", orderId);
+
+using (_logger.BeginScope(new Dictionary&lt;string, object&gt; { ["OrderId"] = orderId }))
+{
+    _logger.LogInformation("Starting processing");
+    await ProcessPaymentAsync();
+    _logger.LogInformation("Payment complete");  // OrderId가 계속 스코프 안에 있음
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tracing::{info, instrument, Instrument};
+
+// #[instrument]는 함수 인자를 필드로 담은 span을 자동으로 만듭니다
+#[instrument(skip(db), fields(customer_name))]
+async fn process_order(order_id: u64, db: &amp;Database) -&gt; Result&lt;(), AppError&gt; {
+    let order = db.get_order(order_id).await?;
+    
+    // 현재 span에 필드를 동적으로 추가
+    tracing::Span::current().record("customer_name", &amp;order.customer_name.as_str());
+    
+    info!("Starting processing");
+    process_payment(&amp;order).await?;        // .await를 지나도 span 문맥 유지
+    info!(items = order.items.len(), "Payment complete");
+    Ok(())
+}
+// 이 함수 안의 모든 로그 메시지에는 자동으로 다음 필드가 포함됩니다:
+//   order_id=12345 customer_name="Alice"
+// 중첩된 async 호출 안에서도 마찬가지입니다!
+
+// 수동으로 span 만들기 (BeginScope와 유사)
+async fn batch_process(orders: Vec&lt;u64&gt;, db: &amp;Database) {
+    for order_id in orders {
+        let span = tracing::info_span!("process_order", order_id);
+        
+        // .instrument(span)은 해당 future에 span을 붙입니다
+        process_order(order_id, db)
+            .instrument(span)
+            .await
+            .unwrap_or_else(|e| error!("Failed: {e}"));
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="subscriber-설정-serilog-sink에-해당"><a class="header" href="#subscriber-설정-serilog-sink에-해당">Subscriber 설정 (Serilog sink에 해당)</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+
+fn init_tracing() {
+    // 개발 환경: 사람이 읽기 쉬운 컬러 출력
+    tracing_subscriber::registry()
+        .with(EnvFilter::try_from_default_env()
+            .unwrap_or_else(|_| "my_app=debug,tower_http=info".into()))
+        .with(fmt::layer().pretty())  // 컬러 + 들여쓰기된 span 출력
+        .init();
+}
+
+fn init_tracing_production() {
+    // 프로덕션: 로그 수집용 JSON 출력 (Serilog JSON sink와 비슷함)
+    tracing_subscriber::registry()
+        .with(EnvFilter::new("my_app=info"))
+        .with(fmt::layer().json())  // 구조화된 JSON
+        .init();
+    // 출력: {"timestamp":"...","level":"INFO","fields":{"order_id":123},...}
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-bash"># 환경 변수로 로그 레벨 제어 (Serilog MinimumLevel과 유사)
+RUST_LOG=my_app=debug,hyper=warn cargo run
+RUST_LOG=trace cargo run  # 모든 로그
+</code></pre>
+<h3 id="serilog--tracing-마이그레이션-치트시트"><a class="header" href="#serilog--tracing-마이그레이션-치트시트">Serilog → tracing 마이그레이션 치트시트</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Serilog / ILogger</th><th>tracing</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Log.Information("{Key}", val)</code></td><td><code>info!(key = val, "message")</code></td><td>필드는 문자열 보간이 아니라 타입을 유지</td></tr>
+<tr><td><code>Log.ForContext("Key", val)</code></td><td><code>span.record("key", val)</code></td><td>현재 span에 필드 추가</td></tr>
+<tr><td><code>using BeginScope(...)</code></td><td><code>#[instrument]</code> 또는 <code>info_span!()</code></td><td><code>#[instrument]</code>를 쓰면 자동</td></tr>
+<tr><td><code>.WriteTo.Console()</code></td><td><code>fmt::layer()</code></td><td>사람이 읽기 쉬운 출력</td></tr>
+<tr><td><code>.WriteTo.Seq()</code> / <code>.File()</code></td><td><code>fmt::layer().json()</code> + 파일 리다이렉션</td><td>또는 <code>tracing-appender</code> 사용</td></tr>
+<tr><td><code>.Enrich.WithProperty()</code></td><td><code>span!(Level::INFO, "name", key = val)</code></td><td>span 필드</td></tr>
+<tr><td><code>LogEventLevel.Debug</code></td><td><code>tracing::Level::DEBUG</code></td><td>같은 개념</td></tr>
+<tr><td><code>{@Object}</code> destructuring</td><td><code>field = ?value</code> (Debug) 또는 <code>%value</code> (Display)</td><td><code>?</code> = Debug, <code>%</code> = Display</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="opentelemetry-연동"><a class="header" href="#opentelemetry-연동">OpenTelemetry 연동</a></h3>
+<pre><code class="language-toml"># 분산 트레이싱용 (System.Diagnostics + OTLP exporter와 유사)
+[dependencies]
+tracing-opentelemetry = "0.22"
+opentelemetry = "0.21"
+opentelemetry-otlp = "0.14"
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 콘솔 출력과 함께 OpenTelemetry 레이어 추가
+use tracing_opentelemetry::OpenTelemetryLayer;
+
+fn init_otel() {
+    let tracer = opentelemetry_otlp::new_pipeline()
+        .tracing()
+        .with_exporter(opentelemetry_otlp::new_exporter().tonic())
+        .install_batch(opentelemetry_sdk::runtime::Tokio)
+        .expect("Failed to create OTLP tracer");
+
+    tracing_subscriber::registry()
+        .with(OpenTelemetryLayer::new(tracer))  // span을 Jaeger/Tempo로 전송
+        .with(fmt::layer())                     // 콘솔에도 출력
+        .init();
+}
+// 이제 #[instrument] span이 자동으로 분산 trace가 됩니다!
+<span class="boring">}</span></code></pre>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch16-1-performance-comparison-and-migration.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch16-3-rust-tooling-ecosystem.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch16-1-performance-comparison-and-migration.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch16-3-rust-tooling-ecosystem.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

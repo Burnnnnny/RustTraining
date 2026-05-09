@@ -1,0 +1,781 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>11. 모두 합치기 — 프로덕션 CI/CD 파이프라인 - Rust 엔지니어링 실무 — cargo build를 넘어서</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-997ff77b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-04fe246c.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 엔지니어링 실무 — cargo build를 넘어서</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="putting-it-all-together--a-production-cicd-pipeline"></a></p>
+<h1 id="모두-합치기--프로덕션-cicd-파이프라인-"><a class="header" href="#모두-합치기--프로덕션-cicd-파이프라인-">모두 합치기 — 프로덕션 CI/CD 파이프라인 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong></p>
+<ul>
+<li>다단계 GitHub Actions CI 워크플로를 구성하는 방법 (check → test → coverage → security → cross → release)</li>
+<li><code>rust-cache</code>와 <code>save-if</code> 튜닝을 활용한 캐시 전략</li>
+<li>nightly 스케줄에서 Miri와 sanitizer를 실행하는 방법</li>
+<li><code>Makefile.toml</code>과 pre-commit hook으로 작업을 자동화하는 방법</li>
+<li><code>cargo-dist</code>로 릴리스를 자동화하는 방법</li>
+</ul>
+<p><strong>상호 참조:</strong> <a href="ch01-build-scripts-buildrs-in-depth.html">빌드 스크립트</a> · <a href="ch02-cross-compilation-one-source-many-target.html">크로스 컴파일</a> · <a href="ch03-benchmarking-measuring-what-matters.html">벤치마킹</a> · <a href="ch04-code-coverage-seeing-what-tests-miss.html">커버리지</a> · <a href="ch05-miri-valgrind-and-sanitizers-verifying-u.html">Miri/Sanitizer</a> · <a href="ch06-dependency-management-and-supply-chain-s.html">의존성 관리</a> · <a href="ch07-release-profiles-and-binary-size.html">릴리스 프로파일</a> · <a href="ch08-compile-time-and-developer-tools.html">컴파일 시간 도구</a> · <a href="ch09-no-std-and-feature-verification.html"><code>no_std</code></a> · <a href="ch10-windows-and-conditional-compilation.html">Windows</a></p>
+</blockquote>
+<p>개별 도구도 유용합니다. 하지만 이들을 모든 push마다 자동으로 조율해 실행하는 파이프라인은 팀의 작업 방식을 바꿔 놓습니다. 이 장에서는 1~10장에서 다룬 도구를 하나의 일관된 CI/CD 워크플로로 엮어 봅니다.</p>
+<p><a id="the-complete-github-actions-workflow"></a></p>
+<h3 id="전체-github-actions-워크플로"><a class="header" href="#전체-github-actions-워크플로">전체 GitHub Actions 워크플로</a></h3>
+<p>모든 검증 단계를 병렬로 실행하는 단일 워크플로 파일입니다:</p>
+<pre><code class="language-yaml"># .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_ENCODED_RUSTFLAGS: "-Dwarnings"  # 경고를 오류로 취급 (최상위 크레이트만)
+  # 참고: RUSTFLAGS와 달리 CARGO_ENCODED_RUSTFLAGS는 build script
+  # 나 proc-macro에는 적용되지 않으므로, 서드파티 경고 때문에
+  # 거짓 실패가 나는 상황을 피할 수 있습니다.
+  # build script에도 강제하고 싶다면 대신 RUSTFLAGS="-Dwarnings" 를 사용하세요.
+
+jobs:
+  # ─── 1단계: 빠른 피드백 (&lt; 2분) ───
+  check:
+    name: Check + Clippy + Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2  # 의존성 캐시
+
+      - name: Check compilation
+        run: cargo check --workspace --all-targets --all-features
+
+      - name: Clippy lints
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Formatting
+        run: cargo fmt --all -- --check
+
+  # ─── 2단계: 테스트 (&lt; 5분) ───
+  test:
+    name: Test (${{ matrix.os }})
+    needs: check
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run tests
+        run: cargo test --workspace
+
+      - name: Run doc tests
+        run: cargo test --workspace --doc
+
+  # ─── 3단계: 크로스 컴파일 (&lt; 10분) ───
+  cross:
+    name: Cross (${{ matrix.target }})
+    needs: check
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            use_cross: true
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install musl-tools
+        if: contains(matrix.target, 'musl')
+        run: sudo apt-get install -y musl-tools
+
+      - name: Install cross
+        if: matrix.use_cross
+        uses: taiki-e/install-action@cross
+
+      - name: Build (native)
+        if: "!matrix.use_cross"
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Build (cross)
+        if: matrix.use_cross
+        run: cross build --release --target ${{ matrix.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/diag_tool
+
+  # ─── 4단계: 커버리지 (&lt; 10분) ───
+  coverage:
+    name: Code Coverage
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+      - uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Generate coverage
+        run: cargo llvm-cov --workspace --lcov --output-path lcov.info
+
+      - name: Enforce minimum coverage
+        run: cargo llvm-cov --workspace --fail-under-lines 75
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # ─── 5단계: 안전성 검증 (&lt; 15분) ───
+  miri:
+    name: Miri
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: miri
+
+      - name: Run Miri
+        run: cargo miri test --workspace
+        env:
+          MIRIFLAGS: "-Zmiri-backtrace=full"
+
+  # ─── 6단계: 벤치마크 (PR 전용, &lt; 10분) ───
+  bench:
+    name: Benchmarks
+    if: github.event_name == 'pull_request'
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Run benchmarks
+        run: cargo bench -- --output-format bencher | tee bench.txt
+
+      - name: Compare with baseline
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'cargo'
+          output-file-path: bench.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          alert-threshold: '115%'
+          comment-on-alert: true
+</code></pre>
+<p><strong>파이프라인 실행 흐름:</strong></p>
+<pre><code class="language-text">                    ┌─────────┐
+                    │  check  │  ← clippy + fmt + cargo check (2분)
+                    └────┬────┘
+           ┌─────────┬──┴──┬──────────┬──────────┐
+           ▼         ▼     ▼          ▼          ▼
+       ┌──────┐  ┌──────┐ ┌────────┐ ┌──────┐ ┌──────┐
+       │ test │  │cross │ │coverage│ │ miri │ │bench │
+       │ (2×) │  │ (2×) │ │        │ │      │ │(PR)  │
+       └──────┘  └──────┘ └────────┘ └──────┘ └──────┘
+         3분      8분       8분       12분      5분
+
+총 경과 시간: 약 14분 (check 게이트 이후 병렬 실행)
+</code></pre>
+<p><a id="ci-caching-strategies"></a></p>
+<h3 id="ci-캐시-전략"><a class="header" href="#ci-캐시-전략">CI 캐시 전략</a></h3>
+<p><a href="https://github.com/Swatinem/rust-cache"><code>Swatinem/rust-cache@v2</code></a>는 표준적인 Rust CI 캐시 액션입니다. 이 액션은 실행 사이에 <code>~/.cargo</code>와 <code>target/</code>을 캐시하지만, 큰 워크스페이스에서는 약간의 튜닝이 필요합니다:</p>
+<pre><code class="language-yaml"># 기본 설정 (위에서 사용한 방식)
+- uses: Swatinem/rust-cache@v2
+
+# 큰 워크스페이스에 맞춰 튜닝한 설정
+- uses: Swatinem/rust-cache@v2
+  with:
+    # 잡별로 캐시 분리 - 테스트 산출물이 빌드 캐시를 불리는 것을 방지
+    prefix-key: "v1-rust"
+    key: ${{ matrix.os }}-${{ matrix.target || 'default' }}
+    # main 브랜치에서만 캐시 저장 (PR은 읽기만 하고 쓰지는 않음)
+    save-if: ${{ github.ref == 'refs/heads/main' }}
+    # Cargo registry + git checkout + target 디렉터리 캐시
+    cache-targets: true
+    cache-all-crates: true
+</code></pre>
+<p><strong>캐시 무효화 시 흔한 함정:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>문제</th><th>해결</th></tr>
+</thead>
+<tbody>
+<tr><td>캐시가 끝없이 커짐 (&gt;5 GB)</td><td><code>prefix-key: "v2-rust"</code>로 바꿔 새 캐시를 강제로 만들기</td></tr>
+<tr><td>서로 다른 feature 조합이 캐시를 오염시킴</td><td><code>key: ${{ hashFiles('**/Cargo.lock') }}</code> 사용</td></tr>
+<tr><td>PR 캐시가 <code>main</code> 캐시를 덮어씀</td><td><code>save-if: ${{ github.ref == 'refs/heads/main' }}</code> 설정</td></tr>
+<tr><td>크로스 컴파일 타깃이 캐시를 과도하게 키움</td><td>타깃 triple별로 별도 <code>key</code> 사용</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>잡 사이에서 캐시 공유하기:</strong></p>
+<p><code>check</code> 잡이 캐시를 저장하고, 뒤따르는 잡 (<code>test</code>, <code>cross</code>, <code>coverage</code>)이 이를 읽습니다. <code>save-if</code>를 <code>main</code>에서만 켜 두면 PR 실행은 캐시된 의존성의 이점은 얻되 오래된 캐시를 다시 써 넣지는 않습니다.</p>
+<blockquote>
+<p><strong>대형 워크스페이스에서 측정한 효과:</strong> 콜드 빌드는 약 4분 → 캐시된 빌드는 약 45초. 캐시 액션만으로도 파이프라인 1회당(모든 병렬 잡을 합쳐) 약 25분의 CI 시간을 절약할 수 있습니다.</p>
+</blockquote>
+<p><a id="makefiletoml-with-cargo-make"></a></p>
+<h3 id="cargo-make를-이용한-makefiletoml"><a class="header" href="#cargo-make를-이용한-makefiletoml"><code>cargo-make</code>를 이용한 <code>Makefile.toml</code></a></h3>
+<p><a href="https://sagiegurari.github.io/cargo-make/"><code>cargo-make</code></a>는 플랫폼 간에 동작하는 휴대성 좋은 태스크 러너를 제공합니다 (<code>make</code>/<code>Makefile</code>과 달리):</p>
+<pre><code class="language-bash"># 설치
+cargo install cargo-make
+</code></pre>
+<pre><code class="language-toml"># Makefile.toml - 워크스페이스 루트에 배치
+
+[config]
+default_to_workspace = false
+
+# ─── 개발자 워크플로 ───
+
+[tasks.dev]
+description = "Full local verification (same checks as CI)"
+dependencies = ["check", "test", "clippy", "fmt-check"]
+
+[tasks.check]
+command = "cargo"
+args = ["check", "--workspace", "--all-targets"]
+
+[tasks.test]
+command = "cargo"
+args = ["test", "--workspace"]
+
+[tasks.clippy]
+command = "cargo"
+args = ["clippy", "--workspace", "--all-targets", "--", "-D", "warnings"]
+
+[tasks.fmt]
+command = "cargo"
+args = ["fmt", "--all"]
+
+[tasks.fmt-check]
+command = "cargo"
+args = ["fmt", "--all", "--", "--check"]
+
+# ─── 커버리지 ───
+
+[tasks.coverage]
+description = "Generate HTML coverage report"
+install_crate = "cargo-llvm-cov"
+command = "cargo"
+args = ["llvm-cov", "--workspace", "--html", "--open"]
+
+[tasks.coverage-ci]
+description = "Generate LCOV for CI upload"
+install_crate = "cargo-llvm-cov"
+command = "cargo"
+args = ["llvm-cov", "--workspace", "--lcov", "--output-path", "lcov.info"]
+
+# ─── 벤치마크 ───
+
+[tasks.bench]
+description = "Run all benchmarks"
+command = "cargo"
+args = ["bench"]
+
+# ─── 크로스 컴파일 ───
+
+[tasks.build-musl]
+description = "Build static binary (musl)"
+command = "cargo"
+args = ["build", "--release", "--target", "x86_64-unknown-linux-musl"]
+
+[tasks.build-arm]
+description = "Build for aarch64 (requires cross)"
+command = "cross"
+args = ["build", "--release", "--target", "aarch64-unknown-linux-gnu"]
+
+[tasks.build-all]
+description = "Build for all deployment targets"
+dependencies = ["build-musl", "build-arm"]
+
+# ─── 안전성 검증 ───
+
+[tasks.miri]
+description = "Run Miri on all tests"
+toolchain = "nightly"
+command = "cargo"
+args = ["miri", "test", "--workspace"]
+
+[tasks.audit]
+description = "Check for known vulnerabilities"
+install_crate = "cargo-audit"
+command = "cargo"
+args = ["audit"]
+
+# ─── 릴리스 ───
+
+[tasks.release-dry]
+description = "Preview what cargo-release would do"
+install_crate = "cargo-release"
+command = "cargo"
+args = ["release", "--workspace", "--dry-run"]
+</code></pre>
+<p><strong>사용법:</strong></p>
+<pre><code class="language-bash"># 로컬에서 CI 파이프라인과 같은 검증 실행
+cargo make dev
+
+# 커버리지 생성 및 확인
+cargo make coverage
+
+# 모든 타깃으로 빌드
+cargo make build-all
+
+# 안전성 검사 실행
+cargo make miri
+
+# 알려진 취약점 확인
+cargo make audit
+</code></pre>
+<p><a id="pre-commit-hooks-custom-scripts-and-cargo-husky"></a></p>
+<h3 id="pre-commit-hook-사용자-정의-스크립트와-cargo-husky"><a class="header" href="#pre-commit-hook-사용자-정의-스크립트와-cargo-husky">Pre-Commit Hook: 사용자 정의 스크립트와 <code>cargo-husky</code></a></h3>
+<p>문제가 CI에 도달하기 <em>전에</em> 잡으세요. 권장 접근은 직접 작성한 git hook입니다. 단순하고, 동작이 투명하며, 외부 의존성이 없습니다:</p>
+<pre><code class="language-bash">#!/bin/sh
+# .githooks/pre-commit
+
+set -e
+
+echo "=== Pre-commit checks ==="
+
+# 빠른 검사부터 실행
+echo "→ cargo fmt --check"
+cargo fmt --all -- --check
+
+echo "→ cargo check"
+cargo check --workspace --all-targets
+
+echo "→ cargo clippy"
+cargo clippy --workspace --all-targets -- -D warnings
+
+echo "→ cargo test (lib only, fast)"
+cargo test --workspace --lib
+
+echo "=== All checks passed ==="
+</code></pre>
+<pre><code class="language-bash"># hook 설치
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+</code></pre>
+<p><strong>대안: <code>cargo-husky</code></strong> (build script를 통해 hook 자동 설치):</p>
+<blockquote>
+<p>⚠️ <strong>참고:</strong> <code>cargo-husky</code>는 2022년 이후 업데이트가 없습니다. 아직 동작은 하지만 사실상 유지보수되지 않는 상태입니다. 새 프로젝트라면 위의 커스텀 hook 방식을 우선 고려하세요.</p>
+</blockquote>
+<pre><code class="language-bash">cargo install cargo-husky
+</code></pre>
+<pre><code class="language-toml"># Cargo.toml - 루트 크레이트의 dev-dependencies에 추가
+[dev-dependencies]
+cargo-husky = { version = "1", default-features = false, features = [
+    "precommit-hook",
+    "run-cargo-check",
+    "run-cargo-clippy",
+    "run-cargo-fmt",
+    "run-cargo-test",
+] }
+</code></pre>
+<p><a id="release-workflow-cargo-release-and-cargo-dist"></a></p>
+<h3 id="릴리스-워크플로-cargo-release와-cargo-dist"><a class="header" href="#릴리스-워크플로-cargo-release와-cargo-dist">릴리스 워크플로: <code>cargo-release</code>와 <code>cargo-dist</code></a></h3>
+<p><strong><code>cargo-release</code></strong> - 버전 증가, 태그 생성, 게시를 자동화합니다:</p>
+<pre><code class="language-bash"># 설치
+cargo install cargo-release
+</code></pre>
+<pre><code class="language-toml"># release.toml - 워크스페이스 루트에 배치
+[workspace]
+consolidate-commits = true
+pre-release-commit-message = "chore: release {{version}}"
+tag-message = "v{{version}}"
+tag-name = "v{{version}}"
+
+# 내부 크레이트는 게시하지 않음
+[[package]]
+name = "core_lib"
+release = false
+
+[[package]]
+name = "diag_framework"
+release = false
+
+# 메인 바이너리만 게시
+[[package]]
+name = "diag_tool"
+release = true
+</code></pre>
+<pre><code class="language-bash"># 릴리스 미리보기
+cargo release patch --dry-run
+
+# 릴리스 실행 (버전 증가, 커밋, 태그, 필요시 publish)
+cargo release patch --execute
+# 0.1.0 → 0.1.1
+
+cargo release minor --execute
+# 0.1.1 → 0.2.0
+</code></pre>
+<p><strong><code>cargo-dist</code></strong> - GitHub Releases에서 내려받을 수 있는 릴리스 바이너리를 생성합니다:</p>
+<pre><code class="language-bash"># 설치
+cargo install cargo-dist
+
+# 초기화 (CI 워크플로 + 메타데이터 생성)
+cargo dist init
+
+# 무엇이 빌드될지 미리보기
+cargo dist plan
+
+# 릴리스 생성 (보통 tag push 시 CI가 수행)
+cargo dist build
+</code></pre>
+<pre><code class="language-toml"># `cargo dist init` 이 추가하는 Cargo.toml 항목
+[workspace.metadata.dist]
+cargo-dist-version = "0.28.0"
+ci = "github"
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-unknown-linux-musl",
+    "aarch64-unknown-linux-gnu",
+    "x86_64-pc-windows-msvc",
+]
+install-path = "CARGO_HOME"
+</code></pre>
+<p>이렇게 하면 tag push 시 다음을 수행하는 GitHub Actions 워크플로가 생성됩니다:</p>
+<ol>
+<li>모든 대상 플랫폼용 바이너리 빌드</li>
+<li>다운로드 가능한 <code>.tar.gz</code> / <code>.zip</code> 아카이브가 포함된 GitHub Release 생성</li>
+<li>shell/PowerShell 설치 스크립트 생성</li>
+<li>crates.io에 게시 (설정한 경우)</li>
+</ol>
+<p><a id="try-it-yourself--capstone-exercise"></a></p>
+<h3 id="직접-해보기--캡스톤-연습문제"><a class="header" href="#직접-해보기--캡스톤-연습문제">직접 해보기 — 캡스톤 연습문제</a></h3>
+<p>이 연습문제는 모든 장을 하나로 묶습니다. 새 Rust 워크스페이스를 대상으로 완전한 엔지니어링 파이프라인을 구축해 보세요:</p>
+<ol>
+<li>
+<p><strong>새 워크스페이스 만들기</strong>: 라이브러리 크레이트(<code>core_lib</code>)와 바이너리 크레이트(<code>cli</code>) 두 개를 만드세요. <code>SOURCE_DATE_EPOCH</code>를 사용해 git hash와 빌드 타임스탬프를 심는 <code>build.rs</code>를 추가하세요 (1장).</p>
+</li>
+<li>
+<p><strong>크로스 컴파일 설정하기</strong>: <code>x86_64-unknown-linux-musl</code>과 <code>aarch64-unknown-linux-gnu</code>를 대상으로 설정하세요. 두 타깃이 모두 <code>cargo zigbuild</code> 또는 <code>cross</code>로 빌드되는지 검증하세요 (2장).</p>
+</li>
+<li>
+<p><strong>벤치마크 추가하기</strong>: <code>core_lib</code>의 함수 하나에 대해 Criterion 또는 Divan 기반 벤치마크를 추가하세요. 로컬에서 실행하고 baseline을 기록하세요 (3장).</p>
+</li>
+<li>
+<p><strong>코드 커버리지 측정하기</strong>: <code>cargo llvm-cov</code>로 커버리지를 측정하세요. 최소 임계값을 80%로 설정하고 통과하는지 확인하세요 (4장).</p>
+</li>
+<li>
+<p><strong><code>cargo +nightly careful test</code>와 <code>cargo miri test</code> 실행하기</strong>: <code>unsafe</code> 코드가 있다면 그것을 실제로 타는 테스트도 하나 추가하세요 (5장).</p>
+</li>
+<li>
+<p><strong><code>cargo-deny</code> 구성하기</strong>: <code>openssl</code>을 금지하고 MIT/Apache-2.0 라이선스만 허용하는 <code>deny.toml</code>을 작성하세요 (6장).</p>
+</li>
+<li>
+<p><strong>릴리스 프로파일 최적화하기</strong>: <code>lto = "thin"</code>, <code>strip = true</code>, <code>codegen-units = 1</code>을 설정하세요. <code>cargo bloat</code>로 전후 바이너리 크기를 측정하세요 (7장).</p>
+</li>
+<li>
+<p><strong><code>cargo hack --each-feature</code> 검증 추가하기</strong>: optional dependency용 feature flag를 하나 만들고, 그 feature만 켰을 때도 단독으로 컴파일되는지 확인하세요 (9장).</p>
+</li>
+<li>
+<p><strong>GitHub Actions 워크플로 작성하기</strong>: 이 장의 예시처럼 6개 단계를 모두 포함한 워크플로를 작성하세요. <code>Swatinem/rust-cache@v2</code>에 <code>save-if</code> 튜닝도 추가하세요.</p>
+</li>
+</ol>
+<p><strong>성공 기준</strong>: GitHub에 push → 모든 CI 단계가 초록불 → <code>cargo dist plan</code>이 릴리스 타깃을 보여줌. 이 시점이면 프로덕션급 Rust 파이프라인을 갖춘 것입니다.</p>
+<p><a id="ci-pipeline-architecture"></a></p>
+<h3 id="ci-파이프라인-아키텍처"><a class="header" href="#ci-파이프라인-아키텍처">CI 파이프라인 아키텍처</a></h3>
+<pre class="mermaid">flowchart LR
+    subgraph "1단계 — 빠른 피드백 &lt; 2분"
+        CHECK["cargo check\ncargo clippy\ncargo fmt"]
+    end
+
+    subgraph "2단계 — 테스트 &lt; 5분"
+        TEST["cargo nextest\ncargo test --doc"]
+    end
+
+    subgraph "3단계 — 커버리지"
+        COV["cargo llvm-cov\n80% 미만이면 실패"]
+    end
+
+    subgraph "4단계 — 보안"
+        SEC["cargo audit\ncargo deny check"]
+    end
+
+    subgraph "5단계 — 크로스 빌드"
+        CROSS["musl 정적 빌드\naarch64 + x86_64"]
+    end
+
+    subgraph "6단계 — 릴리스 (tag 전용)"
+        REL["cargo dist\nGitHub Release"]
+    end
+
+    CHECK --&gt; TEST --&gt; COV --&gt; SEC --&gt; CROSS --&gt; REL
+
+    style CHECK fill:#91e5a3,color:#000
+    style TEST fill:#91e5a3,color:#000
+    style COV fill:#e3f2fd,color:#000
+    style SEC fill:#ffd43b,color:#000
+    style CROSS fill:#e3f2fd,color:#000
+    style REL fill:#b39ddb,color:#000
+</pre>
+
+<p><a id="key-takeaways"></a></p>
+<h3 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h3>
+<ul>
+<li>CI는 빠른 검사부터 앞에 두고, 비용이 큰 잡은 게이트 뒤의 병렬 단계로 배치하세요</li>
+<li><code>Swatinem/rust-cache@v2</code>에 <code>save-if: ${{ github.ref == 'refs/heads/main' }}</code>를 적용하면 PR 캐시가 서로 덮어쓰며 흔들리는 문제를 막을 수 있습니다</li>
+<li>Miri와 무거운 sanitizer는 모든 push마다 돌리지 말고 nightly <code>schedule:</code> 트리거에서 실행하세요</li>
+<li><code>Makefile.toml</code> (<code>cargo make</code>)은 여러 도구를 묶은 워크플로를 로컬 개발용 단일 명령으로 압축해 줍니다</li>
+<li><code>cargo-dist</code>는 크로스 플랫폼 릴리스 빌드를 자동화합니다. 더 이상 플랫폼 매트릭스 YAML을 손으로 쓰지 마세요</li>
+</ul>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch10-windows-and-conditional-compilation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch12-tricks-from-the-trenches.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch10-windows-and-conditional-compilation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch12-tricks-from-the-trenches.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

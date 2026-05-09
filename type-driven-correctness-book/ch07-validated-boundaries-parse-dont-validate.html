@@ -1,0 +1,1679 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>7. 검증된 경계 — Validate하지 말고 Parse하라 - Rust의 타입 주도 정확성</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-d7038b1f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-020eda16.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust의 타입 주도 정확성</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="validated-boundaries-parse-dont-validate"></a></p>
+<h1 id="검증된-경계--validate하지-말고-parse하라-"><a class="header" href="#검증된-경계--validate하지-말고-parse하라-">검증된 경계 — Validate하지 말고 Parse하라 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong> 시스템 경계에서 데이터를 정확히 한 번만 검증하고, 유효성 증명을 전용 타입에 실어 나른 뒤 다시는 검사하지 않는 방법 — 평평한 바이트인 IPMI FRU, 구조화된 문서인 Redfish JSON, 중첩 디스패치가 있는 다형 이진인 IPMI SEL에 적용하고, 끝에서 끝까지 전체 워크스루를 제공합니다.</p>
+<p><strong>상호 참조:</strong> <a href="ch02-typed-command-interfaces-request-determi.html">ch02</a>(typed commands), <a href="ch06-dimensional-analysis-making-the-compiler.html">ch06</a>(차원 타입), <a href="ch11-fourteen-tricks-from-the-trenches.html">ch11</a>(요령 2 sealed trait, 요령 3 <code>#[non_exhaustive]</code>, 요령 5 FromStr), <a href="ch14-testing-type-level-guarantees.html">ch14</a>(proptest)</p>
+</blockquote>
+<p><a id="the-problem-shotgun-validation"></a></p>
+<h2 id="문제-산탄총-검증"><a class="header" href="#문제-산탄총-검증">문제: 산탄총 검증</a></h2>
+<p>전형적인 코드에서는 검증이 사방에 흩어져 있습니다. 데이터를 받는 함수마다 “혹시 몰라” 다시 검사합니다.</p>
+<pre><code class="language-c">// C — 검증이 코드베이스 전체에 산재
+int process_fru_data(uint8_t *data, int len) {
+    if (data == NULL) return -1;          // check: non-null
+    if (len &lt; 8) return -1;              // check: minimum length
+    if (data[0] != 0x01) return -1;      // check: format version
+    if (checksum(data, len) != 0) return -1; // check: checksum
+
+    // ... 10 more functions that repeat the same checks ...
+}
+</code></pre>
+<p>이 패턴(“산탄총 검증”)에는 두 가지 문제가 있습니다.</p>
+<ol>
+<li><strong>중복</strong> — 같은 검사가 수십 곳에 반복됨</li>
+<li><strong>불완전</strong> — 함수 하나에서 검사 하나만 빠져도 버그</li>
+</ol>
+<p><a id="parse-dont-validate"></a></p>
+<h2 id="parse하지-validate-말-것"><a class="header" href="#parse하지-validate-말-것">Parse하지 Validate 말 것</a></h2>
+<p>correct-by-construction 접근: <strong>경계에서 한 번만 검증하고, 유효성 증명을 타입에 실어 나른다</strong>.</p>
+<pre><code class="language-rust ignore">/// 와이어에서 온 원시 바이트 — 아직 검증되지 않음.
+#[derive(Debug)]
+pub struct RawFruData(Vec&lt;u8&gt;);</code></pre>
+<p><a id="case-study-ipmi-fru-data"></a></p>
+<h3 id="사례-연구-ipmi-fru-데이터"><a class="header" href="#사례-연구-ipmi-fru-데이터">사례 연구: IPMI FRU 데이터</a></h3>
+<pre><code class="language-rust ignore"><span class="boring">#[derive(Debug)]
+</span><span class="boring">pub struct RawFruData(Vec&lt;u8&gt;);
+</span>
+/// 검증된 IPMI FRU 데이터. TryFrom으로만 생성 가능하며
+/// 모든 불변식을 강제. ValidFru를 얻으면
+/// 모든 데이터가 올바름이 보장됨.
+#[derive(Debug)]
+pub struct ValidFru {
+    format_version: u8,
+    internal_area_offset: u8,
+    chassis_area_offset: u8,
+    board_area_offset: u8,
+    product_area_offset: u8,
+    data: Vec&lt;u8&gt;,
+}
+
+#[derive(Debug)]
+pub enum FruError {
+    TooShort { actual: usize, minimum: usize },
+    BadFormatVersion(u8),
+    ChecksumMismatch { expected: u8, actual: u8 },
+    InvalidAreaOffset { area: &amp;'static str, offset: u8 },
+}
+
+impl std::fmt::Display for FruError {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        match self {
+            Self::TooShort { actual, minimum } =&gt;
+                write!(f, "FRU data too short: {actual} bytes (minimum {minimum})"),
+            Self::BadFormatVersion(v) =&gt;
+                write!(f, "unsupported FRU format version: {v}"),
+            Self::ChecksumMismatch { expected, actual } =&gt;
+                write!(f, "checksum mismatch: expected 0x{expected:02X}, got 0x{actual:02X}"),
+            Self::InvalidAreaOffset { area, offset } =&gt;
+                write!(f, "invalid {area} area offset: {offset}"),
+        }
+    }
+}
+
+impl TryFrom&lt;RawFruData&gt; for ValidFru {
+    type Error = FruError;
+
+    fn try_from(raw: RawFruData) -&gt; Result&lt;Self, FruError&gt; {
+        let data = raw.0;
+
+        // 1. Length check
+        if data.len() &lt; 8 {
+            return Err(FruError::TooShort {
+                actual: data.len(),
+                minimum: 8,
+            });
+        }
+
+        // 2. Format version
+        if data[0] != 0x01 {
+            return Err(FruError::BadFormatVersion(data[0]));
+        }
+
+        // 3. Checksum (header is first 8 bytes, checksum at byte 7)
+        let checksum: u8 = data[..8].iter().fold(0u8, |acc, &amp;b| acc.wrapping_add(b));
+        if checksum != 0 {
+            return Err(FruError::ChecksumMismatch {
+                expected: 0,
+                actual: checksum,
+            });
+        }
+
+        // 4. Area offsets must be within bounds
+        for (name, idx) in [
+            ("internal", 1), ("chassis", 2),
+            ("board", 3), ("product", 4),
+        ] {
+            let offset = data[idx];
+            if offset != 0 &amp;&amp; (offset as usize * 8) &gt;= data.len() {
+                return Err(FruError::InvalidAreaOffset {
+                    area: name,
+                    offset,
+                });
+            }
+        }
+
+        // 모든 검사 통과 — 검증된 타입 구성
+        Ok(ValidFru {
+            format_version: data[0],
+            internal_area_offset: data[1],
+            chassis_area_offset: data[2],
+            board_area_offset: data[3],
+            product_area_offset: data[4],
+            data,
+        })
+    }
+}
+
+impl ValidFru {
+    /// 재검증 불필요 — 타입이 정확성을 보장.
+    pub fn board_area(&amp;self) -&gt; Option&lt;&amp;[u8]&gt; {
+        if self.board_area_offset == 0 {
+            return None;
+        }
+        let start = self.board_area_offset as usize * 8;
+        Some(&amp;self.data[start..])  // 안전 — 파싱 시 범위 검사됨
+    }
+
+    pub fn product_area(&amp;self) -&gt; Option&lt;&amp;[u8]&gt; {
+        if self.product_area_offset == 0 {
+            return None;
+        }
+        let start = self.product_area_offset as usize * 8;
+        Some(&amp;self.data[start..])
+    }
+
+    pub fn format_version(&amp;self) -&gt; u8 {
+        self.format_version
+    }
+}</code></pre>
+<p><code>&amp;ValidFru</code>를 받는 함수는 데이터가 잘 형성되었음을 <strong>압니다</strong>. 재검사 불필요:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub struct ValidFru { board_area_offset: u8, data: Vec&lt;u8&gt; }
+</span><span class="boring">impl ValidFru {
+</span><span class="boring">    pub fn board_area(&amp;self) -&gt; Option&lt;&amp;[u8]&gt; { None }
+</span><span class="boring">}
+</span>
+/// FRU 데이터를 다시 검증할 필요 없음.
+/// 타입 시그니처가 이미 유효함을 보장.
+fn extract_board_serial(fru: &amp;ValidFru) -&gt; Option&lt;String&gt; {
+    let board = fru.board_area()?;
+    // ... 보드 영역에서 시리얼 파싱 ...
+    // 범위 검사 불필요 — ValidFru가 오프셋 범위를 보장
+    Some("ABC123".to_string()) // stub
+}
+
+fn extract_board_manufacturer(fru: &amp;ValidFru) -&gt; Option&lt;String&gt; {
+    let board = fru.board_area()?;
+    // 여전히 검증 불필요 — 동일 보장
+    Some("Acme Corp".to_string()) // stub
+}</code></pre>
+<p><a id="validated-redfish-json"></a></p>
+<h2 id="검증된-redfish-json"><a class="header" href="#검증된-redfish-json">검증된 Redfish JSON</a></h2>
+<p>같은 패턴이 Redfish API 응답에 적용됩니다. 한 번 파싱하고, 유효성을 타입에 담습니다.</p>
+<pre><code class="language-rust ignore">use std::collections::HashMap;
+
+/// Redfish 엔드포인트에서 온 원시 JSON 문자열.
+pub struct RawRedfishResponse(pub String);
+
+/// 검증된 Redfish Thermal 응답.
+/// 필수 필드가 모두 있고 범위 내임이 보장됨.
+#[derive(Debug)]
+pub struct ValidThermalResponse {
+    pub temperatures: Vec&lt;ValidTemperatureReading&gt;,
+    pub fans: Vec&lt;ValidFanReading&gt;,
+}
+
+#[derive(Debug)]
+pub struct ValidTemperatureReading {
+    pub name: String,
+    pub reading_celsius: f64,     // NaN 아님, 센서 범위 내 보장
+    pub upper_critical: f64,
+    pub status: HealthStatus,
+}
+
+#[derive(Debug)]
+pub struct ValidFanReading {
+    pub name: String,
+    pub reading_rpm: u32,        // 장착 팬이면 &gt; 0 보장
+    pub status: HealthStatus,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum HealthStatus {
+    Ok,
+    Warning,
+    Critical,
+}
+
+#[derive(Debug)]
+pub enum RedfishValidationError {
+    MissingField(&amp;'static str),
+    OutOfRange { field: &amp;'static str, value: f64 },
+    InvalidStatus(String),
+}
+
+impl std::fmt::Display for RedfishValidationError {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        match self {
+            Self::MissingField(name) =&gt; write!(f, "missing required field: {name}"),
+            Self::OutOfRange { field, value } =&gt;
+                write!(f, "field {field} out of range: {value}"),
+            Self::InvalidStatus(s) =&gt; write!(f, "invalid health status: {s}"),
+        }
+    }
+}
+
+// 검증 후 하류 코드는 다시 검사하지 않음:
+fn check_thermal_health(thermal: &amp;ValidThermalResponse) -&gt; bool {
+    // 누락 필드나 NaN 검사 불필요.
+    // ValidThermalResponse가 모든 읽기값이 타당함을 보장.
+    thermal.temperatures.iter().all(|t| {
+        t.reading_celsius &lt; t.upper_critical &amp;&amp; t.status != HealthStatus::Critical
+    }) &amp;&amp; thermal.fans.iter().all(|f| {
+        f.reading_rpm &gt; 0 &amp;&amp; f.status != HealthStatus::Critical
+    })
+}</code></pre>
+<p><a id="polymorphic-validation-ipmi-sel-records"></a></p>
+<h2 id="다형-검증-ipmi-sel-레코드"><a class="header" href="#다형-검증-ipmi-sel-레코드">다형 검증: IPMI SEL 레코드</a></h2>
+<p>앞의 두 사례는 <strong>평평한</strong> 구조를 검증했습니다 — 고정 바이트 레이아웃(FRU)과 알려진 JSON 스키마(Redfish). 실제 데이터는 종종 <strong>다형적</strong>입니다: 뒤쪽 바이트의 해석이 앞쪽 바이트에 달립니다. IPMI System Event Log(SEL) 레코드가 전형적인 예입니다.</p>
+<p><a id="the-shape-of-the-problem"></a></p>
+<h3 id="문제의-형태"><a class="header" href="#문제의-형태">문제의 형태</a></h3>
+<p>SEL 레코드는 정확히 16바이트입니다. 하지만 그 바이트가 <em>의미하는 것</em>은 디스패치 체인에 달립니다.</p>
+<pre><code>Byte 2: Record Type
+  ├─ 0x02 → System Event
+  │    Byte 10[6:4]: Event Type
+  │      ├─ 0x01       → Threshold event (reading + threshold in data bytes 2-3)
+  │      ├─ 0x02-0x0C  → Discrete event (bit in offset field)
+  │      └─ 0x6F       → Sensor-specific (meaning depends on Sensor Type in byte 7)
+  │           Byte 7: Sensor Type
+  │             ├─ 0x01 → Temperature events
+  │             ├─ 0x02 → Voltage events
+  │             ├─ 0x04 → Fan events
+  │             ├─ 0x07 → Processor events
+  │             ├─ 0x0C → Memory events
+  │             ├─ 0x08 → Power Supply events
+  │             └─ ...  → (42 sensor types in IPMI 2.0 Table 42-3)
+  ├─ 0xC0-0xDF → OEM Timestamped
+  └─ 0xE0-0xFF → OEM Non-Timestamped
+</code></pre>
+<p>C에서는 <code>switch</code> 안의 <code>switch</code> 안의 <code>switch</code>이고, 각 단계가 같은 <code>uint8_t *data</code> 포인터를 공유합니다. 단계 하나를 잊거나 스펙 표를 잘못 읽거나 잘못된 바이트를 인덱스하면 — 버그는 조용합니다.</p>
+<pre><code class="language-c">// C — 다형 파싱 문제
+void process_sel_entry(uint8_t *data, int len) {
+    if (data[2] == 0x02) {  // system event
+        uint8_t event_type = (data[10] &gt;&gt; 4) &amp; 0x07;
+        if (event_type == 0x01) {  // threshold
+            uint8_t reading = data[11];   // 🐛 or is it data[13]?
+            uint8_t threshold = data[12]; // 🐛 spec says byte 12 is trigger, not threshold
+            printf("Temp: %d crossed %d\n", reading, threshold);
+        } else if (event_type == 0x6F) {  // sensor-specific
+            uint8_t sensor_type = data[7];
+            if (sensor_type == 0x0C) {  // memory
+                // 🐛 forgot to check event data 1 offset bits
+                printf("Memory ECC error\n");
+            }
+            // 🐛 no else — silently drops 30+ other sensor types
+        }
+    }
+    // 🐛 OEM record types silently ignored
+}
+</code></pre>
+<p><a id="step-1-parse-the-outer-frame"></a></p>
+<h3 id="1단계--바깥-프레임-파싱"><a class="header" href="#1단계--바깥-프레임-파싱">1단계 — 바깥 프레임 파싱</a></h3>
+<p>첫 <code>TryFrom</code>이 레코드 타입으로 디스패치합니다 — 유니온의 가장 바깥 층입니다.</p>
+<pre><code class="language-rust ignore">/// `Get SEL Entry`(IPMI cmd 0x43)에서 온 그대로의 16바이트 SEL 레코드.
+pub struct RawSelRecord(pub [u8; 16]);
+
+/// 검증된 SEL 레코드 — 레코드 타입 디스패치됨, 필드 검사됨.
+pub enum ValidSelRecord {
+    SystemEvent(SystemEventRecord),
+    OemTimestamped(OemTimestampedRecord),
+    OemNonTimestamped(OemNonTimestampedRecord),
+}
+
+#[derive(Debug)]
+pub struct OemTimestampedRecord {
+    pub record_id: u16,
+    pub timestamp: u32,
+    pub manufacturer_id: [u8; 3],
+    pub oem_data: [u8; 6],
+}
+
+#[derive(Debug)]
+pub struct OemNonTimestampedRecord {
+    pub record_id: u16,
+    pub oem_data: [u8; 13],
+}
+
+#[derive(Debug)]
+pub enum SelParseError {
+    UnknownRecordType(u8),
+    UnknownSensorType(u8),
+    UnknownEventType(u8),
+    InvalidEventData { reason: &amp;'static str },
+}
+
+impl std::fmt::Display for SelParseError {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        match self {
+            Self::UnknownRecordType(t) =&gt; write!(f, "unknown record type: 0x{t:02X}"),
+            Self::UnknownSensorType(t) =&gt; write!(f, "unknown sensor type: 0x{t:02X}"),
+            Self::UnknownEventType(t) =&gt; write!(f, "unknown event type: 0x{t:02X}"),
+            Self::InvalidEventData { reason } =&gt; write!(f, "invalid event data: {reason}"),
+        }
+    }
+}
+
+impl TryFrom&lt;RawSelRecord&gt; for ValidSelRecord {
+    type Error = SelParseError;
+
+    fn try_from(raw: RawSelRecord) -&gt; Result&lt;Self, SelParseError&gt; {
+        let d = &amp;raw.0;
+        let record_id = u16::from_le_bytes([d[0], d[1]]);
+
+        match d[2] {
+            0x02 =&gt; {
+                let system = parse_system_event(record_id, d)?;
+                Ok(ValidSelRecord::SystemEvent(system))
+            }
+            0xC0..=0xDF =&gt; {
+                Ok(ValidSelRecord::OemTimestamped(OemTimestampedRecord {
+                    record_id,
+                    timestamp: u32::from_le_bytes([d[3], d[4], d[5], d[6]]),
+                    manufacturer_id: [d[7], d[8], d[9]],
+                    oem_data: [d[10], d[11], d[12], d[13], d[14], d[15]],
+                }))
+            }
+            0xE0..=0xFF =&gt; {
+                Ok(ValidSelRecord::OemNonTimestamped(OemNonTimestampedRecord {
+                    record_id,
+                    oem_data: [d[3], d[4], d[5], d[6], d[7], d[8], d[9],
+                               d[10], d[11], d[12], d[13], d[14], d[15]],
+                }))
+            }
+            other =&gt; Err(SelParseError::UnknownRecordType(other)),
+        }
+    }
+}</code></pre>
+<p>이 경계 이후 모든 소비자는 열거형에 매칭합니다. 컴파일러가 세 레코드 타입을 모두 처리하도록 강제합니다 — OEM 레코드를 “잊을” 수 없습니다.</p>
+<p><a id="step-2-parse-the-system-event-sensor-type--typed-event"></a></p>
+<h3 id="2단계--시스템-이벤트-파싱-센서-타입--타입이-있는-이벤트"><a class="header" href="#2단계--시스템-이벤트-파싱-센서-타입--타입이-있는-이벤트">2단계 — 시스템 이벤트 파싱: 센서 타입 → 타입이 있는 이벤트</a></h3>
+<p>내부 디스패치가 이벤트 데이터 바이트를 센서 타입으로 인덱싱된 합 타입으로 바꿉니다. C의 <code>switch</code> 안의 <code>switch</code>가 중첩 열거형이 되는 지점입니다.</p>
+<pre><code class="language-rust ignore">#[derive(Debug)]
+pub struct SystemEventRecord {
+    pub record_id: u16,
+    pub timestamp: u32,
+    pub generator: GeneratorId,
+    pub sensor_type: SensorType,
+    pub sensor_number: u8,
+    pub event_direction: EventDirection,
+    pub event: TypedEvent,      // ← the key: event data is TYPED
+}
+
+#[derive(Debug)]
+pub enum GeneratorId {
+    Software(u8),
+    Ipmb { slave_addr: u8, channel: u8, lun: u8 },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum EventDirection { Assertion, Deassertion }
+
+// ──── The Sensor/Event Type Hierarchy ────
+
+/// IPMI 표 42-3의 센서 타입. 향후 IPMI 개정과 OEM 범위가
+/// 변형을 추가하므로 non_exhaustive(ch11 요령 3).
+#[non_exhaustive]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum SensorType {
+    Temperature,    // 0x01
+    Voltage,        // 0x02
+    Current,        // 0x03
+    Fan,            // 0x04
+    PhysicalSecurity, // 0x05
+    Processor,      // 0x07
+    PowerSupply,    // 0x08
+    Memory,         // 0x0C
+    SystemEvent,    // 0x12
+    Watchdog2,      // 0x23
+}
+
+/// 다형 페이로드 — 각 변형이 자체 타입 데이터를 실음.
+#[derive(Debug)]
+pub enum TypedEvent {
+    Threshold(ThresholdEvent),
+    SensorSpecific(SensorSpecificEvent),
+    Discrete { offset: u8, event_data: [u8; 3] },
+}
+
+/// 임계값 이벤트는 트리거 읽기와 임계값을 실음.
+/// 둘 다 원시 센서 값(선형화 전), u8로 유지.
+/// SDR 선형화 후 차원 타입이 됨(ch06).
+#[derive(Debug)]
+pub struct ThresholdEvent {
+    pub crossing: ThresholdCrossing,
+    pub trigger_reading: u8,
+    pub threshold_value: u8,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ThresholdCrossing {
+    LowerNonCriticalLow,
+    LowerNonCriticalHigh,
+    LowerCriticalLow,
+    LowerCriticalHigh,
+    LowerNonRecoverableLow,
+    LowerNonRecoverableHigh,
+    UpperNonCriticalLow,
+    UpperNonCriticalHigh,
+    UpperCriticalLow,
+    UpperCriticalHigh,
+    UpperNonRecoverableLow,
+    UpperNonRecoverableHigh,
+}
+
+/// 센서별 이벤트 — 센서 타입마다 변형이 있고
+/// 해당 센서에 정의된 이벤트의 완전 열거형을 둠.
+#[derive(Debug)]
+pub enum SensorSpecificEvent {
+    Temperature(TempEvent),
+    Voltage(VoltageEvent),
+    Fan(FanEvent),
+    Processor(ProcessorEvent),
+    PowerSupply(PowerSupplyEvent),
+    Memory(MemoryEvent),
+    PhysicalSecurity(PhysicalSecurityEvent),
+    Watchdog(WatchdogEvent),
+}
+
+// ──── Per-sensor-type event enums (from IPMI Table 42-3) ────
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum MemoryEvent {
+    CorrectableEcc,
+    UncorrectableEcc,
+    Parity,
+    MemoryBoardScrubFailed,
+    MemoryDeviceDisabled,
+    CorrectableEccLogLimit,
+    PresenceDetected,
+    ConfigurationError,
+    Spare,
+    Throttled,
+    CriticalOvertemperature,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum PowerSupplyEvent {
+    PresenceDetected,
+    Failure,
+    PredictiveFailure,
+    InputLost,
+    InputOutOfRange,
+    InputLostOrOutOfRange,
+    ConfigurationError,
+    InactiveStandby,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum TempEvent {
+    UpperNonCritical,
+    UpperCritical,
+    UpperNonRecoverable,
+    LowerNonCritical,
+    LowerCritical,
+    LowerNonRecoverable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum VoltageEvent {
+    UpperNonCritical,
+    UpperCritical,
+    UpperNonRecoverable,
+    LowerNonCritical,
+    LowerCritical,
+    LowerNonRecoverable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum FanEvent {
+    UpperNonCritical,
+    UpperCritical,
+    UpperNonRecoverable,
+    LowerNonCritical,
+    LowerCritical,
+    LowerNonRecoverable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ProcessorEvent {
+    Ierr,
+    ThermalTrip,
+    Frb1BistFailure,
+    Frb2HangInPost,
+    Frb3ProcessorStartupFailure,
+    ConfigurationError,
+    UncorrectableMachineCheck,
+    PresenceDetected,
+    Disabled,
+    TerminatorPresenceDetected,
+    Throttled,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum PhysicalSecurityEvent {
+    ChassisIntrusion,
+    DriveIntrusion,
+    IOCardAreaIntrusion,
+    ProcessorAreaIntrusion,
+    LanLeashedLost,
+    UnauthorizedDocking,
+    FanAreaIntrusion,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum WatchdogEvent {
+    BiosReset,
+    OsReset,
+    OsShutdown,
+    OsPowerDown,
+    OsPowerCycle,
+    BiosNmi,
+    Timer,
+}</code></pre>
+<p><a id="step-3-the-parser-wiring"></a></p>
+<h3 id="3단계--파서-배선"><a class="header" href="#3단계--파서-배선">3단계 — 파서 배선</a></h3>
+<pre><code class="language-rust ignore">fn parse_system_event(record_id: u16, d: &amp;[u8]) -&gt; Result&lt;SystemEventRecord, SelParseError&gt; {
+    let timestamp = u32::from_le_bytes([d[3], d[4], d[5], d[6]]);
+
+    let generator = if d[7] &amp; 0x01 == 0 {
+        GeneratorId::Ipmb {
+            slave_addr: d[7] &amp; 0xFE,
+            channel: (d[8] &gt;&gt; 4) &amp; 0x0F,
+            lun: d[8] &amp; 0x03,
+        }
+    } else {
+        GeneratorId::Software(d[7])
+    };
+
+    let sensor_type = parse_sensor_type(d[10])?;
+    let sensor_number = d[11];
+    let event_direction = if d[12] &amp; 0x80 != 0 {
+        EventDirection::Deassertion
+    } else {
+        EventDirection::Assertion
+    };
+
+    let event_type_code = d[12] &amp; 0x7F;
+    let event_data = [d[13], d[14], d[15]];
+
+    let event = match event_type_code {
+        0x01 =&gt; {
+            // 임계값 — 이벤트 데이터 바이트 2는 트리거 읽기, 3은 임계값
+            let offset = event_data[0] &amp; 0x0F;
+            TypedEvent::Threshold(ThresholdEvent {
+                crossing: parse_threshold_crossing(offset)?,
+                trigger_reading: event_data[1],
+                threshold_value: event_data[2],
+            })
+        }
+        0x6F =&gt; {
+            // 센서별 — 센서 타입으로 디스패치
+            let offset = event_data[0] &amp; 0x0F;
+            let specific = parse_sensor_specific(&amp;sensor_type, offset)?;
+            TypedEvent::SensorSpecific(specific)
+        }
+        0x02..=0x0C =&gt; {
+            // 일반 이산
+            TypedEvent::Discrete { offset: event_data[0] &amp; 0x0F, event_data }
+        }
+        other =&gt; return Err(SelParseError::UnknownEventType(other)),
+    };
+
+    Ok(SystemEventRecord {
+        record_id,
+        timestamp,
+        generator,
+        sensor_type,
+        sensor_number,
+        event_direction,
+        event,
+    })
+}
+
+fn parse_sensor_type(code: u8) -&gt; Result&lt;SensorType, SelParseError&gt; {
+    match code {
+        0x01 =&gt; Ok(SensorType::Temperature),
+        0x02 =&gt; Ok(SensorType::Voltage),
+        0x03 =&gt; Ok(SensorType::Current),
+        0x04 =&gt; Ok(SensorType::Fan),
+        0x05 =&gt; Ok(SensorType::PhysicalSecurity),
+        0x07 =&gt; Ok(SensorType::Processor),
+        0x08 =&gt; Ok(SensorType::PowerSupply),
+        0x0C =&gt; Ok(SensorType::Memory),
+        0x12 =&gt; Ok(SensorType::SystemEvent),
+        0x23 =&gt; Ok(SensorType::Watchdog2),
+        other =&gt; Err(SelParseError::UnknownSensorType(other)),
+    }
+}
+
+fn parse_threshold_crossing(offset: u8) -&gt; Result&lt;ThresholdCrossing, SelParseError&gt; {
+    match offset {
+        0x00 =&gt; Ok(ThresholdCrossing::LowerNonCriticalLow),
+        0x01 =&gt; Ok(ThresholdCrossing::LowerNonCriticalHigh),
+        0x02 =&gt; Ok(ThresholdCrossing::LowerCriticalLow),
+        0x03 =&gt; Ok(ThresholdCrossing::LowerCriticalHigh),
+        0x04 =&gt; Ok(ThresholdCrossing::LowerNonRecoverableLow),
+        0x05 =&gt; Ok(ThresholdCrossing::LowerNonRecoverableHigh),
+        0x06 =&gt; Ok(ThresholdCrossing::UpperNonCriticalLow),
+        0x07 =&gt; Ok(ThresholdCrossing::UpperNonCriticalHigh),
+        0x08 =&gt; Ok(ThresholdCrossing::UpperCriticalLow),
+        0x09 =&gt; Ok(ThresholdCrossing::UpperCriticalHigh),
+        0x0A =&gt; Ok(ThresholdCrossing::UpperNonRecoverableLow),
+        0x0B =&gt; Ok(ThresholdCrossing::UpperNonRecoverableHigh),
+        _ =&gt; Err(SelParseError::InvalidEventData {
+            reason: "threshold offset out of range",
+        }),
+    }
+}
+
+fn parse_sensor_specific(
+    sensor_type: &amp;SensorType,
+    offset: u8,
+) -&gt; Result&lt;SensorSpecificEvent, SelParseError&gt; {
+    match sensor_type {
+        SensorType::Memory =&gt; {
+            let ev = match offset {
+                0x00 =&gt; MemoryEvent::CorrectableEcc,
+                0x01 =&gt; MemoryEvent::UncorrectableEcc,
+                0x02 =&gt; MemoryEvent::Parity,
+                0x03 =&gt; MemoryEvent::MemoryBoardScrubFailed,
+                0x04 =&gt; MemoryEvent::MemoryDeviceDisabled,
+                0x05 =&gt; MemoryEvent::CorrectableEccLogLimit,
+                0x06 =&gt; MemoryEvent::PresenceDetected,
+                0x07 =&gt; MemoryEvent::ConfigurationError,
+                0x08 =&gt; MemoryEvent::Spare,
+                0x09 =&gt; MemoryEvent::Throttled,
+                0x0A =&gt; MemoryEvent::CriticalOvertemperature,
+                _ =&gt; return Err(SelParseError::InvalidEventData {
+                    reason: "unknown memory event offset",
+                }),
+            };
+            Ok(SensorSpecificEvent::Memory(ev))
+        }
+        SensorType::PowerSupply =&gt; {
+            let ev = match offset {
+                0x00 =&gt; PowerSupplyEvent::PresenceDetected,
+                0x01 =&gt; PowerSupplyEvent::Failure,
+                0x02 =&gt; PowerSupplyEvent::PredictiveFailure,
+                0x03 =&gt; PowerSupplyEvent::InputLost,
+                0x04 =&gt; PowerSupplyEvent::InputOutOfRange,
+                0x05 =&gt; PowerSupplyEvent::InputLostOrOutOfRange,
+                0x06 =&gt; PowerSupplyEvent::ConfigurationError,
+                0x07 =&gt; PowerSupplyEvent::InactiveStandby,
+                _ =&gt; return Err(SelParseError::InvalidEventData {
+                    reason: "unknown power supply event offset",
+                }),
+            };
+            Ok(SensorSpecificEvent::PowerSupply(ev))
+        }
+        SensorType::Processor =&gt; {
+            let ev = match offset {
+                0x00 =&gt; ProcessorEvent::Ierr,
+                0x01 =&gt; ProcessorEvent::ThermalTrip,
+                0x02 =&gt; ProcessorEvent::Frb1BistFailure,
+                0x03 =&gt; ProcessorEvent::Frb2HangInPost,
+                0x04 =&gt; ProcessorEvent::Frb3ProcessorStartupFailure,
+                0x05 =&gt; ProcessorEvent::ConfigurationError,
+                0x06 =&gt; ProcessorEvent::UncorrectableMachineCheck,
+                0x07 =&gt; ProcessorEvent::PresenceDetected,
+                0x08 =&gt; ProcessorEvent::Disabled,
+                0x09 =&gt; ProcessorEvent::TerminatorPresenceDetected,
+                0x0A =&gt; ProcessorEvent::Throttled,
+                _ =&gt; return Err(SelParseError::InvalidEventData {
+                    reason: "unknown processor event offset",
+                }),
+            };
+            Ok(SensorSpecificEvent::Processor(ev))
+        }
+        // Temperature, Voltage, Fan 등에 대해 패턴 반복.
+        // 센서 타입마다 오프셋을 전용 열거형에 매핑.
+        _ =&gt; Err(SelParseError::InvalidEventData {
+            reason: "sensor-specific dispatch not implemented for this sensor type",
+        }),
+    }
+}</code></pre>
+<p><a id="step-4-consuming-typed-sel-records"></a></p>
+<h3 id="4단계--타입이-있는-sel-레코드-소비"><a class="header" href="#4단계--타입이-있는-sel-레코드-소비">4단계 — 타입이 있는 SEL 레코드 소비</a></h3>
+<p>파싱되면 하류 코드는 중첩 열거형에 패턴 매칭합니다. 컴파일러가 완전한 처리를 강제합니다 — 조용한 fallthrough 없음, 센서 타입 누락 없음.</p>
+<pre><code class="language-rust ignore">/// SEL 이벤트가 하드웨어 알림을 일으켜야 하는지 판단.
+/// 컴파일러가 모든 변형 처리를 보장.
+fn should_alert(record: &amp;ValidSelRecord) -&gt; bool {
+    match record {
+        ValidSelRecord::SystemEvent(sys) =&gt; match &amp;sys.event {
+            TypedEvent::Threshold(t) =&gt; {
+                // 치명·복구 불가 임계 교차 → 알림
+                matches!(t.crossing,
+                    ThresholdCrossing::UpperCriticalLow
+                    | ThresholdCrossing::UpperCriticalHigh
+                    | ThresholdCrossing::LowerCriticalLow
+                    | ThresholdCrossing::LowerCriticalHigh
+                    | ThresholdCrossing::UpperNonRecoverableLow
+                    | ThresholdCrossing::UpperNonRecoverableHigh
+                    | ThresholdCrossing::LowerNonRecoverableLow
+                    | ThresholdCrossing::LowerNonRecoverableHigh
+                )
+            }
+            TypedEvent::SensorSpecific(ss) =&gt; match ss {
+                SensorSpecificEvent::Memory(m) =&gt; matches!(m,
+                    MemoryEvent::UncorrectableEcc
+                    | MemoryEvent::Parity
+                    | MemoryEvent::CriticalOvertemperature
+                ),
+                SensorSpecificEvent::PowerSupply(p) =&gt; matches!(p,
+                    PowerSupplyEvent::Failure
+                    | PowerSupplyEvent::InputLost
+                ),
+                SensorSpecificEvent::Processor(p) =&gt; matches!(p,
+                    ProcessorEvent::Ierr
+                    | ProcessorEvent::ThermalTrip
+                    | ProcessorEvent::UncorrectableMachineCheck
+                ),
+                // 이후 버전에 새 센서 타입 변형이 추가되면?
+                // ❌ 컴파일 오류: non-exhaustive patterns
+                _ =&gt; false,
+            },
+            TypedEvent::Discrete { .. } =&gt; false,
+        },
+        // 이 정책에서는 OEM 레코드는 알림 대상 아님
+        ValidSelRecord::OemTimestamped(_) =&gt; false,
+        ValidSelRecord::OemNonTimestamped(_) =&gt; false,
+    }
+}
+
+/// 사람이 읽을 수 있는 설명 생성.
+/// 모든 분기가 구체적 메시지 — "unknown event" fallback 없음.
+fn describe(record: &amp;ValidSelRecord) -&gt; String {
+    match record {
+        ValidSelRecord::SystemEvent(sys) =&gt; {
+            let sensor = format!("{:?} sensor #{}", sys.sensor_type, sys.sensor_number);
+            let dir = match sys.event_direction {
+                EventDirection::Assertion =&gt; "asserted",
+                EventDirection::Deassertion =&gt; "deasserted",
+            };
+            match &amp;sys.event {
+                TypedEvent::Threshold(t) =&gt; {
+                    format!("{sensor}: {:?} {dir} (reading: 0x{:02X}, threshold: 0x{:02X})",
+                        t.crossing, t.trigger_reading, t.threshold_value)
+                }
+                TypedEvent::SensorSpecific(ss) =&gt; {
+                    format!("{sensor}: {ss:?} {dir}")
+                }
+                TypedEvent::Discrete { offset, .. } =&gt; {
+                    format!("{sensor}: discrete offset {offset:#x} {dir}")
+                }
+            }
+        }
+        ValidSelRecord::OemTimestamped(oem) =&gt;
+            format!("OEM record 0x{:04X} (mfr {:02X}{:02X}{:02X})",
+                oem.record_id,
+                oem.manufacturer_id[0], oem.manufacturer_id[1], oem.manufacturer_id[2]),
+        ValidSelRecord::OemNonTimestamped(oem) =&gt;
+            format!("OEM non-ts record 0x{:04X}", oem.record_id),
+    }
+}</code></pre>
+<p><a id="walkthrough-end-to-end-sel-processing"></a></p>
+<h3 id="워크스루-끝에서-끝까지-sel-처리"><a class="header" href="#워크스루-끝에서-끝까지-sel-처리">워크스루: 끝에서 끝까지 SEL 처리</a></h3>
+<p>와이어의 원시 바이트부터 알림 결정까지 — 모든 타입이 있는 핸드오프를 보여 주는 전체 흐름입니다.</p>
+<pre><code class="language-rust ignore">/// BMC의 모든 SEL 항목을 처리해 타입이 있는 알림을 생성.
+fn process_sel_log(raw_entries: &amp;[[u8; 16]]) -&gt; Vec&lt;String&gt; {
+    let mut alerts = Vec::new();
+
+    for (i, raw_bytes) in raw_entries.iter().enumerate() {
+        // ─── 경계: 원시 바이트 → 검증된 레코드 ───
+        let raw = RawSelRecord(*raw_bytes);
+        let record = match ValidSelRecord::try_from(raw) {
+            Ok(r) =&gt; r,
+            Err(e) =&gt; {
+                eprintln!("SEL entry {i}: parse error: {e}");
+                continue;
+            }
+        };
+
+        // ─── 여기부터 모두 타입이 있음 ───
+
+        // 1. 이벤트 설명(완전 매치 — 모든 변형 처리)
+        let description = describe(&amp;record);
+        println!("SEL[{i}]: {description}");
+
+        // 2. 알림 정책 검사(완전 매치 — 컴파일러가 완전성 증명)
+        if should_alert(&amp;record) {
+            alerts.push(description);
+        }
+
+        // 3. 임계값 이벤트에서 차원이 있는 읽기값 추출
+        if let ValidSelRecord::SystemEvent(sys) = &amp;record {
+            if let TypedEvent::Threshold(t) = &amp;sys.event {
+                // 컴파일러는 t.trigger_reading이 임계값 이벤트 읽기이지
+                // 임의 바이트가 아님을 앎. SDR 선형화(ch06) 후에는:
+                //   let temp: Celsius = linearize(t.trigger_reading, &amp;sdr);
+                // 그러면 Celsius는 Rpm과 비교할 수 없음.
+                println!(
+                    "  → raw reading: 0x{:02X}, raw threshold: 0x{:02X}",
+                    t.trigger_reading, t.threshold_value
+                );
+            }
+        }
+    }
+
+    alerts
+}
+
+fn main() {
+    // 예: SEL 항목 두 개(설명용으로 구성)
+    let sel_data: Vec&lt;[u8; 16]&gt; = vec![
+        // Entry 1: System event, Memory sensor #3, sensor-specific,
+        //          offset 0x00 = CorrectableEcc, assertion
+        [
+            0x01, 0x00,       // record ID: 1
+            0x02,             // record type: system event
+            0x00, 0x00, 0x00, 0x00, // timestamp (stub)
+            0x20,             // generator: IPMB slave addr 0x20
+            0x00,             // channel/lun
+            0x04,             // event message rev
+            0x0C,             // sensor type: Memory (0x0C)
+            0x03,             // sensor number: 3
+            0x6F,             // event dir: assertion, event type: sensor-specific
+            0x00,             // event data 1: offset 0x00 = CorrectableEcc
+            0x00, 0x00,       // event data 2-3
+        ],
+        // Entry 2: System event, Temperature sensor #1, threshold,
+        //          offset 0x09 = UpperCriticalHigh, reading=95, threshold=90
+        [
+            0x02, 0x00,       // record ID: 2
+            0x02,             // record type: system event
+            0x00, 0x00, 0x00, 0x00, // timestamp (stub)
+            0x20,             // generator
+            0x00,             // channel/lun
+            0x04,             // event message rev
+            0x01,             // sensor type: Temperature (0x01)
+            0x01,             // sensor number: 1
+            0x01,             // event dir: assertion, event type: threshold (0x01)
+            0x09,             // event data 1: offset 0x09 = UpperCriticalHigh
+            0x5F,             // event data 2: trigger reading (95 raw)
+            0x5A,             // event data 3: threshold value (90 raw)
+        ],
+    ];
+
+    let alerts = process_sel_log(&amp;sel_data);
+    println!("\n=== ALERTS ({}) ===", alerts.len());
+    for alert in &amp;alerts {
+        println!("  🚨 {alert}");
+    }
+}</code></pre>
+<p><strong>예상 출력:</strong></p>
+<pre><code class="language-text">SEL[0]: Memory sensor #3: Memory(CorrectableEcc) asserted
+SEL[1]: Temperature sensor #1: UpperCriticalHigh asserted (reading: 0x5F, threshold: 0x5A)
+  → raw reading: 0x5F, raw threshold: 0x5A
+
+=== ALERTS (1) ===
+  🚨 Temperature sensor #1: UpperCriticalHigh asserted (reading: 0x5F, threshold: 0x5A)
+</code></pre>
+<p>항목 0(정정 가능 ECC)은 기록만 되고 알림은 없습니다. 항목 1(상한 임계 치명 온도)은 알림을 켭니다. 두 결정 모두 완전 패턴 매칭으로 강제됩니다 — 컴파일러가 모든 센서 타입과 임계 교차가 처리됨을 증명합니다.</p>
+<p><a id="from-parsed-events-to-redfish-health-the-consumer-pipeline"></a></p>
+<h3 id="파싱된-이벤트에서-redfish-헬스로-소비자-파이프라인"><a class="header" href="#파싱된-이벤트에서-redfish-헬스로-소비자-파이프라인">파싱된 이벤트에서 Redfish 헬스로: 소비자 파이프라인</a></h3>
+<p>위 워크스루는 알림으로 끝나지만, 실제 BMC에서는 파싱된 SEL 레코드가 Redfish 헬스 롤업으로 흐릅니다(<a href="ch18-redfish-server-walkthrough.html">ch18</a>).
+현재 핸드오프는 정보가 손실되는 <code>bool</code>입니다.</p>
+<pre><code class="language-rust ignore">// ❌ 손실 있음 — 서브시스템별 세부 정보를 버림
+pub struct SelSummary {
+    pub has_critical_events: bool,
+    pub total_entries: u32,
+}</code></pre>
+<p>타입 시스템이 방금 준 정보를 모두 잃습니다: 어떤 서브시스템이 영향을 받는지, 심각도는 무엇인지, 읽기값에 차원 데이터가 실리는지. 전체 파이프라인을 만듭니다.</p>
+<h4 id="1단계--sdr-선형화-원시-바이트--차원-타입ch06"><a class="header" href="#1단계--sdr-선형화-원시-바이트--차원-타입ch06">1단계 — SDR 선형화: 원시 바이트 → 차원 타입(ch06)</a></h4>
+<p>임계값 SEL 이벤트는 이벤트 데이터 바이트 2–3에 원시 센서 읽기를 담습니다. IPMI SDR(Sensor Data Record)이 선형화 식을 제공합니다. 선형화 후 원시 바이트는 차원 타입이 됩니다.</p>
+<pre><code class="language-rust ignore">/// SDR linearization coefficients for a single sensor.
+/// See IPMI spec section 36.3 for the full formula.
+pub struct SdrLinearization {
+    pub sensor_type: SensorType,
+    pub m: i16,        // multiplier
+    pub b: i16,        // offset
+    pub r_exp: i8,     // result exponent (power-of-10)
+    pub b_exp: i8,     // B exponent
+}
+
+/// A linearized sensor reading with its unit attached.
+/// The return type depends on the sensor type — the compiler
+/// enforces that temperature sensors produce Celsius, not Rpm.
+#[derive(Debug, Clone)]
+pub enum LinearizedReading {
+    Temperature(Celsius),
+    Voltage(Volts),
+    Fan(Rpm),
+    Current(Amps),
+    Power(Watts),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Amps(pub f64);
+
+impl SdrLinearization {
+    /// Apply the IPMI linearization formula:
+    ///   y = (M × raw + B × 10^B_exp) × 10^R_exp
+    /// Returns a dimensional type based on the sensor type.
+    pub fn linearize(&amp;self, raw: u8) -&gt; LinearizedReading {
+        let y = (self.m as f64 * raw as f64
+                + self.b as f64 * 10_f64.powi(self.b_exp as i32))
+                * 10_f64.powi(self.r_exp as i32);
+
+        match self.sensor_type {
+            SensorType::Temperature =&gt; LinearizedReading::Temperature(Celsius(y)),
+            SensorType::Voltage     =&gt; LinearizedReading::Voltage(Volts(y)),
+            SensorType::Fan         =&gt; LinearizedReading::Fan(Rpm(y as u32)),
+            SensorType::Current     =&gt; LinearizedReading::Current(Amps(y)),
+            SensorType::PowerSupply =&gt; LinearizedReading::Power(Watts(y)),
+            // Other sensor types — extend as needed
+            _ =&gt; LinearizedReading::Temperature(Celsius(y)),
+        }
+    }
+}</code></pre>
+<p>이로써 SEL 워크스루의 원시 바이트 <code>0x5F</code>(십진 95)가 <code>Celsius(95.0)</code>이 되고 — 컴파일러가 <code>Rpm</code>이나 <code>Watts</code>와 비교하는 것을 막습니다.</p>
+<h4 id="2단계--서브시스템별-헬스-분류"><a class="header" href="#2단계--서브시스템별-헬스-분류">2단계 — 서브시스템별 헬스 분류</a></h4>
+<p>모든 것을 <code>has_critical_events: bool</code>로 뭉개지 말고, 파싱된 각 SEL 이벤트를 서브시스템별 헬스 버킷으로 분류합니다.</p>
+<pre><code class="language-rust ignore">/// 단일 SEL 이벤트의 헬스 기여 — 서브시스템별로 분류.
+#[derive(Debug, Clone)]
+pub enum SubsystemHealth {
+    Processor(HealthValue),
+    Memory(HealthValue),
+    PowerSupply(HealthValue),
+    Thermal(HealthValue),
+    Fan(HealthValue),
+    Storage(HealthValue),
+    Security(HealthValue),
+}
+
+/// 타입이 있는 SEL 이벤트를 서브시스템별 헬스로 분류.
+/// 완전 매칭으로 모든 센서 타입이 기여하도록 보장.
+fn classify_event_health(record: &amp;SystemEventRecord) -&gt; SubsystemHealth {
+    match &amp;record.event {
+        TypedEvent::Threshold(t) =&gt; {
+            // 임계값 심각도는 crossing 단계에 달림
+            let health = match t.crossing {
+                // 비치명 → Warning
+                ThresholdCrossing::UpperNonCriticalLow
+                | ThresholdCrossing::UpperNonCriticalHigh
+                | ThresholdCrossing::LowerNonCriticalLow
+                | ThresholdCrossing::LowerNonCriticalHigh =&gt; HealthValue::Warning,
+
+                // 치명 또는 복구 불가 → Critical
+                ThresholdCrossing::UpperCriticalLow
+                | ThresholdCrossing::UpperCriticalHigh
+                | ThresholdCrossing::LowerCriticalLow
+                | ThresholdCrossing::LowerCriticalHigh
+                | ThresholdCrossing::UpperNonRecoverableLow
+                | ThresholdCrossing::UpperNonRecoverableHigh
+                | ThresholdCrossing::LowerNonRecoverableLow
+                | ThresholdCrossing::LowerNonRecoverableHigh =&gt; HealthValue::Critical,
+            };
+
+            // 센서 타입에 따라 올바른 서브시스템으로 라우팅
+            match record.sensor_type {
+                SensorType::Temperature =&gt; SubsystemHealth::Thermal(health),
+                SensorType::Voltage     =&gt; SubsystemHealth::PowerSupply(health),
+                SensorType::Current     =&gt; SubsystemHealth::PowerSupply(health),
+                SensorType::Fan         =&gt; SubsystemHealth::Fan(health),
+                SensorType::Processor   =&gt; SubsystemHealth::Processor(health),
+                SensorType::PowerSupply =&gt; SubsystemHealth::PowerSupply(health),
+                SensorType::Memory      =&gt; SubsystemHealth::Memory(health),
+                _                       =&gt; SubsystemHealth::Thermal(health),
+            }
+        }
+
+        TypedEvent::SensorSpecific(ss) =&gt; match ss {
+            SensorSpecificEvent::Memory(m) =&gt; {
+                let health = match m {
+                    MemoryEvent::UncorrectableEcc
+                    | MemoryEvent::Parity
+                    | MemoryEvent::CriticalOvertemperature =&gt; HealthValue::Critical,
+
+                    MemoryEvent::CorrectableEccLogLimit
+                    | MemoryEvent::MemoryBoardScrubFailed
+                    | MemoryEvent::Throttled =&gt; HealthValue::Warning,
+
+                    MemoryEvent::CorrectableEcc
+                    | MemoryEvent::PresenceDetected
+                    | MemoryEvent::MemoryDeviceDisabled
+                    | MemoryEvent::ConfigurationError
+                    | MemoryEvent::Spare =&gt; HealthValue::OK,
+                };
+                SubsystemHealth::Memory(health)
+            }
+
+            SensorSpecificEvent::PowerSupply(p) =&gt; {
+                let health = match p {
+                    PowerSupplyEvent::Failure
+                    | PowerSupplyEvent::InputLost =&gt; HealthValue::Critical,
+
+                    PowerSupplyEvent::PredictiveFailure
+                    | PowerSupplyEvent::InputOutOfRange
+                    | PowerSupplyEvent::InputLostOrOutOfRange
+                    | PowerSupplyEvent::ConfigurationError =&gt; HealthValue::Warning,
+
+                    PowerSupplyEvent::PresenceDetected
+                    | PowerSupplyEvent::InactiveStandby =&gt; HealthValue::OK,
+                };
+                SubsystemHealth::PowerSupply(health)
+            }
+
+            SensorSpecificEvent::Processor(p) =&gt; {
+                let health = match p {
+                    ProcessorEvent::Ierr
+                    | ProcessorEvent::ThermalTrip
+                    | ProcessorEvent::UncorrectableMachineCheck =&gt; HealthValue::Critical,
+
+                    ProcessorEvent::Frb1BistFailure
+                    | ProcessorEvent::Frb2HangInPost
+                    | ProcessorEvent::Frb3ProcessorStartupFailure
+                    | ProcessorEvent::ConfigurationError
+                    | ProcessorEvent::Disabled =&gt; HealthValue::Warning,
+
+                    ProcessorEvent::PresenceDetected
+                    | ProcessorEvent::TerminatorPresenceDetected
+                    | ProcessorEvent::Throttled =&gt; HealthValue::OK,
+                };
+                SubsystemHealth::Processor(health)
+            }
+
+            SensorSpecificEvent::PhysicalSecurity(_) =&gt;
+                SubsystemHealth::Security(HealthValue::Warning),
+
+            SensorSpecificEvent::Watchdog(_) =&gt;
+                SubsystemHealth::Processor(HealthValue::Warning),
+
+            // Temperature, Voltage, Fan sensor-specific events
+            SensorSpecificEvent::Temperature(_) =&gt;
+                SubsystemHealth::Thermal(HealthValue::Warning),
+            SensorSpecificEvent::Voltage(_) =&gt;
+                SubsystemHealth::PowerSupply(HealthValue::Warning),
+            SensorSpecificEvent::Fan(_) =&gt;
+                SubsystemHealth::Fan(HealthValue::Warning),
+        },
+
+        TypedEvent::Discrete { .. } =&gt; {
+            // 일반 이산 — 센서 타입으로 Warning 분류
+            match record.sensor_type {
+                SensorType::Processor =&gt; SubsystemHealth::Processor(HealthValue::Warning),
+                SensorType::Memory    =&gt; SubsystemHealth::Memory(HealthValue::Warning),
+                _                     =&gt; SubsystemHealth::Thermal(HealthValue::OK),
+            }
+        }
+    }
+}</code></pre>
+<p>모든 <code>match</code> 팔이 완전합니다 — <code>MemoryEvent</code> 변형을 추가하면 컴파일러가 심각도를 정하도록 강제합니다. <code>SensorSpecificEvent</code> 변형을 추가하면 모든 소비자가 분류해야 합니다. 파싱 절의 열거형 트리에 대한 보상입니다.</p>
+<h4 id="3단계--타입이-있는-sel-요약으로-집계"><a class="header" href="#3단계--타입이-있는-sel-요약으로-집계">3단계 — 타입이 있는 SEL 요약으로 집계</a></h4>
+<p>손실 있는 <code>bool</code> 대신 서브시스템별 헬스를 보존하는 구조화된 요약으로 바꿉니다.</p>
+<pre><code class="language-rust ignore">use std::collections::HashMap;
+
+/// 풍부한 SEL 요약 — 타입이 있는 이벤트에서 도출한 서브시스템별 헬스.
+/// Redfish 서버(ch18) 헬스 롤업에 넘기는 것.
+#[derive(Debug, Clone)]
+pub struct TypedSelSummary {
+    pub total_entries: u32,
+    pub processor_health: HealthValue,
+    pub memory_health: HealthValue,
+    pub power_health: HealthValue,
+    pub thermal_health: HealthValue,
+    pub fan_health: HealthValue,
+    pub storage_health: HealthValue,
+    pub security_health: HealthValue,
+    /// 임계값 이벤트의 차원 읽기값(선형화 후).
+    pub threshold_readings: Vec&lt;LinearizedThresholdEvent&gt;,
+}
+
+/// 선형화된 읽기값이 붙은 임계값 이벤트.
+#[derive(Debug, Clone)]
+pub struct LinearizedThresholdEvent {
+    pub sensor_type: SensorType,
+    pub sensor_number: u8,
+    pub crossing: ThresholdCrossing,
+    pub trigger_reading: LinearizedReading,
+    pub threshold_value: LinearizedReading,
+}
+
+/// 파싱된 SEL 레코드로 TypedSelSummary 빌드.
+/// 소비자 파이프라인: 파싱(위 0단계) → 분류 → 집계.
+pub fn summarize_sel(
+    records: &amp;[ValidSelRecord],
+    sdr_table: &amp;HashMap&lt;u8, SdrLinearization&gt;,
+) -&gt; TypedSelSummary {
+    let mut processor = HealthValue::OK;
+    let mut memory = HealthValue::OK;
+    let mut power = HealthValue::OK;
+    let mut thermal = HealthValue::OK;
+    let mut fan = HealthValue::OK;
+    let mut storage = HealthValue::OK;
+    let mut security = HealthValue::OK;
+    let mut threshold_readings = Vec::new();
+    let mut count = 0u32;
+
+    for record in records {
+        count += 1;
+
+        let ValidSelRecord::SystemEvent(sys) = record else {
+            continue; // OEM 레코드는 헬스에 기여하지 않음
+        };
+
+        // ── 이벤트 분류 → 서브시스템별 헬스 ──
+        let health = classify_event_health(sys);
+        match &amp;health {
+            SubsystemHealth::Processor(h) =&gt; processor = processor.max(*h),
+            SubsystemHealth::Memory(h)    =&gt; memory = memory.max(*h),
+            SubsystemHealth::PowerSupply(h) =&gt; power = power.max(*h),
+            SubsystemHealth::Thermal(h)   =&gt; thermal = thermal.max(*h),
+            SubsystemHealth::Fan(h)       =&gt; fan = fan.max(*h),
+            SubsystemHealth::Storage(h)   =&gt; storage = storage.max(*h),
+            SubsystemHealth::Security(h)  =&gt; security = security.max(*h),
+        }
+
+        // ── SDR가 있으면 임계값 읽기 선형화 ──
+        if let TypedEvent::Threshold(t) = &amp;sys.event {
+            if let Some(sdr) = sdr_table.get(&amp;sys.sensor_number) {
+                threshold_readings.push(LinearizedThresholdEvent {
+                    sensor_type: sys.sensor_type,
+                    sensor_number: sys.sensor_number,
+                    crossing: t.crossing,
+                    trigger_reading: sdr.linearize(t.trigger_reading),
+                    threshold_value: sdr.linearize(t.threshold_value),
+                });
+            }
+        }
+    }
+
+    TypedSelSummary {
+        total_entries: count,
+        processor_health: processor,
+        memory_health: memory,
+        power_health: power,
+        thermal_health: thermal,
+        fan_health: fan,
+        storage_health: storage,
+        security_health: security,
+        threshold_readings,
+    }
+}</code></pre>
+<h4 id="4단계--전체-파이프라인-원시-바이트--redfish-헬스"><a class="header" href="#4단계--전체-파이프라인-원시-바이트--redfish-헬스">4단계 — 전체 파이프라인: 원시 바이트 → Redfish 헬스</a></h4>
+<p>원시 SEL 바이트부터 Redfish 준비 헬스 값까지 모든 타입이 있는 핸드오프를 보여 주는 완전한 소비자 파이프라인입니다.</p>
+<pre class="mermaid">flowchart LR
+    RAW["원시 [u8; 16]\nSEL 항목"]
+    PARSE["TryFrom:\nValidSelRecord\n(열거형 트리)"]
+    CLASSIFY["classify_event_health\n(완전 매치)"]
+    LINEARIZE["SDR 선형화\n원시 → Celsius/Rpm/Watts"]
+    SUMMARY["TypedSelSummary\n(서브시스템별 헬스\n+ 차원 읽기)"]
+    REDFISH["ch18: 헬스 롤업\n→ Status.Health JSON"]
+
+    RAW --&gt;|"ch07 Parse"| PARSE
+    PARSE --&gt;|"타입이 있는 이벤트"| CLASSIFY
+    PARSE --&gt;|"임계값 바이트"| LINEARIZE
+    CLASSIFY --&gt;|"SubsystemHealth"| SUMMARY
+    LINEARIZE --&gt;|"LinearizedReading"| SUMMARY
+    SUMMARY --&gt;|"TypedSelSummary"| REDFISH
+
+    style RAW fill:#fff3e0,color:#000
+    style PARSE fill:#e1f5fe,color:#000
+    style CLASSIFY fill:#f3e5f5,color:#000
+    style LINEARIZE fill:#e8f5e9,color:#000
+    style SUMMARY fill:#c8e6c9,color:#000
+    style REDFISH fill:#bbdefb,color:#000
+</pre>
+
+<pre><code class="language-rust ignore">use std::collections::HashMap;
+
+fn full_sel_pipeline() {
+    // ── BMC에서 온 원시 SEL 데이터 ──
+    let raw_entries: Vec&lt;[u8; 16]&gt; = vec![
+        // Memory correctable ECC on sensor #3
+        [0x01,0x00, 0x02, 0x00,0x00,0x00,0x00,
+         0x20,0x00, 0x04, 0x0C, 0x03, 0x6F, 0x00, 0x00,0x00],
+        // Temperature upper critical on sensor #1, reading=95, threshold=90
+        [0x02,0x00, 0x02, 0x00,0x00,0x00,0x00,
+         0x20,0x00, 0x04, 0x01, 0x01, 0x01, 0x09, 0x5F,0x5A],
+        // PSU failure on sensor #5
+        [0x03,0x00, 0x02, 0x00,0x00,0x00,0x00,
+         0x20,0x00, 0x04, 0x08, 0x05, 0x6F, 0x01, 0x00,0x00],
+    ];
+
+    // ── 0단계: 경계에서 파싱(ch07 TryFrom) ──
+    let records: Vec&lt;ValidSelRecord&gt; = raw_entries.iter()
+        .filter_map(|raw| ValidSelRecord::try_from(RawSelRecord(*raw)).ok())
+        .collect();
+
+    // ── 1–3단계: 분류 + 선형화 + 집계 ──
+    let mut sdr_table = HashMap::new();
+    sdr_table.insert(1u8, SdrLinearization {
+        sensor_type: SensorType::Temperature,
+        m: 1, b: 0, r_exp: 0, b_exp: 0,  // 이 예시는 1:1 매핑
+    });
+
+    let summary = summarize_sel(&amp;records, &amp;sdr_table);
+
+    // ── 결과: 구조화·타입 있음·Redfish 준비 ──
+    println!("SEL Summary:");
+    println!("  Total entries: {}", summary.total_entries);
+    println!("  Processor:  {:?}", summary.processor_health);  // OK
+    println!("  Memory:     {:?}", summary.memory_health);      // OK (정정 가능 → OK)
+    println!("  Power:      {:?}", summary.power_health);       // Critical (PSU 실패)
+    println!("  Thermal:    {:?}", summary.thermal_health);     // Critical (상한 치명)
+    println!("  Fan:        {:?}", summary.fan_health);         // OK
+    println!("  Security:   {:?}", summary.security_health);    // OK
+
+    // 임계값 이벤트에서 보존된 차원 읽기:
+    for r in &amp;summary.threshold_readings {
+        println!("  Threshold: sensor {:?} #{} — {:?} crossed {:?}",
+            r.sensor_type, r.sensor_number,
+            r.trigger_reading, r.crossing);
+        // trigger_reading은 LinearizedReading::Temperature(Celsius(95.0))
+        // — 원시 바이트도 아니고 타입 없는 f64도 아님
+    }
+
+    // ── 이 요약이 ch18 헬스 롤업으로 바로 들어감 ──
+    // compute_system_health()가 단일 `has_critical_events: bool` 대신
+    // 서브시스템별 값을 쓸 수 있음
+}</code></pre>
+<p><strong>예상 출력:</strong></p>
+<pre><code class="language-text">SEL Summary:
+  Total entries: 3
+  Processor:  OK
+  Memory:     OK
+  Power:      Critical
+  Thermal:    Critical
+  Fan:        OK
+  Security:   OK
+  Threshold: sensor Temperature #1 — Temperature(Celsius(95.0)) crossed UpperCriticalHigh
+</code></pre>
+<h4 id="소비자-파이프라인이-증명하는-것"><a class="header" href="#소비자-파이프라인이-증명하는-것">소비자 파이프라인이 증명하는 것</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>단계</th><th>패턴</th><th>강제되는 것</th></tr>
+</thead>
+<tbody>
+<tr><td>Parse</td><td>검증된 경계(ch07)</td><td>모든 소비자가 타입이 있는 열거형으로만 동작, 원시 바이트 아님</td></tr>
+<tr><td>Classify</td><td>완전 매칭</td><td>모든 센서 타입·이벤트 변형이 헬스 값으로 매핑 — 하나를 잊을 수 없음</td></tr>
+<tr><td>Linearize</td><td>차원 분석(ch06)</td><td>원시 바이트 0x5F가 <code>f64</code>가 아니라 <code>Celsius(95.0)</code> — RPM과 혼동 불가</td></tr>
+<tr><td>Aggregate</td><td>타입이 있는 fold</td><td>서브시스템별 헬스가 <code>HealthValue::max()</code> 사용 — <code>Ord</code>가 정확성 보장</td></tr>
+<tr><td>Handoff</td><td>구조화된 요약</td><td>ch18이 <code>bool</code>이 아니라 7개 서브시스템 헬스 값이 담긴 <code>TypedSelSummary</code> 수신</td></tr>
+</tbody>
+</table>
+</div>
+<p>타입 없는 C 파이프라인과 비교:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>단계</th><th>C</th><th>Rust</th></tr>
+</thead>
+<tbody>
+<tr><td>레코드 타입 파싱</td><td>fallthrough 가능한 <code>switch</code></td><td>열거형 <code>match</code> — 완전</td></tr>
+<tr><td>심각도 분류</td><td>수동 <code>if</code> 체인, PSU 누락 가능</td><td>완전 <code>match</code> — 변형 누락 시 컴파일 오류</td></tr>
+<tr><td>읽기 선형화</td><td>단위 없는 <code>double</code></td><td>서로 다른 타입인 <code>Celsius</code> / <code>Rpm</code> / <code>Watts</code></td></tr>
+<tr><td>헬스 집계</td><td><code>bool has_critical</code></td><td>타입이 있는 서브시스템 필드 7개</td></tr>
+<tr><td>Redfish로 넘김</td><td>타입 없는 <code>json_object_set("Health", "OK")</code></td><td><code>TypedSelSummary</code> → 타입이 있는 헬스 롤업(ch18)</td></tr>
+</tbody>
+</table>
+</div>
+<p>Rust 파이프라인은 버그를 더 막을 뿐 아니라 <strong>더 풍부한 출력</strong>을 만듭니다.
+C 파이프라인은 단계마다 정보를 잃습니다(다형 → 평평, 차원 → 타입 없음, 서브시스템별 → 단일 bool). Rust 파이프라인은 모두 보존합니다. 타입 시스템이 <strong>구조를 버리는 것보다 유지하는 쪽이 더 쉽게</strong> 만듭니다.</p>
+<p><a id="what-the-compiler-proves"></a></p>
+<h3 id="컴파일러가-증명하는-것"><a class="header" href="#컴파일러가-증명하는-것">컴파일러가 증명하는 것</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C의 버그</th><th>Rust가 막는 방법</th></tr>
+</thead>
+<tbody>
+<tr><td>레코드 타입 검사를 잊음</td><td><code>ValidSelRecord</code>에 <code>match</code> — 세 변형 모두 처리</td></tr>
+<tr><td>트리거 읽기의 잘못된 바이트 인덱스</td><td><code>ThresholdEvent.trigger_reading</code>에 한 번만 파싱 — 소비자는 원시 바이트를 건드리지 않음</td></tr>
+<tr><td>센서 타입에 대한 <code>case</code> 누락</td><td><code>SensorSpecificEvent</code> 매치가 완전 — 변형 누락 시 컴파일 오류</td></tr>
+<tr><td>OEM 레코드를 조용히 드롭</td><td>열거형 변형 존재 — 처리하거나 명시적으로 <code>_ =&gt;</code>로 무시</td></tr>
+<tr><td>임계값 읽기(°C)와 팬 오프셋 비교</td><td>SDR 선형화 후 <code>Celsius</code> ≠ <code>Rpm</code>(ch06)</td></tr>
+<tr><td>새 센서 타입 추가, 알림 로직 잊음</td><td><code>#[non_exhaustive]</code> + 완전 매치 → 하류 크레이트에서 컴파일 오류</td></tr>
+<tr><td>두 코드 경로에서 이벤트 데이터를 다르게 파싱</td><td>단일 <code>parse_system_event()</code> 경계 — 단일 진실 공급원</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="the-three-beat-pattern"></a></p>
+<h3 id="세-박자-패턴"><a class="header" href="#세-박자-패턴">세 박자 패턴</a></h3>
+<p>이 장의 세 사례를 돌아보면 <strong>점진적인 호</strong>가 보입니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>사례 연구</th><th>입력 형태</th><th>파싱 복잡도</th><th>핵심 기법</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>FRU</strong>(바이트)</td><td>평평, 고정 레이아웃</td><td><code>TryFrom</code> 하나, 필드 검사</td><td>검증된 경계 타입</td></tr>
+<tr><td><strong>Redfish</strong>(JSON)</td><td>구조화, 알려진 스키마</td><td><code>TryFrom</code> 하나, 필드+중첩 검사</td><td>같은 기법, 전송만 다름</td></tr>
+<tr><td><strong>SEL</strong>(다형 바이트)</td><td>중첩 판별 유니온</td><td>디스패치 체인: 레코드 타입 → 이벤트 타입 → 센서 타입</td><td>열거형 트리 + 완전 매칭</td></tr>
+</tbody>
+</table>
+</div>
+<p>셋 모두 원리는 같습니다: <strong>경계에서 한 번만 검증하고, 타입에 증명을 실어 나르고, 다시 검사하지 않는다.</strong> SEL 사례는 이 원리가 임의로 복잡한 다형 데이터까지 확장됨을 보여 줍니다 — 타입 시스템이 중첩 디스패치를 평평한 필드 검증만큼 자연스럽게 다룹니다.</p>
+<p><a id="composing-validated-types"></a></p>
+<h2 id="검증된-타입-조합"><a class="header" href="#검증된-타입-조합">검증된 타입 조합</a></h2>
+<p>검증된 타입은 조합됩니다 — 검증된 필드들의 구조체 그 자체도 검증됩니다.</p>
+<pre><code class="language-rust ignore"><span class="boring">#[derive(Debug)]
+</span><span class="boring">pub struct ValidFru { format_version: u8 }
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">pub struct ValidThermalResponse { }
+</span>
+/// 완전히 검증된 시스템 스냅샷.
+/// 각 필드는 독립적으로 검증되었고, 합성체도 유효.
+#[derive(Debug)]
+pub struct ValidSystemSnapshot {
+    pub fru: ValidFru,
+    pub thermal: ValidThermalResponse,
+    // 각 필드가 자체 유효성 보장.
+    // "validate_snapshot()" 함수 불필요.
+}
+
+/// ValidSystemSnapshot이 검증된 부분으로 구성되므로
+/// 이를 받는 함수는 모든 데이터를 신뢰할 수 있음.
+fn generate_health_report(snapshot: &amp;ValidSystemSnapshot) {
+    println!("FRU version: {}", snapshot.fru.format_version);
+    // 검증 불필요 — 타입이 전부 보장
+}</code></pre>
+<p><a id="the-key-insight"></a></p>
+<h3 id="핵심-통찰"><a class="header" href="#핵심-통찰">핵심 통찰</a></h3>
+<blockquote>
+<p><strong>경계에서 검증하라. 타입에 증명을 실어 나르라. 다시 검사하지 마라.</strong></p>
+</blockquote>
+<p>“이 함수 하나만 검증을 빼먹었다“류 버그 한 클래스가 사라집니다. 함수가 <code>&amp;ValidFru</code>를 받으면 데이터는 유효합니다. 그게 전부입니다.</p>
+<p><a id="when-to-use-validated-boundary-types"></a></p>
+<h3 id="언제-검증된-경계-타입을-쓸까"><a class="header" href="#언제-검증된-경계-타입을-쓸까">언제 검증된 경계 타입을 쓸까</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>데이터 소스</th><th style="text-align: center">검증된 경계 타입?</th></tr>
+</thead>
+<tbody>
+<tr><td>BMC의 IPMI FRU 데이터</td><td style="text-align: center">예 — 복잡한 이진 형식</td></tr>
+<tr><td>Redfish JSON 응답</td><td style="text-align: center">예 — 필수 필드가 많음</td></tr>
+<tr><td>PCIe 설정 공간</td><td style="text-align: center">예 — 레지스터 레이아웃이 엄격</td></tr>
+<tr><td>SMBIOS 테이블</td><td style="text-align: center">예 — 체크섬이 있는 버전 형식</td></tr>
+<tr><td>사용자 제공 테스트 매개변수</td><td style="text-align: center">예 — 주입 방지</td></tr>
+<tr><td>내부 함수 호출</td><td style="text-align: center">보통 아니요 — 타입이 이미 제약</td></tr>
+<tr><td>로그 메시지</td><td style="text-align: center">아니요 — 최선 노력, 안전 핵심 아님</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="validation-boundary-flow"></a></p>
+<h2 id="검증-경계-흐름"><a class="header" href="#검증-경계-흐름">검증 경계 흐름</a></h2>
+<pre class="mermaid">flowchart LR
+    RAW["원시 바이트 / JSON"] --&gt;|"TryFrom / serde"| V{"유효?"}
+    V --&gt;|Yes| VT["ValidFru / ValidRedfish"]
+    V --&gt;|No| E["Err(ParseError)"]
+    VT --&gt;|"&amp;ValidFru"| F1["fn process()"] &amp; F2["fn report()"] &amp; F3["fn store()"]
+    style RAW fill:#fff3e0,color:#000
+    style V fill:#e1f5fe,color:#000
+    style VT fill:#c8e6c9,color:#000
+    style E fill:#ffcdd2,color:#000
+    style F1 fill:#e8f5e9,color:#000
+    style F2 fill:#e8f5e9,color:#000
+    style F3 fill:#e8f5e9,color:#000
+</pre>
+
+<p><a id="exercise-validated-smbios-table"></a></p>
+<h2 id="연습-검증된-smbios-테이블"><a class="header" href="#연습-검증된-smbios-테이블">연습: 검증된 SMBIOS 테이블</a></h2>
+<p>SMBIOS Type 17(Memory Device) 레코드용 <code>ValidSmbiosType17</code> 타입을 설계하세요.</p>
+<ul>
+<li>원시 입력은 <code>&amp;[u8]</code>; 최소 길이 21바이트, 바이트 0은 0x11이어야 함.</li>
+<li>필드: <code>handle: u16</code>, <code>size_mb: u16</code>, <code>speed_mhz: u16</code>.</li>
+<li><code>TryFrom&lt;&amp;[u8]&gt;</code>를 써서 모든 하류 함수가 <code>&amp;ValidSmbiosType17</code>만 받게 하세요.</li>
+</ul>
+<details>
+<summary>해답</summary>
+<pre><code class="language-rust ignore">#[derive(Debug)]
+pub struct ValidSmbiosType17 {
+    pub handle: u16,
+    pub size_mb: u16,
+    pub speed_mhz: u16,
+}
+
+impl TryFrom&lt;&amp;[u8]&gt; for ValidSmbiosType17 {
+    type Error = String;
+    fn try_from(raw: &amp;[u8]) -&gt; Result&lt;Self, Self::Error&gt; {
+        if raw.len() &lt; 21 {
+            return Err(format!("too short: {} &lt; 21", raw.len()));
+        }
+        if raw[0] != 0x11 {
+            return Err(format!("wrong type: 0x{:02X} != 0x11", raw[0]));
+        }
+        Ok(ValidSmbiosType17 {
+            handle: u16::from_le_bytes([raw[1], raw[2]]),
+            size_mb: u16::from_le_bytes([raw[12], raw[13]]),
+            speed_mhz: u16::from_le_bytes([raw[19], raw[20]]),
+        })
+    }
+}
+
+// 하류 함수는 검증된 타입만 받음 — 재검사 없음
+pub fn report_dimm(dimm: &amp;ValidSmbiosType17) -&gt; String {
+    format!("DIMM handle 0x{:04X}: {}MB @ {}MHz",
+        dimm.handle, dimm.size_mb, dimm.speed_mhz)
+}</code></pre>
+</details>
+<p><a id="key-takeaways"></a></p>
+<h2 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h2>
+<ol>
+<li><strong>경계에서 한 번만 파싱</strong> — <code>TryFrom</code>이 원시 데이터를 정확히 한 번만 검증하고, 하류는 타입을 신뢰합니다.</li>
+<li><strong>산탄총 검증 제거</strong> — 함수가 <code>&amp;ValidFru</code>를 받으면 데이터는 유효합니다. 그게 전부입니다.</li>
+<li><strong>패턴이 평평한 것에서 다형까지 확장</strong> — FRU(평평한 바이트), Redfish(구조화 JSON), SEL(중첩 판별 유니온)이 복잡도만 올라가며 같은 기법을 씁니다.</li>
+<li><strong>완전 매칭이 곧 검증</strong> — SEL 같은 다형 데이터에서 컴파일러의 열거형 완전성 검사가 “센서 타입을 잊음” 버그 클래스를 런타임 비용 없이 막습니다.</li>
+<li><strong>소비자 파이프라인이 구조를 보존</strong> — 파싱 → 분류 → 선형화 → 집계가 서브시스템별 헬스와 차원 읽기를 유지하는데, C는 단일 <code>bool</code>로 손실 압축합니다. 타입 시스템이 정보를 버리기보다 유지하는 쪽이 더 쉽습니다.</li>
+<li><strong><code>serde</code>는 자연스러운 경계</strong> — <code>#[derive(Deserialize)]</code>와 <code>#[serde(try_from)]</code>로 파싱 시점에 JSON을 검증합니다.</li>
+<li><strong>검증된 타입 조합</strong> — <code>ValidServerHealth</code>가 <code>ValidFru</code> + <code>ValidThermal</code> + <code>ValidPower</code>를 요구할 수 있습니다.</li>
+<li><strong>proptest(ch14)와 짝</strong> — <code>TryFrom</code> 경계를 퍼징해 유효 입력이 거절되지 않고 무효 입력이 스며들지 않게 합니다.</li>
+<li><strong>이 패턴이 전체 Redfish 워크플로로 조합됨</strong> — ch17은 클라이언트 측에서 검증된 경계(JSON 응답을 타입이 있는 구조체로 파싱)를 적용하고, ch18은 서버 측에서 패턴을 뒤집습니다(빌더 type-state로 직렬화 전 필수 필드가 모두 채워졌음을 보장). 여기서 만든 SEL 소비자 파이프라인은 ch18의 <code>TypedSelSummary</code> 헬스 롤업으로 바로 이어집니다.</li>
+</ol>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch06-dimensional-analysis-making-the-compiler.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch08-capability-mixins-compile-time-hardware-.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch06-dimensional-analysis-making-the-compiler.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch08-capability-mixins-compile-time-hardware-.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

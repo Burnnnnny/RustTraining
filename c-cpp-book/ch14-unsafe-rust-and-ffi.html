@@ -1,0 +1,746 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>14. Unsafe Rust와 FFI - C/C++ 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-316e143c.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-30fc96c1.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C/C++ 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="unsafe-rust"></a></p>
+<h3 id="unsafe-rust-개요"><a class="header" href="#unsafe-rust-개요">Unsafe Rust 개요</a></h3>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> <code>unsafe</code>를 언제, 어떻게 써야 하는지, 로 포인터 역참조, Rust에서 C를 호출하고 C에서 Rust를 호출하는 FFI(Foreign Function Interface), 문자열 상호운용을 위한 <code>CString</code>/<code>CStr</code>, 그리고 unsafe 코드를 감싸는 안전한 래퍼를 작성하는 방법을 배웁니다.</p>
+</blockquote>
+<ul>
+<li><code>unsafe</code>는 Rust 컴파일러가 평소에는 허용하지 않는 기능에 접근할 수 있게 해 줍니다.
+<ul>
+<li>로 포인터 역참조</li>
+<li><em>mutable</em> 정적 변수 접근</li>
+<li>https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html</li>
+</ul>
+</li>
+<li>큰 힘에는 큰 책임이 따릅니다.
+<ul>
+<li><code>unsafe</code>는 컴파일러에게 “컴파일러가 평소에 보장하는 불변 조건은 이제 프로그래머인 내가 책임지겠다“라고 선언하는 것입니다.</li>
+<li>가변 참조와 불변 참조가 별칭되지 않음, 댕글링 포인터가 없음, 잘못된 참조가 없음 등을 직접 보장해야 합니다.</li>
+<li><code>unsafe</code> 사용 범위는 가능한 한 가장 작은 스코프로 제한해야 합니다.</li>
+<li><code>unsafe</code>를 쓰는 모든 코드는 어떤 가정을 두는지 설명하는 <code>safety</code> 주석을 가져야 합니다.</li>
+</ul>
+</li>
+</ul>
+<p><a id="unsafe-rust-examples"></a></p>
+<h3 id="unsafe-rust-예제"><a class="header" href="#unsafe-rust-예제">Unsafe Rust 예제</a></h3>
+<pre class="playground"><code class="language-rust">unsafe fn harmless() {}
+fn main() {
+    // Safety: 해가 없는 unsafe 함수를 호출한다
+    unsafe {
+        harmless();
+    }
+    let a = 42u32;
+    let p = &amp;a as *const u32;
+    // Safety: p는 아직 스코프 안에 있는 유효한 변수 a를 가리킨다
+    unsafe {
+        println!("{}", *p);
+    }
+    // Safety: 안전하지 않다; 설명용 예제일 뿐이다
+    let dangerous_buffer = 0xb8000 as *mut u32;
+    unsafe {
+        println!("About to go kaboom!!!");
+        *dangerous_buffer = 0; // 대부분의 최신 시스템에서는 SEGV가 발생한다
+    }
+}</code></pre>
+<p><a id="simple-ffi-example-rust-library-function-consumed-by-c"></a></p>
+<h3 id="간단한-ffi-예제-c가-소비하는-rust-라이브러리-함수"><a class="header" href="#간단한-ffi-예제-c가-소비하는-rust-라이브러리-함수">간단한 FFI 예제 (C가 소비하는 Rust 라이브러리 함수)</a></h3>
+<p><a id="ffi-strings-cstring-and-cstr"></a></p>
+<h2 id="ffi-문자열-cstring과-cstr"><a class="header" href="#ffi-문자열-cstring과-cstr">FFI 문자열: <code>CString</code>과 <code>CStr</code></a></h2>
+<p>FFI는 <em>Foreign Function Interface</em>의 약자로, Rust가 다른 언어(예: C)로 작성된 함수를 호출하고 반대로 다른 언어가 Rust 함수를 호출할 수 있게 하는 메커니즘입니다.</p>
+<p>C 코드와 연결할 때 Rust의 <code>String</code>과 <code>&amp;str</code> 타입은(C 문자열과 달리 UTF-8이며 null terminator가 없음) C 문자열(null 종료 바이트 배열)과 바로 호환되지 않습니다. 이를 위해 Rust는 <code>std::ffi</code>에 <code>CString</code>(소유형)과 <code>CStr</code>(대여형)을 제공합니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>타입</th><th>비슷한 Rust 타입</th><th>사용하는 상황</th></tr>
+</thead>
+<tbody>
+<tr><td><code>CString</code></td><td><code>String</code>(소유)</td><td>Rust 데이터로부터 C 문자열을 만들 때</td></tr>
+<tr><td><code>&amp;CStr</code></td><td><code>&amp;str</code>(대여)</td><td>외부 코드로부터 C 문자열을 받을 때</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::ffi::{CString, CStr};
+use std::os::raw::c_char;
+
+fn demo_ffi_strings() {
+    // C 호환 문자열 생성(null terminator 추가)
+    let c_string = CString::new("Hello from Rust").expect("CString::new failed");
+    let ptr: *const c_char = c_string.as_ptr();
+
+    // C 문자열을 다시 Rust로 변환(포인터를 신뢰하므로 unsafe)
+    // Safety: ptr은 유효하며 null로 종료되어 있다(바로 위에서 생성했다)
+    let back_to_rust: &amp;CStr = unsafe { CStr::from_ptr(ptr) };
+    let rust_str: &amp;str = back_to_rust.to_str().expect("Invalid UTF-8");
+    println!("{}", rust_str);
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>주의:</strong> <code>CString::new()</code>는 입력에 중간 null 바이트(<code>\0</code>)가 있으면 에러를 반환합니다. 항상 <code>Result</code>를 처리하세요. 아래 FFI 예제들에서 <code>CStr</code>를 계속 보게 될 것입니다.</p>
+</blockquote>
+<ul>
+<li><code>FFI</code> 함수는 컴파일러가 이름을 맹글링하지 않도록 <code>#[no_mangle]</code>를 붙여야 합니다.</li>
+<li>이 크레이트는 정적 라이브러리로 컴파일합니다.
+<pre><code>#[no_mangle] 
+pub extern "C" fn add(left: u64, right: u64) -&gt; u64 {
+    left + right
+}
+</code></pre>
+</li>
+<li>아래 C 코드를 컴파일한 뒤, 우리가 만든 정적 라이브러리와 링크합니다.
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+extern uint64_t add(uint64_t, uint64_t);
+int main() {
+    printf("Add returned %llu\n", add(21, 21));
+}
+</code></pre>
+</li>
+</ul>
+<p><a id="complex-ffi-example"></a></p>
+<h3 id="복잡한-ffi-예제"><a class="header" href="#복잡한-ffi-예제">복잡한 FFI 예제</a></h3>
+<ul>
+<li>아래 예제에서는 Rust 로깅 인터페이스를 만들고 이를 [PYTHON]과 <code>C</code>에 노출합니다.
+<ul>
+<li>같은 인터페이스를 Rust와 C에서 네이티브하게 어떻게 사용할 수 있는지 봅니다.</li>
+<li><code>C</code>용 헤더 파일을 생성하는 <code>cbindgen</code> 같은 도구를 살펴봅니다.</li>
+<li><code>unsafe</code> 래퍼가 안전한 Rust 코드로 가는 다리 역할을 하는 방식도 확인합니다.</li>
+</ul>
+</li>
+</ul>
+<p><a id="logger-helper-functions"></a></p>
+<h2 id="로거-헬퍼-함수"><a class="header" href="#로거-헬퍼-함수">로거 헬퍼 함수</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn create_or_open_log_file(log_file: &amp;str, overwrite: bool) -&gt; Result&lt;File, String&gt; {
+    if overwrite {
+        File::create(log_file).map_err(|e| e.to_string())
+    } else {
+        OpenOptions::new()
+            .write(true)
+            .append(true)
+            .open(log_file)
+            .map_err(|e| e.to_string())
+    }
+}
+
+fn log_to_file(file_handle: &amp;mut File, message: &amp;str) -&gt; Result&lt;(), String&gt; {
+    file_handle
+        .write_all(message.as_bytes())
+        .map_err(|e| e.to_string())
+}
+<span class="boring">}</span></code></pre>
+<p><a id="logger-struct"></a></p>
+<h2 id="logger-구조체"><a class="header" href="#logger-구조체">Logger 구조체</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct SimpleLogger {
+    log_level: LogLevel,
+    file_handle: File,
+}
+
+impl SimpleLogger {
+    fn new(log_file: &amp;str, overwrite: bool, log_level: LogLevel) -&gt; Result&lt;Self, String&gt; {
+        let file_handle = create_or_open_log_file(log_file, overwrite)?;
+        Ok(Self {
+            file_handle,
+            log_level,
+        })
+    }
+
+    fn log_message(&amp;mut self, log_level: LogLevel, message: &amp;str) -&gt; Result&lt;(), String&gt; {
+        if log_level as u32 &lt;= self.log_level as u32 {
+            let timestamp = Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
+            let message = format!("Simple: {timestamp} {log_level} {message}\n");
+            log_to_file(&amp;mut self.file_handle, &amp;message)
+        } else {
+            Ok(())
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="testing"></a></p>
+<h2 id="테스트"><a class="header" href="#테스트">테스트</a></h2>
+<ul>
+<li>Rust로 기능을 테스트하는 일은 매우 쉽습니다.
+<ul>
+<li>테스트 함수에는 <code>#[test]</code>를 붙이며, 컴파일된 바이너리에는 포함되지 않습니다.</li>
+<li>테스트용 목(mock) 메서드를 만드는 것도 쉽습니다.</li>
+</ul>
+</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]
+fn testfunc() -&gt; Result&lt;(), String&gt; {
+    let mut logger = SimpleLogger::new("test.log", false, LogLevel::INFO)?;
+    logger.log_message(LogLevel::TRACELEVEL1, "Hello world")?;
+    logger.log_message(LogLevel::CRITICAL, "Critical message")?;
+    Ok(()) // 컴파일러가 여기서 logger를 자동으로 drop한다
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-bash">cargo test
+</code></pre>
+<p><a id="c-rust-ffi"></a></p>
+<h2 id="c-rust-ffi"><a class="header" href="#c-rust-ffi">(C)-Rust FFI</a></h2>
+<ul>
+<li><code>cbindgen</code>은 Rust에서 export한 함수를 위한 헤더 파일을 생성하는 데 매우 유용한 도구입니다.
+<ul>
+<li>cargo로 설치할 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-bash">cargo install cbindgen
+cbindgen 
+</code></pre>
+<ul>
+<li>함수와 구조체는 <code>#[no_mangle]</code> 및 <code>#[repr(C)]</code>를 통해 외부에 노출할 수 있습니다.
+<ul>
+<li>여기서는 실제 구현체를 가리키는 <code>**</code>를 받고, 성공 시 0, 실패 시 0이 아닌 값을 반환하는 흔한 인터페이스 패턴을 가정합니다.</li>
+<li><strong>불투명 구조체 vs 투명 구조체</strong>: <code>SimpleLogger</code>는 <em>opaque pointer</em>(<code>*mut SimpleLogger</code>)로 전달되므로 C 쪽은 내부 필드에 접근하지 않습니다. 따라서 <code>#[repr(C)]</code>가 <strong>필요하지 않습니다</strong>. C 코드가 구조체 필드를 직접 읽고 써야 할 때만 <code>#[repr(C)]</code>를 사용하세요.</li>
+</ul>
+</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Opaque — C는 포인터만 들고 있고 필드를 들여다보지 않는다. #[repr(C)]가 필요 없다.
+struct SimpleLogger { /* Rust-only fields */ }
+
+// Transparent — C가 필드를 직접 읽고 쓴다. 반드시 #[repr(C)]를 써야 한다.
+#[repr(C)]
+pub struct Point {
+    pub x: f64,
+    pub y: f64,
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-c">typedef struct SimpleLogger SimpleLogger;
+uint32_t create_simple_logger(const char *file_name, struct SimpleLogger **out_logger);
+uint32_t log_entry(struct SimpleLogger *logger, const char *message);
+uint32_t drop_logger(struct SimpleLogger *logger);
+</code></pre>
+<ul>
+<li>이런 FFI 경계에서는 매우 많은 sanity check가 필요합니다.</li>
+<li>Rust가 자동으로 메모리를 해제하지 않도록 일부 메모리는 명시적으로 leak해야 합니다.</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[no_mangle] 
+pub extern "C" fn create_simple_logger(file_name: *const std::os::raw::c_char, out_logger: *mut *mut SimpleLogger) -&gt; u32 {
+    use std::ffi::CStr;
+    // 포인터가 NULL이 아닌지 확인
+    if file_name.is_null() || out_logger.is_null() {
+        return 1;
+    }
+    // Safety: 계약상 전달된 포인터는 NULL이 아니면 null-terminated 문자열이다
+    let file_name = unsafe {
+        CStr::from_ptr(file_name)
+    };
+    let file_name = file_name.to_str();
+    // file_name에 깨진 문자가 없는지 확인
+    if file_name.is_err() {
+        return 1;
+    }
+    let file_name = file_name.unwrap();
+    // 예제에서는 기본값을 가정한다; 실제 코드에서는 인자로 받을 수 있다
+    let new_logger = SimpleLogger::new(file_name, false, LogLevel::CRITICAL);
+    // 로거를 정상적으로 생성했는지 확인
+    if new_logger.is_err() {
+        return 1;
+    }
+    let new_logger = Box::new(new_logger.unwrap());
+    // Box가 스코프를 벗어날 때 drop되지 않도록 막는다
+    let logger_ptr: *mut SimpleLogger = Box::leak(new_logger);
+    // Safety: out_logger는 non-null이며 logger_ptr은 유효하다
+    unsafe {
+        *out_logger = logger_ptr;
+    }
+    return 0;
+}
+<span class="boring">}</span></code></pre>
+<ul>
+<li><code>log_entry()</code>에도 비슷한 에러 검사가 들어갑니다.</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[no_mangle]
+pub extern "C" fn log_entry(logger: *mut SimpleLogger, message: *const std::os::raw::c_char) -&gt; u32 {
+    use std::ffi::CStr;
+    if message.is_null() || logger.is_null() {
+        return 1;
+    }
+    // Safety: message는 non-null이다
+    let message = unsafe {
+        CStr::from_ptr(message)
+    };
+    let message = message.to_str();
+    // message에 깨진 문자가 없는지 확인
+    if message.is_err() {
+        return 1;
+    }
+    // Safety: logger는 create_simple_logger()가 이전에 생성한 유효한 포인터다
+    unsafe {
+        (*logger).log_message(LogLevel::CRITICAL, message.unwrap()).is_err() as u32
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn drop_logger(logger: *mut SimpleLogger) -&gt; u32 {
+    if logger.is_null() {
+        return 1;
+    }
+    // Safety: logger는 create_simple_logger()가 이전에 생성한 유효한 포인터다
+    unsafe {
+        // Box&lt;SimpleLogger&gt;를 재구성하면, 스코프 종료 시 자동으로 drop된다
+        let _ = Box::from_raw(logger);
+    }
+    0
+}
+<span class="boring">}</span></code></pre>
+<ul>
+<li>이 (C)-FFI는 Rust로 테스트할 수도 있고, 직접 C 프로그램을 작성해서 테스트할 수도 있습니다.</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]
+fn test_c_logger() {
+    // c".."는 NULL 종료 문자열을 만든다
+    let file_name = c"test.log".as_ptr() as *const std::os::raw::c_char;
+    let mut c_logger: *mut SimpleLogger = std::ptr::null_mut();
+    assert_eq!(create_simple_logger(file_name, &amp;mut c_logger), 0);
+    // c"..." 문자열을 만드는 수동 방식
+    let message = b"message from C\0".as_ptr() as *const std::os::raw::c_char;
+    assert_eq!(log_entry(c_logger, message), 0);
+    drop_logger(c_logger);
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-c">#include "logger.h"
+...
+int main() {
+    SimpleLogger *logger = NULL;
+    if (create_simple_logger("test.log", &amp;logger) == 0) {
+        log_entry(logger, "Hello from C");
+        drop_logger(logger); /*핸들을 닫는 등 정리가 필요하다.*/
+    } 
+    ...
+}
+</code></pre>
+<p><a id="ensuring-correctness-of-unsafe-code"></a></p>
+<h2 id="unsafe-코드의-정확성-보장"><a class="header" href="#unsafe-코드의-정확성-보장">unsafe 코드의 정확성 보장</a></h2>
+<ul>
+<li>요약하면 <code>unsafe</code>를 쓸 때는 의도적이고 신중한 사고가 필요합니다.
+<ul>
+<li>코드가 두는 안전 가정을 항상 문서화하고, 가능하면 전문가와 함께 검토하세요.</li>
+<li><code>cbindgen</code>, Miri, Valgrind 같은 도구를 활용해 정확성을 검증하세요.</li>
+<li><strong>패닉이 FFI 경계를 넘어 unwind되게 두면 안 됩니다.</strong> 이것은 UB입니다. FFI 진입점에서 <code>std::panic::catch_unwind</code>를 사용하거나, 프로파일에서 <code>panic = "abort"</code>를 설정하세요.</li>
+<li>구조체가 FFI를 통해 공유된다면 C 호환 메모리 레이아웃을 보장하기 위해 <code>#[repr(C)]</code>를 붙이세요.</li>
+<li>https://doc.rust-lang.org/nomicon/intro.html (“Rustonomicon”, 즉 unsafe Rust의 암흑 마법서)를 참고하세요.</li>
+<li>사내 전문가의 도움을 받는 것도 좋습니다.</li>
+</ul>
+</li>
+</ul>
+<p><a id="verification-tools-miri-vs-valgrind"></a></p>
+<h3 id="검증-도구-miri-vs-valgrind"><a class="header" href="#검증-도구-miri-vs-valgrind">검증 도구: Miri vs Valgrind</a></h3>
+<p>C++ 개발자에게 Valgrind와 sanitizer는 익숙합니다. Rust에는 그런 도구들에 더해, Rust 고유의 UB를 훨씬 더 정밀하게 잡아내는 Miri가 있습니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>항목</th><th><strong>Miri</strong></th><th><strong>Valgrind</strong></th><th><strong>C++ sanitizer (ASan/MSan/UBSan)</strong></th></tr>
+</thead>
+<tbody>
+<tr><td><strong>무엇을 잡는가</strong></td><td>Rust 특화 UB: stacked borrows, 잘못된 <code>enum</code> discriminant, 초기화되지 않은 읽기, aliasing 위반</td><td>메모리 누수, use-after-free, 잘못된 읽기/쓰기, 초기화되지 않은 메모리</td><td>버퍼 오버플로, use-after-free, 데이터 레이스, UB</td></tr>
+<tr><td><strong>동작 방식</strong></td><td>MIR(Rust 중간 IR)을 해석함. 네이티브 실행은 하지 않음</td><td>컴파일된 바이너리를 런타임에 계측</td><td>컴파일 시점 계측</td></tr>
+<tr><td><strong>FFI 지원</strong></td><td>❌ FFI 경계를 넘을 수 없음(C 호출은 건너뜀)</td><td>✅ FFI를 포함한 모든 컴파일된 바이너리에 사용 가능</td><td>✅ C 코드도 sanitizer로 컴파일했다면 사용 가능</td></tr>
+<tr><td><strong>속도</strong></td><td>네이티브보다 약 100배 느림</td><td>약 10~50배 느림</td><td>약 2~5배 느림</td></tr>
+<tr><td><strong>언제 쓰는가</strong></td><td>순수 Rust <code>unsafe</code> 코드, 자료구조 불변식 점검</td><td>FFI 코드, 전체 바이너리 통합 테스트</td><td>FFI의 C/C++ 쪽, 성능에 민감한 테스트</td></tr>
+<tr><td><strong>aliasing 버그 탐지</strong></td><td>✅ Stacked Borrows 모델 사용</td><td>❌</td><td>부분적으로 가능(TSan은 데이터 레이스 중심)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>권장 사항:</strong> 둘 다 쓰세요. 순수 Rust unsafe에는 Miri, FFI 통합에는 Valgrind가 좋습니다.</p>
+<ul>
+<li>
+<p><strong>Miri</strong>: Valgrind가 볼 수 없는 Rust 특화 UB(aliasing 위반, 잘못된 enum 값, stacked borrows)를 잡습니다.</p>
+<pre><code>rustup +nightly component add miri
+cargo +nightly miri test                    # 모든 테스트를 Miri 아래에서 실행
+cargo +nightly miri test -- test_name       # 특정 테스트만 실행
+</code></pre>
+<blockquote>
+<p>⚠️ Miri는 nightly가 필요하며 FFI 호출을 실행할 수 없습니다. unsafe Rust 로직을 테스트 가능한 단위로 분리하세요.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Valgrind</strong>: 이미 익숙한 그 도구이며, FFI를 포함한 컴파일된 바이너리 전체에 적용할 수 있습니다.</p>
+<pre><code>sudo apt install valgrind
+cargo install cargo-valgrind
+cargo valgrind test                         # 모든 테스트를 Valgrind 아래에서 실행
+</code></pre>
+<blockquote>
+<p>FFI 코드에서 흔한 <code>Box::leak</code> / <code>Box::from_raw</code> 패턴의 누수를 잡는 데 유용합니다.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>cargo-careful</strong>: 일반 테스트와 Miri의 중간쯤 되는 추가 런타임 검사를 켜고 테스트를 실행합니다.</p>
+<pre><code>cargo install cargo-careful
+cargo +nightly careful test
+</code></pre>
+</li>
+</ul>
+<p><a id="unsafe-rust-summary"></a></p>
+<h2 id="unsafe-rust-요약"><a class="header" href="#unsafe-rust-요약">Unsafe Rust 요약</a></h2>
+<ul>
+<li><code>cbindgen</code>은 Rust에서 C로 가는 FFI에 매우 좋은 도구입니다.
+<ul>
+<li>반대 방향 FFI 인터페이스에는 <code>bindgen</code>을 사용하세요. 문서가 매우 잘 되어 있습니다.</li>
+</ul>
+</li>
+<li><strong>unsafe 코드가 맞다고, 혹은 safe Rust에서 써도 괜찮다고 가정하지 마세요. 실수하기 정말 쉽고, 겉보기에는 잘 동작하는 코드도 미묘한 이유로 틀릴 수 있습니다.</strong>
+<ul>
+<li>도구를 사용해 정확성을 검증하세요.</li>
+<li>여전히 확신이 서지 않으면 전문가에게 도움을 구하세요.</li>
+</ul>
+</li>
+<li><code>unsafe</code> 코드에는 어떤 가정 위에 서 있는지, 왜 올바른지 명시적으로 설명하는 주석이 반드시 있어야 합니다.
+<ul>
+<li><code>unsafe</code> 코드를 호출하는 쪽도 그에 대응하는 <code>Safety</code> 주석을 두고, 필요한 제약을 지켜야 합니다.</li>
+</ul>
+</li>
+</ul>
+<p><a id="exercise-writing-a-safe-ffi-wrapper"></a></p>
+<h1 id="연습문제-안전한-ffi-래퍼-작성하기"><a class="header" href="#연습문제-안전한-ffi-래퍼-작성하기">연습문제: 안전한 FFI 래퍼 작성하기</a></h1>
+<p>🔴 <strong>도전</strong> — unsafe 블록, 로 포인터, 안전한 API 설계를 함께 이해해야 합니다.</p>
+<ul>
+<li><code>unsafe</code>한 FFI 스타일 함수를 감싸는 안전한 Rust 래퍼를 작성하세요. 이 연습문제는 호출자가 제공한 버퍼에 서식화된 문자열을 써 넣는 C 함수를 흉내 냅니다.</li>
+<li><strong>1단계</strong>: 인사말을 로 <code>*mut u8</code> 버퍼에 쓰는 <code>unsafe_greet</code> 함수를 구현하세요.</li>
+<li><strong>2단계</strong>: <code>Vec&lt;u8&gt;</code>를 할당하고, unsafe 함수를 호출한 뒤, <code>String</code>을 반환하는 안전한 래퍼 <code>safe_greet</code>를 작성하세요.</li>
+<li><strong>3단계</strong>: 모든 unsafe 블록에 올바른 <code>// Safety:</code> 주석을 추가하세요.</li>
+</ul>
+<p><strong>시작 코드:</strong></p>
+<pre class="playground"><code class="language-rust">use std::fmt::Write as _;
+
+/// C 함수를 흉내 낸다: buffer에 "Hello, &lt;name&gt;!"을 기록한다.
+/// null terminator를 제외한 실제 기록 바이트 수를 반환한다.
+/// # Safety
+/// - `buf`는 최소 `buf_len` 바이트의 쓰기 가능한 메모리를 가리켜야 한다
+/// - `name`은 null-terminated C 문자열을 가리키는 유효한 포인터여야 한다
+unsafe fn unsafe_greet(buf: *mut u8, buf_len: usize, name: *const u8) -&gt; isize {
+    // TODO: greeting을 만들고, buf에 바이트를 복사한 뒤, 길이를 반환하라
+    // 힌트: std::ffi::CStr::from_ptr를 쓰거나 바이트를 직접 순회하라
+    todo!()
+}
+
+/// 안전한 래퍼 — public API에는 unsafe가 없다
+fn safe_greet(name: &amp;str) -&gt; Result&lt;String, String&gt; {
+    // TODO: Vec&lt;u8&gt; 버퍼를 할당하고, null-terminated 이름을 만든 다음,
+    // Safety 주석과 함께 unsafe 블록 안에서 unsafe_greet를 호출하고,
+    // 결과를 다시 String으로 변환하라
+    todo!()
+}
+
+fn main() {
+    match safe_greet("Rustacean") {
+        Ok(msg) =&gt; println!("{msg}"),
+        Err(e) =&gt; eprintln!("Error: {e}"),
+    }
+    // 예상 출력: Hello, Rustacean!
+}</code></pre>
+<details><summary>해답 (클릭하여 펼치기)</summary>
+<pre class="playground"><code class="language-rust">use std::ffi::CStr;
+
+/// C 함수를 흉내 낸다: buffer에 "Hello, &lt;name&gt;!"을 기록한다.
+/// 버퍼가 너무 작으면 -1을 반환한다.
+/// # Safety
+/// - `buf`는 최소 `buf_len` 바이트의 쓰기 가능한 메모리를 가리켜야 한다
+/// - `name`은 null-terminated C 문자열을 가리키는 유효한 포인터여야 한다
+unsafe fn unsafe_greet(buf: *mut u8, buf_len: usize, name: *const u8) -&gt; isize {
+    // Safety: 호출자가 name이 유효한 null-terminated 문자열이라고 보장한다
+    let name_cstr = unsafe { CStr::from_ptr(name as *const std::os::raw::c_char) };
+    let name_str = match name_cstr.to_str() {
+        Ok(s) =&gt; s,
+        Err(_) =&gt; return -1,
+    };
+    let greeting = format!("Hello, {}!", name_str);
+    if greeting.len() &gt; buf_len {
+        return -1;
+    }
+    // Safety: buf는 최소 buf_len 바이트의 쓰기 가능한 메모리를 가리킨다(호출자 보장)
+    unsafe {
+        std::ptr::copy_nonoverlapping(greeting.as_ptr(), buf, greeting.len());
+    }
+    greeting.len() as isize
+}
+
+/// 안전한 래퍼 — public API에는 unsafe가 없다
+fn safe_greet(name: &amp;str) -&gt; Result&lt;String, String&gt; {
+    let mut buffer = vec![0u8; 256];
+    // C API에 넘길 null-terminated 이름을 만든다
+    let name_with_null: Vec&lt;u8&gt; = name.bytes().chain(std::iter::once(0)).collect();
+
+    // Safety: buffer는 256바이트의 쓰기 가능한 공간을 가지며, name_with_null은 null-terminated다
+    let bytes_written = unsafe {
+        unsafe_greet(buffer.as_mut_ptr(), buffer.len(), name_with_null.as_ptr())
+    };
+
+    if bytes_written &lt; 0 {
+        return Err("Buffer too small or invalid name".to_string());
+    }
+
+    String::from_utf8(buffer[..bytes_written as usize].to_vec())
+        .map_err(|e| format!("Invalid UTF-8: {e}"))
+}
+
+fn main() {
+    match safe_greet("Rustacean") {
+        Ok(msg) =&gt; println!("{msg}"),
+        Err(e) =&gt; eprintln!("Error: {e}"),
+    }
+}
+// Output:
+// Hello, Rustacean!</code></pre>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch13-concurrency.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch15-no_std-rust-without-the-standard-library.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch13-concurrency.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch15-no_std-rust-without-the-standard-library.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,779 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3. 내장 타입과 변수 - C# 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-89f02b98.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-00223320.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C# 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="variables-and-mutability"></a></p>
+<h2 id="변수와-가변성"><a class="header" href="#변수와-가변성">변수와 가변성</a></h2>
+<blockquote>
+<p><strong>이 절에서 배울 내용:</strong> Rust의 변수 선언과 가변성 모델을 C#의 <code>var</code>/<code>const</code>와 비교하고, 기본 타입 대응 관계, 중요한 <code>String</code> vs <code>&amp;str</code> 구분, 타입 추론, 그리고 Rust가 C#과 다르게 형변환과 변환을 다루는 방식을 배웁니다.</p>
+<p><strong>난이도:</strong> 🟢 입문</p>
+</blockquote>
+<p><a id="c-variable-declaration"></a></p>
+<h3 id="c-변수-선언"><a class="header" href="#c-변수-선언">C# 변수 선언</a></h3>
+<pre><code class="language-csharp">// C# - 변수는 기본적으로 가변이다
+int count = 0;           // 가변
+count = 5;               // ✅ 가능
+
+readonly int maxSize = 100;  // 초기화 이후 불변
+// maxSize = 200;        // ❌ 컴파일 에러
+
+const int BUFFER_SIZE = 1024; // 컴파일 타임 상수
+</code></pre>
+<p><a id="rust-variable-declaration"></a></p>
+<h3 id="rust-변수-선언"><a class="header" href="#rust-변수-선언">Rust 변수 선언</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 변수는 기본적으로 불변이다
+let count = 0;           // 기본은 불변
+// count = 5;            // ❌ 컴파일 에러: immutable 변수에는 다시 대입할 수 없다
+
+let mut count = 0;       // 명시적으로 가변
+count = 5;               // ✅ 가능
+
+const BUFFER_SIZE: usize = 1024; // 컴파일 타임 상수
+<span class="boring">}</span></code></pre>
+<p><a id="key-mental-shift-for-c-developers"></a></p>
+<h3 id="c-개발자가-먼저-가져야-할-사고-전환"><a class="header" href="#c-개발자가-먼저-가져야-할-사고-전환">C# 개발자가 먼저 가져야 할 사고 전환</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// let은 기본적으로 readonly라고 생각하면 이해가 쉽다
+let name = "John";       // C#으로 치면: readonly string name = "John";
+let mut age = 30;        // C#으로 치면: int age = 30;
+
+// 변수 섀도잉 (Rust에 특유한 개념)
+let spaces = "   ";      // String
+let spaces = spaces.len(); // 이제 숫자(usize)
+// 이것은 mutation이 아니라 새 변수를 다시 바인딩한 것이다
+<span class="boring">}</span></code></pre>
+<p><a id="practical-example-counter"></a></p>
+<h3 id="실전-예제-카운터"><a class="header" href="#실전-예제-카운터">실전 예제: 카운터</a></h3>
+<pre><code class="language-csharp">// C# 버전
+public class Counter
+{
+    private int value = 0;
+    
+    public void Increment()
+    {
+        value++;  // 상태 변경
+    }
+    
+    public int GetValue() =&gt; value;
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust 버전
+pub struct Counter {
+    value: i32,  // 기본은 private
+}
+
+impl Counter {
+    pub fn new() -&gt; Counter {
+        Counter { value: 0 }
+    }
+    
+    pub fn increment(&amp;mut self) {  // 상태 변경에는 &amp;mut가 필요
+        self.value += 1;
+    }
+    
+    pub fn get_value(&amp;self) -&gt; i32 {
+        self.value
+    }
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<p><a id="data-types-comparison"></a></p>
+<h2 id="데이터-타입-비교"><a class="header" href="#데이터-타입-비교">데이터 타입 비교</a></h2>
+<p><a id="primitive-types"></a></p>
+<h3 id="기본-타입"><a class="header" href="#기본-타입">기본 타입</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C# 타입</th><th>Rust 타입</th><th>크기</th><th>범위</th></tr>
+</thead>
+<tbody>
+<tr><td><code>byte</code></td><td><code>u8</code></td><td>8비트</td><td>0 ~ 255</td></tr>
+<tr><td><code>sbyte</code></td><td><code>i8</code></td><td>8비트</td><td>-128 ~ 127</td></tr>
+<tr><td><code>short</code></td><td><code>i16</code></td><td>16비트</td><td>-32,768 ~ 32,767</td></tr>
+<tr><td><code>ushort</code></td><td><code>u16</code></td><td>16비트</td><td>0 ~ 65,535</td></tr>
+<tr><td><code>int</code></td><td><code>i32</code></td><td>32비트</td><td>-2³¹ ~ 2³¹-1</td></tr>
+<tr><td><code>uint</code></td><td><code>u32</code></td><td>32비트</td><td>0 ~ 2³²-1</td></tr>
+<tr><td><code>long</code></td><td><code>i64</code></td><td>64비트</td><td>-2⁶³ ~ 2⁶³-1</td></tr>
+<tr><td><code>ulong</code></td><td><code>u64</code></td><td>64비트</td><td>0 ~ 2⁶⁴-1</td></tr>
+<tr><td><code>float</code></td><td><code>f32</code></td><td>32비트</td><td>IEEE 754</td></tr>
+<tr><td><code>double</code></td><td><code>f64</code></td><td>64비트</td><td>IEEE 754</td></tr>
+<tr><td><code>bool</code></td><td><code>bool</code></td><td>1비트</td><td>true/false</td></tr>
+<tr><td><code>char</code></td><td><code>char</code></td><td>32비트</td><td>유니코드 스칼라 값</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="size-types-important"></a></p>
+<h3 id="크기-타입-usize은-중요하다"><a class="header" href="#크기-타입-usize은-중요하다">크기 타입 (<code>usize</code>)은 중요하다</a></h3>
+<pre><code class="language-csharp">// C# - int는 항상 32비트
+int arrayIndex = 0;
+long fileSize = file.Length;
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 크기 타입은 포인터 크기(32비트 또는 64비트)에 맞춘다
+let array_index: usize = 0;      // C의 size_t와 비슷
+let file_size: u64 = file.len(); // 명시적 64비트
+<span class="boring">}</span></code></pre>
+<p><a id="type-inference"></a></p>
+<h3 id="타입-추론"><a class="header" href="#타입-추론">타입 추론</a></h3>
+<pre><code class="language-csharp">// C# - var 키워드
+var name = "John";        // string
+var count = 42;           // int
+var price = 29.99;        // double
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 자동 타입 추론
+let name = "John";        // &amp;str (string slice)
+let count = 42;           // i32 (기본 정수 타입)
+let price = 29.99;        // f64 (기본 부동소수점 타입)
+
+// 명시적 타입 표기
+let count: u32 = 42;
+let price: f32 = 29.99;
+<span class="boring">}</span></code></pre>
+<p><a id="arrays-and-collections-overview"></a></p>
+<h3 id="배열과-컬렉션-개요"><a class="header" href="#배열과-컬렉션-개요">배열과 컬렉션 개요</a></h3>
+<pre><code class="language-csharp">// C# - 참조 타입이며 힙에 할당
+int[] numbers = new int[5];        // 고정 크기
+List&lt;int&gt; list = new List&lt;int&gt;();  // 가변 크기
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 상황에 따라 선택지가 여러 개다
+let numbers: [i32; 5] = [1, 2, 3, 4, 5];  // 스택 배열, 고정 크기
+let mut list: Vec&lt;i32&gt; = Vec::new();      // 힙 벡터, 가변 크기
+<span class="boring">}</span></code></pre>
+<hr>
+<p><a id="string-types-string-vs-str"></a></p>
+<h2 id="문자열-타입-string-vs-str"><a class="header" href="#문자열-타입-string-vs-str">문자열 타입: String vs &amp;str</a></h2>
+<p>이 부분은 C# 개발자가 가장 자주 헷갈리는 개념 중 하나이므로 천천히 나눠서 보겠습니다.</p>
+<p><a id="c-string-handling"></a></p>
+<h3 id="c-문자열-다루기"><a class="header" href="#c-문자열-다루기">C# 문자열 다루기</a></h3>
+<pre><code class="language-csharp">// C# - 단순한 문자열 모델
+string name = "John";                // 문자열 리터럴
+string greeting = "Hello, " + name;  // 문자열 결합
+string upper = name.ToUpper();       // 메서드 호출
+</code></pre>
+<p><a id="rust-string-types"></a></p>
+<h3 id="rust-문자열-타입"><a class="header" href="#rust-문자열-타입">Rust 문자열 타입</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 대표적인 문자열 타입은 두 가지다
+
+// 1. &amp;str (string slice) - C#의 ReadOnlySpan&lt;char&gt;에 가까운 개념
+let name: &amp;str = "John";        // 문자열 리터럴 (불변, 대여됨)
+
+// 2. String - 소유하는 문자열
+let mut greeting = String::new();      // 빈 문자열
+greeting.push_str("Hello, ");          // 덧붙이기
+greeting.push_str(name);               // 덧붙이기
+
+// 또는 바로 생성할 수도 있다
+let greeting = String::from("Hello, John");
+let greeting = "Hello, John".to_string();  // &amp;str -&gt; String 변환
+<span class="boring">}</span></code></pre>
+<p><a id="when-to-use-which"></a></p>
+<h3 id="언제-무엇을-써야-할까"><a class="header" href="#언제-무엇을-써야-할까">언제 무엇을 써야 할까?</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>상황</th><th>사용 타입</th><th>C#에서 비슷한 개념</th></tr>
+</thead>
+<tbody>
+<tr><td>문자열 리터럴</td><td><code>&amp;str</code></td><td><code>string</code> 리터럴</td></tr>
+<tr><td>함수 매개변수 (읽기 전용)</td><td><code>&amp;str</code></td><td><code>string</code> 또는 <code>ReadOnlySpan&lt;char&gt;</code></td></tr>
+<tr><td>소유하고 수정하는 문자열</td><td><code>String</code></td><td><code>StringBuilder</code></td></tr>
+<tr><td>소유권을 가진 문자열 반환</td><td><code>String</code></td><td><code>string</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="practical-examples"></a></p>
+<h3 id="실전-예제"><a class="header" href="#실전-예제">실전 예제</a></h3>
+<pre class="playground"><code class="language-rust">// 어떤 문자열 타입이든 받을 수 있는 함수
+fn greet(name: &amp;str) {  // String과 &amp;str 둘 다 받을 수 있다
+    println!("Hello, {}!", name);
+}
+
+fn main() {
+    let literal = "John";                     // &amp;str
+    let owned = String::from("Jane");        // String
+    
+    greet(literal);                          // 가능
+    greet(&amp;owned);                           // 가능 (String을 &amp;str로 빌림)
+    greet("Bob");                            // 가능
+}
+
+// 소유권 있는 문자열을 반환하는 함수
+fn create_greeting(name: &amp;str) -&gt; String {
+    format!("Hello, {}!", name)  // format! 매크로는 String을 반환
+}</code></pre>
+<p><a id="think-of-it-this-way"></a></p>
+<h3 id="c-개발자라면-이렇게-이해해도-된다"><a class="header" href="#c-개발자라면-이렇게-이해해도-된다">C# 개발자라면 이렇게 이해해도 된다</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// &amp;str은 ReadOnlySpan&lt;char&gt;처럼 문자열 데이터를 가리키는 뷰
+// String은 내가 소유하고 수정할 수 있는 문자열 버퍼
+
+let borrowed: &amp;str = "I don't own this data";
+let owned: String = String::from("I own this data");
+
+// 둘 사이 변환
+let owned_copy: String = borrowed.to_string();  // 복사해서 소유
+let borrowed_view: &amp;str = &amp;owned;               // 빌려서 뷰 생성
+<span class="boring">}</span></code></pre>
+<hr>
+<p><a id="printing-and-string-formatting"></a></p>
+<h2 id="출력과-문자열-포매팅"><a class="header" href="#출력과-문자열-포매팅">출력과 문자열 포매팅</a></h2>
+<p>C# 개발자는 <code>Console.WriteLine</code>과 문자열 보간(<code>$""</code>)에 많이 의존합니다. Rust의 포매팅 시스템도 그에 못지않게 강력하지만, 매크로와 포맷 지정자를 사용한다는 차이가 있습니다.</p>
+<p><a id="basic-output"></a></p>
+<h3 id="기본-출력"><a class="header" href="#기본-출력">기본 출력</a></h3>
+<pre><code class="language-csharp">// C# 출력
+Console.Write("no newline");
+Console.WriteLine("with newline");
+Console.Error.WriteLine("to stderr");
+
+// 문자열 보간 (C# 6+)
+string name = "Alice";
+int age = 30;
+Console.WriteLine($"{name} is {age} years old");
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust 출력 - 전부 매크로다 (!에 주목)
+print!("no newline");                // -&gt; stdout, 개행 없음
+println!("with newline");            // -&gt; stdout + 개행
+eprint!("to stderr");                // -&gt; stderr, 개행 없음
+eprintln!("to stderr with newline"); // -&gt; stderr + 개행
+
+// 문자열 포매팅 (C#의 $"..."와 비슷)
+let name = "Alice";
+let age = 30;
+println!("{name} is {age} years old");     // inline 변수 캡처 (Rust 1.58+)
+println!("{} is {} years old", name, age); // 위치 인수
+
+// format!은 출력 대신 String을 반환한다
+let msg = format!("{name} is {age} years old");
+<span class="boring">}</span></code></pre>
+<p><a id="format-specifiers"></a></p>
+<h3 id="포맷-지정자"><a class="header" href="#포맷-지정자">포맷 지정자</a></h3>
+<pre><code class="language-csharp">// C# 포맷 지정자
+Console.WriteLine($"{price:F2}");         // 고정 소수점: 29.99
+Console.WriteLine($"{count:D5}");         // 0 채움 정수: 00042
+Console.WriteLine($"{value,10}");         // 오른쪽 정렬, 폭 10
+Console.WriteLine($"{value,-10}");        // 왼쪽 정렬, 폭 10
+Console.WriteLine($"{hex:X}");            // 16진수: FF
+Console.WriteLine($"{ratio:P1}");         // 퍼센트: 85.0%
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust 포맷 지정자
+println!("{price:.2}");             // 소수 둘째 자리까지: 29.99
+println!("{count:05}");             // 0 채움, 폭 5: 00042
+println!("{value:&gt;10}");            // 오른쪽 정렬, 폭 10
+println!("{value:&lt;10}");            // 왼쪽 정렬, 폭 10
+println!("{value:^10}");            // 가운데 정렬, 폭 10
+println!("{hex:#X}");               // 접두사 포함 16진수: 0xFF
+println!("{hex:08X}");              // 0 채움 16진수: 000000FF
+println!("{bits:#010b}");           // 접두사 포함 2진수: 0b00001010
+println!("{big}", big = 1_000_000); // 이름 있는 인수
+<span class="boring">}</span></code></pre>
+<p><a id="debug-vs-display-printing"></a></p>
+<h3 id="debug-vs-display-출력"><a class="header" href="#debug-vs-display-출력"><code>Debug</code> vs <code>Display</code> 출력</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// {:?}  - Debug trait (개발자용, derive 가능)
+// {:#?} - 보기 좋게 줄바꿈된 Debug
+// {}    - Display trait (사용자용, 직접 구현해야 함)
+
+#[derive(Debug)] // Debug 출력 자동 생성
+struct Point { x: f64, y: f64 }
+
+let p = Point { x: 1.5, y: 2.7 };
+
+println!("{:?}", p);   // Point { x: 1.5, y: 2.7 } - compact debug
+println!("{:#?}", p);  // Point {                    - pretty debug
+                        //     x: 1.5,
+                        //     y: 2.7,
+                        // }
+// println!("{}", p);  // ❌ ERROR: Point는 Display를 구현하지 않음
+
+// 사용자 친화적 출력을 위해 Display 구현:
+use std::fmt;
+
+impl fmt::Display for Point {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+println!("{}", p);    // (1.5, 2.7) - 사용자 친화적 출력
+<span class="boring">}</span></code></pre>
+<pre><code class="language-csharp">// C#으로 비유하면:
+// {:?}  ~= object.GetType().ToString() 또는 디버거 덤프
+// {}    ~= object.ToString()
+// C#에서는 ToString()을 override하고, Rust에서는 Display를 구현한다
+</code></pre>
+<p><a id="quick-reference-printing"></a></p>
+<h3 id="빠른-비교표"><a class="header" href="#빠른-비교표">빠른 비교표</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Rust</th><th>출력 의미</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Console.WriteLine(x)</code></td><td><code>println!("{x}")</code></td><td>Display 포매팅</td></tr>
+<tr><td><code>$"{x}"</code> (보간)</td><td><code>format!("{x}")</code></td><td><code>String</code> 반환</td></tr>
+<tr><td><code>x.ToString()</code></td><td><code>x.to_string()</code></td><td><code>Display</code> trait 필요</td></tr>
+<tr><td><code>ToString()</code> 재정의</td><td><code>impl Display</code></td><td>사용자 대상 출력</td></tr>
+<tr><td>디버거 보기</td><td><code>{:?}</code> 또는 <code>dbg!(x)</code></td><td>개발자 대상 출력</td></tr>
+<tr><td><code>String.Format("{0:F2}", x)</code></td><td><code>format!("{x:.2}")</code></td><td>포맷된 <code>String</code></td></tr>
+<tr><td><code>Console.Error.WriteLine</code></td><td><code>eprintln!()</code></td><td>stderr 출력</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="type-casting-and-conversions"></a></p>
+<h2 id="형변환과-변환"><a class="header" href="#형변환과-변환">형변환과 변환</a></h2>
+<p>C#에는 암시적 변환, 명시적 캐스트 <code>(int)x</code>, <code>Convert.To*()</code>가 있습니다. Rust는 훨씬 더 엄격해서 숫자형 암시적 변환이 없습니다.</p>
+<p><a id="numeric-conversions"></a></p>
+<h3 id="숫자-변환"><a class="header" href="#숫자-변환">숫자 변환</a></h3>
+<pre><code class="language-csharp">// C# - 암시적 변환과 명시적 변환
+int small = 42;
+long big = small;              // 암시적 확장: 가능
+double d = small;              // 암시적 확장: 가능
+int truncated = (int)3.14;     // 명시적 축소: 3
+byte b = (byte)300;            // 조용히 overflow: 44
+
+// 안전한 변환
+if (int.TryParse("42", out int parsed)) { /* ... */ }
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 모든 숫자 변환은 명시적이다
+let small: i32 = 42;
+let big: i64 = small as i64;          // 확장도 'as'로 명시
+let d: f64 = small as f64;            // 정수 -&gt; 실수도 명시
+let truncated: i32 = 3.14_f64 as i32; // 축소: 3 (버림)
+let b: u8 = 300_u16 as u8;            // overflow: 44로 wrap (C# unchecked와 비슷)
+
+// TryFrom을 이용한 안전한 변환
+use std::convert::TryFrom;
+let safe: Result&lt;u8, _&gt; = u8::try_from(300_u16); // Err - 범위 초과
+let ok: Result&lt;u8, _&gt;   = u8::try_from(42_u16);  // Ok(42)
+
+// 문자열 파싱 - bool + out 파라미터가 아니라 Result를 반환
+let parsed: Result&lt;i32, _&gt; = "42".parse::&lt;i32&gt;();   // Ok(42)
+let bad: Result&lt;i32, _&gt;    = "abc".parse::&lt;i32&gt;();  // Err(ParseIntError)
+
+// turbofish 문법과 함께:
+let n = "42".parse::&lt;f64&gt;().unwrap(); // 42.0
+<span class="boring">}</span></code></pre>
+<p><a id="string-conversions"></a></p>
+<h3 id="문자열-변환"><a class="header" href="#문자열-변환">문자열 변환</a></h3>
+<pre><code class="language-csharp">// C#
+int n = 42;
+string s = n.ToString();          // "42"
+string formatted = $"{n:X}";
+int back = int.Parse(s);          // 42 또는 예외 발생
+bool ok = int.TryParse(s, out int result);
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - to_string()은 Display 기반, parse()는 FromStr 기반
+let n: i32 = 42;
+let s: String = n.to_string();            // "42" (Display trait 사용)
+let formatted = format!("{n:X}");         // "2A"
+let back: i32 = s.parse().unwrap();       // 42 또는 panic
+let result: Result&lt;i32, _&gt; = s.parse();   // Ok(42) - 안전한 버전
+
+// &amp;str &lt;-&gt; String 변환 (Rust에서 가장 흔한 변환)
+let owned: String = "hello".to_string();    // &amp;str -&gt; String
+let owned2: String = String::from("hello"); // &amp;str -&gt; String (동등)
+let borrowed: &amp;str = &amp;owned;                // String -&gt; &amp;str (무료, 단순 대여)
+<span class="boring">}</span></code></pre>
+<p><a id="reference-conversions-no-inheritance-casting"></a></p>
+<h3 id="참조-변환-상속-캐스팅은-없다"><a class="header" href="#참조-변환-상속-캐스팅은-없다">참조 변환 (상속 캐스팅은 없다!)</a></h3>
+<pre><code class="language-csharp">// C# - upcasting과 downcasting
+Animal a = new Dog();              // Upcast (암시적)
+Dog d = (Dog)a;                    // Downcast (명시적, 실패 가능)
+if (a is Dog dog) { /* ... */ }    // 패턴 매칭으로 안전한 downcast
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust - 상속이 없으므로 upcasting/downcasting도 없다
+// 다형성에는 trait object를 사용:
+let animal: Box&lt;dyn Animal&gt; = Box::new(Dog);
+
+// "Downcasting"이 필요하면 Any trait를 써야 한다 (드문 경우):
+use std::any::Any;
+if let Some(dog) = animal_any.downcast_ref::&lt;Dog&gt;() {
+    // dog 사용
+}
+// 실전에서는 downcasting 대신 enum을 더 자주 사용한다:
+enum Animal {
+    Dog(Dog),
+    Cat(Cat),
+}
+match animal {
+    Animal::Dog(d) =&gt; { /* d 사용 */ }
+    Animal::Cat(c) =&gt; { /* c 사용 */ }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="quick-reference-conversions"></a></p>
+<h3 id="빠른-비교표-1"><a class="header" href="#빠른-비교표-1">빠른 비교표</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Rust</th><th>비고</th></tr>
+</thead>
+<tbody>
+<tr><td><code>(int)x</code></td><td><code>x as i32</code></td><td>잘라내기/래핑 캐스트</td></tr>
+<tr><td>암시적 확장 변환</td><td><code>as</code>를 반드시 사용</td><td>숫자형 암시적 변환이 없음</td></tr>
+<tr><td><code>Convert.ToInt32(x)</code></td><td><code>i32::try_from(x)</code></td><td>안전하며 <code>Result</code> 반환</td></tr>
+<tr><td><code>int.Parse(s)</code></td><td><code>s.parse::&lt;i32&gt;().unwrap()</code></td><td>실패 시 panic</td></tr>
+<tr><td><code>int.TryParse(s, out n)</code></td><td><code>s.parse::&lt;i32&gt;()</code></td><td><code>Result&lt;i32, _&gt;</code> 반환</td></tr>
+<tr><td><code>(Dog)animal</code></td><td>제공되지 않음</td><td>enum 또는 <code>Any</code> 사용</td></tr>
+<tr><td><code>as Dog</code> / <code>is Dog</code></td><td><code>downcast_ref::&lt;Dog&gt;()</code></td><td><code>Any</code> 기반, 가능하면 enum 선호</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><a id="comments-and-documentation"></a></p>
+<h2 id="주석과-문서화"><a class="header" href="#주석과-문서화">주석과 문서화</a></h2>
+<p><a id="regular-comments"></a></p>
+<h3 id="일반-주석"><a class="header" href="#일반-주석">일반 주석</a></h3>
+<pre><code class="language-csharp">// C# 주석
+// 한 줄 주석
+/* 여러 줄
+   주석 */
+
+/// &lt;summary&gt;
+/// XML 문서 주석
+/// &lt;/summary&gt;
+/// &lt;param name="name"&gt;사용자 이름&lt;/param&gt;
+/// &lt;returns&gt;인사말 문자열&lt;/returns&gt;
+public string Greet(string name)
+{
+    return $"Hello, {name}!";
+}
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust 주석
+// 한 줄 주석
+/* 여러 줄
+   주석 */
+
+/// 문서 주석 (C#의 ///와 비슷)
+/// 이 함수는 이름을 받아 인사말을 반환합니다.
+///
+/// # Arguments
+///
+/// * `name` - 문자열 슬라이스 형태의 사용자 이름
+///
+/// # Returns
+///
+/// 인사말을 담은 `String`
+///
+/// # Examples
+///
+/// ```
+/// let greeting = greet("Alice");
+/// assert_eq!(greeting, "Hello, Alice!");
+/// ```
+pub fn greet(name: &amp;str) -&gt; String {
+    format!("Hello, {}!", name)
+}
+<span class="boring">}</span></code></pre>
+<p><a id="documentation-generation"></a></p>
+<h3 id="문서-생성"><a class="header" href="#문서-생성">문서 생성</a></h3>
+<pre><code class="language-bash"># 문서 생성 (C#의 XML 문서와 비슷한 역할)
+cargo doc --open
+
+# 문서 테스트 실행
+cargo test --doc
+</code></pre>
+<hr>
+<p><a id="exercises"></a></p>
+<h2 id="연습문제"><a class="header" href="#연습문제">연습문제</a></h2>
+<details>
+<summary><strong>🏋️ 연습문제: 타입 안전한 온도 변환</strong> (클릭해서 펼치기)</summary>
+<p>다음 조건을 만족하는 Rust 프로그램을 작성해 보세요.</p>
+<ol>
+<li>섭씨 절대영도(<code>-273.15</code>)를 나타내는 <code>const</code>를 선언한다.</li>
+<li>수행된 변환 횟수를 세는 <code>static</code> 카운터를 선언한다. (<code>AtomicU32</code> 사용)</li>
+<li>절대영도보다 낮은 온도는 <code>f64::NAN</code>을 반환해 거부하는 <code>celsius_to_fahrenheit(c: f64) -&gt; f64</code> 함수를 작성한다.</li>
+<li>문자열 <code>"98.6"</code>을 <code>f64</code>로 파싱한 뒤 변환하면서 shadowing을 보여준다.</li>
+</ol>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust">use std::sync::atomic::{AtomicU32, Ordering};
+
+const ABSOLUTE_ZERO_C: f64 = -273.15;
+static CONVERSION_COUNT: AtomicU32 = AtomicU32::new(0);
+
+fn celsius_to_fahrenheit(c: f64) -&gt; f64 {
+    if c &lt; ABSOLUTE_ZERO_C {
+        return f64::NAN;
+    }
+    CONVERSION_COUNT.fetch_add(1, Ordering::Relaxed);
+    c * 9.0 / 5.0 + 32.0
+}
+
+fn main() {
+    let temp = "98.6";                     // &amp;str
+    let temp: f64 = temp.parse().unwrap(); // f64로 shadowing
+    let temp = celsius_to_fahrenheit(temp); // 화씨 값으로 shadowing
+    println!("{temp:.1}°F");
+    println!("Conversions: {}", CONVERSION_COUNT.load(Ordering::Relaxed));
+}</code></pre>
+</details>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch02-1-essential-keywords-reference.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch03-1-true-immutability-vs-record-illusions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch02-1-essential-keywords-reference.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch03-1-true-immutability-vs-record-illusions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

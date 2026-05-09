@@ -1,0 +1,1155 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>15. 크레이트 아키텍처와 API 설계 - Rust 패턴과 엔지니어링 활용 가이드</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-414debd0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-34cb9765.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 패턴과 엔지니어링 활용 가이드</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="crate-architecture-and-api-design"></a></p>
+<h1 id="15-크레이트-아키텍처와-api-설계-"><a class="header" href="#15-크레이트-아키텍처와-api-설계-">15. 크레이트 아키텍처와 API 설계 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong></p>
+<ul>
+<li>모듈 배치 관례와 재수출(re-export) 전략</li>
+<li>다듬어진 크레이트를 위한 공개 API 설계 체크리스트</li>
+<li>인체공학적 매개변수 패턴: <code>impl Into</code>, <code>AsRef</code>, <code>Cow</code></li>
+<li><code>TryFrom</code>과 검증된 타입으로 하는 “파싱하고 검증하지 말 것”</li>
+<li>기능 플래그, 조건부 컴파일, 워크스페이스 구성</li>
+</ul>
+</blockquote>
+<p><a id="module-layout-conventions"></a></p>
+<h2 id="모듈-배치-관례"><a class="header" href="#모듈-배치-관례">모듈 배치 관례</a></h2>
+<pre><code class="language-text">my_crate/
+├── Cargo.toml
+├── src/
+│   ├── lib.rs          # 크레이트 루트 — 재수출과 공개 API
+│   ├── config.rs       # 기능 모듈
+│   ├── parser/         # 하위 모듈이 있는 복잡한 모듈
+│   │   ├── mod.rs      # 또는 부모에 parser.rs (Rust 2018+)
+│   │   ├── lexer.rs
+│   │   └── ast.rs
+│   ├── error.rs        # 에러 타입
+│   └── utils.rs        # 내부 헬퍼 (pub(crate))
+├── tests/
+│   └── integration.rs  # 통합 테스트
+├── benches/
+│   └── perf.rs         # 벤치마크
+└── examples/
+    └── basic.rs        # cargo run --example basic
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// lib.rs — 재수출로 공개 API를 구성합니다
+mod config;
+mod error;
+mod parser;
+mod utils;
+
+// 사용자에게 필요한 것만 재수출:
+pub use config::Config;
+pub use error::Error;
+pub use parser::Parser;
+
+// 공개 타입은 크레이트 루트에 — 사용자는 이렇게 씁니다:
+// use my_crate::Config;
+// use my_crate::config::Config; 가 아님
+<span class="boring">}</span></code></pre>
+<p><strong>가시성 한정자</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>한정자</th><th>보이는 범위</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pub</code></td><td>모두</td></tr>
+<tr><td><code>pub(crate)</code></td><td>이 크레이트만</td></tr>
+<tr><td><code>pub(super)</code></td><td>부모 모듈</td></tr>
+<tr><td><code>pub(in path)</code></td><td>특정 조상 모듈</td></tr>
+<tr><td>(없음)</td><td>현재 모듈과 자식</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="public-api-design-checklist"></a></p>
+<h3 id="공개-api-설계-체크리스트"><a class="header" href="#공개-api-설계-체크리스트">공개 API 설계 체크리스트</a></h3>
+<ol>
+<li><strong>참조를 받고 소유권을 반환</strong> — <code>fn process(input: &amp;str) -&gt; String</code></li>
+<li><strong>매개변수에 <code>impl Trait</code> 사용</strong> — 서명을 깔끔하게 하려면 <code>fn read(r: impl Read)</code>가 <code>fn read&lt;R: Read&gt;(r: R)</code>보다 낫습니다</li>
+<li><strong><code>Result</code>를 반환하고 <code>panic!</code>은 피하기</strong> — 호출자가 에러 처리 방식을 정하도록</li>
+<li><strong>표준 트레잇 구현</strong> — <code>Debug</code>, <code>Display</code>, <code>Clone</code>, <code>Default</code>, <code>From</code>/<code>Into</code></li>
+<li><strong>잘못된 상태를 표현 불가능하게</strong> — 타입 상태와 뉴타입 활용</li>
+<li><strong>복잡한 설정은 빌더 패턴</strong> — 필수 필드가 있으면 타입 상태 빌더</li>
+<li><strong>사용자 구현을 막을 트레잇은 봉인(seal)</strong> — <code>pub trait Sealed: private::Sealed {}</code></li>
+<li><strong>타입·함수에 <code>#[must_use]</code></strong> — 중요한 <code>Result</code>, 가드, 값을 조용히 버리는 실수 방지. 반환을 무시하면 거의 항상 버그인 타입에 적용합니다:
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[must_use = "dropping the guard immediately releases the lock"]
+pub struct LockGuard&lt;'a, T&gt; { /* ... */ }
+
+#[must_use]
+pub fn validate(input: &amp;str) -&gt; Result&lt;ValidInput, ValidationError&gt; { /* ... */ }
+<span class="boring">}</span></code></pre>
+</li>
+</ol>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 봉인 트레잇 패턴 — 사용은 가능, 구현은 불가:
+mod private {
+    pub trait Sealed {}
+}
+
+pub trait DatabaseDriver: private::Sealed {
+    fn connect(&amp;self, url: &amp;str) -&gt; Connection;
+}
+
+// 이 크레이트의 타입만 Sealed를 구현할 수 있음 → DatabaseDriver도 우리만 구현
+pub struct PostgresDriver;
+impl private::Sealed for PostgresDriver {}
+impl DatabaseDriver for PostgresDriver {
+    fn connect(&amp;self, url: &amp;str) -&gt; Connection { /* ... */ }
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong><code>#[non_exhaustive]</code></strong> — 공개 enum·구조체에 붙이면 변형·필드 추가가
+호환성 깨짐(semver major)이 아닙니다. 하위 크레이트는 match에 와일드카드
+(<code>_ =&gt;</code>)를 써야 하고, 구조체 리터럴로는 생성할 수 없습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[non_exhaustive]
+pub enum DiagError {
+    Timeout,
+    HardwareFault,
+    // 이후 릴리스에서 변형을 추가해도 semver 위반이 아님
+}
+<span class="boring">}</span></code></pre>
+</blockquote>
+<p><a id="ergonomic-parameter-patterns"></a></p>
+<h3 id="인체공학적-매개변수--impl-into-asref-cow"><a class="header" href="#인체공학적-매개변수--impl-into-asref-cow">인체공학적 매개변수 — <code>impl Into</code>, <code>AsRef</code>, <code>Cow</code></a></h3>
+<p>Rust에서 영향이 큰 API 패턴 중 하나는 함수 매개변수에 <strong>가장 일반적인 타입</strong>을 받아
+호출부에서 매번 <code>.to_string()</code>, <code>&amp;*s</code>, <code>.as_ref()</code>를 반복하지 않게 하는 것입니다.
+“받을 때는 관대하게”의 Rust 버전입니다.</p>
+<h4 id="impl-intot--변환-가능한-것은-무엇이든"><a class="header" href="#impl-intot--변환-가능한-것은-무엇이든"><code>impl Into&lt;T&gt;</code> — 변환 가능한 것은 무엇이든</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 마찰: 호출자가 직접 변환해야 함
+fn connect(host: String, port: u16) -&gt; Connection {
+    // ...
+}
+connect("localhost".to_string(), 5432);  // 귀찮은 .to_string()
+connect(hostname.clone(), 5432);       // 이미 String이면 불필요한 clone
+
+// ✅ 인체공학: String으로 변환 가능한 것이면 무엇이든
+fn connect(host: impl Into&lt;String&gt;, port: u16) -&gt; Connection {
+    let host = host.into();  // 함수 안에서 한 번만 변환
+    // ...
+}
+connect("localhost", 5432);     // &amp;str — 마찰 없음
+connect(hostname, 5432);        // String — 이동, clone 없음
+connect(arc_str, 5432);         // Arc&lt;str&gt; — From이 구현된 경우
+<span class="boring">}</span></code></pre>
+<p><code>From</code>/<code>Into</code> 쌍의 blanket 구현 덕분에 동작합니다. <code>impl Into&lt;T&gt;</code>는 “<code>T</code>가 될 수 있는 것”을 달라는 뜻입니다.</p>
+<h4 id="asreft--참조로-빌리기"><a class="header" href="#asreft--참조로-빌리기"><code>AsRef&lt;T&gt;</code> — 참조로 빌리기</a></h4>
+<p><code>AsRef&lt;T&gt;</code>는 <code>Into&lt;T&gt;</code>의 빌리기 쪽입니다. 소유가 아니라 <em>읽기만</em> 할 때 씁니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::path::Path;
+
+// ❌ 호출자를 &amp;Path로 강제
+fn file_exists(path: &amp;Path) -&gt; bool {
+    path.exists()
+}
+file_exists(Path::new("/tmp/test.txt"));  // 어색함
+
+// ✅ &amp;Path처럼 쓸 수 있는 것이면 무엇이든
+fn file_exists(path: impl AsRef&lt;Path&gt;) -&gt; bool {
+    path.as_ref().exists()
+}
+file_exists("/tmp/test.txt");                    // &amp;str ✅
+file_exists(String::from("/tmp/test.txt"));      // String ✅
+file_exists(Path::new("/tmp/test.txt"));         // &amp;Path ✅
+file_exists(PathBuf::from("/tmp/test.txt"));     // PathBuf ✅
+
+// 문자열 계열도 같은 패턴:
+fn log_message(msg: impl AsRef&lt;str&gt;) {
+    println!("[LOG] {}", msg.as_ref());
+}
+log_message("hello");                    // &amp;str ✅
+log_message(String::from("hello"));      // String ✅
+<span class="boring">}</span></code></pre>
+<h4 id="cowt--쓸-때만-복제"><a class="header" href="#cowt--쓸-때만-복제"><code>Cow&lt;T&gt;</code> — 쓸 때만 복제</a></h4>
+<p><code>Cow&lt;'a, T&gt;</code>(Clone on Write)는 수정이 필요할 때까지 할당을 미룹니다.
+<code>&amp;T</code>를 빌리거나 <code>T::Owned</code>를 가집니다. 대부분의 호출에서 데이터를 바꾸지 않을 때 적합합니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::borrow::Cow;
+
+/// 진단 메시지 정규화 — 바꿀 필요가 있을 때만 할당
+fn normalize_message(msg: &amp;str) -&gt; Cow&lt;'_, str&gt; {
+    if msg.contains('\t') || msg.contains('\r') {
+        Cow::Owned(msg.replace('\t', "    ").replace('\r', ""))
+    } else {
+        Cow::Borrowed(msg)
+    }
+}
+
+// 대부분의 메시지는 할당 없이 통과:
+let clean = normalize_message("All tests passed");          // 빌림 — 비용 없음
+let fixed = normalize_message("Error:\tfailed\r\n");        // 소유 — 할당됨
+
+// Cow&lt;str&gt;는 Deref&lt;Target=str&gt;이므로 &amp;str처럼 씁니다:
+println!("{}", clean);
+println!("{}", fixed.to_uppercase());
+<span class="boring">}</span></code></pre>
+<h4 id="빠른-참고-무엇을-쓸까"><a class="header" href="#빠른-참고-무엇을-쓸까">빠른 참고: 무엇을 쓸까</a></h4>
+<pre><code class="language-text">함수 안에서 데이터 소유가 필요한가?
+├── 예 → impl Into&lt;T&gt;
+│         "`T`가 될 수 있는 것을 달라"
+└── 아니오 → 읽기만 하나?
+     ├── 예 → impl AsRef&lt;T&gt; 또는 &amp;T
+     │         "`&amp;T`로 빌릴 수 있는 것을 달라"
+     └── 가끔 수정?
+          └── Cow&lt;'_, T&gt;
+              "가능하면 빌리고, 꼭 필요할 때만 복제"
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>패턴</th><th>소유</th><th>할당</th><th>쓸 때</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&amp;str</code></td><td>빌림</td><td>없음</td><td>단순 문자열 인자</td></tr>
+<tr><td><code>impl AsRef&lt;str&gt;</code></td><td>빌림</td><td>없음</td><td>String, &amp;str 등 — 읽기만</td></tr>
+<tr><td><code>impl Into&lt;String&gt;</code></td><td>소유</td><td>변환 시</td><td>&amp;str, String — 저장/소유</td></tr>
+<tr><td><code>Cow&lt;'_, str&gt;</code></td><td>둘 다</td><td>수정 시만</td><td>대개 수정 없는 처리</td></tr>
+<tr><td><code>&amp;[u8]</code> / <code>impl AsRef&lt;[u8]&gt;</code></td><td>빌림</td><td>없음</td><td>바이트 지향 API</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong><code>Borrow&lt;T&gt;</code> vs <code>AsRef&lt;T&gt;</code></strong>: 둘 다 <code>&amp;T</code>를 주지만 <code>Borrow&lt;T&gt;</code>는 원본과 빌린 형태에서
+<code>Eq</code>, <code>Ord</code>, <code>Hash</code>가 <strong>일치</strong>함을 추가로 보장합니다. 그래서 <code>HashMap&lt;String, V&gt;::get()</code>은
+<code>String: Borrow&lt;Q&gt;</code>인 <code>&amp;Q</code>를 받고 <code>AsRef</code>가 아닙니다. 조회 키에는 <code>Borrow</code>, 일반적인 “참조 달라”에는 <code>AsRef</code>를 쓰세요.</p>
+</blockquote>
+<h4 id="api에서-변환-조합하기"><a class="header" href="#api에서-변환-조합하기">API에서 변환 조합하기</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 인체공학적 매개변수를 쓴 진단 API 예:
+pub struct DiagRunner {
+    name: String,
+    config_path: PathBuf,
+}
+
+impl DiagRunner {
+    /// 이름은 문자열 계열, 설정 경로는 경로 계열 아무거나
+    pub fn new(
+        name: impl Into&lt;String&gt;,
+        config_path: impl Into&lt;PathBuf&gt;,
+    ) -&gt; Self {
+        DiagRunner {
+            name: name.into(),
+            config_path: config_path.into(),
+        }
+    }
+
+    /// 읽기 전용 조회에는 AsRef&lt;str&gt;
+    pub fn get_result(&amp;self, test_name: impl AsRef&lt;str&gt;) -&gt; Option&lt;&amp;TestResult&gt; {
+        self.results.get(test_name.as_ref())
+    }
+}
+
+// 호출부 마찰 없음:
+let runner = DiagRunner::new("GPU Diag", "/etc/diag_tool/config.json");
+let runner = DiagRunner::new(format!("Diag-{}", node_id), config_path);
+let runner = DiagRunner::new(name_string, path_buf);
+<span class="boring">}</span></code></pre>
+<hr>
+<p><a id="case-study-designing-a-public-crate-api"></a></p>
+<h2 id="사례-연구-공개-크레이트-api-설계--전과-후"><a class="header" href="#사례-연구-공개-크레이트-api-설계--전과-후">사례 연구: 공개 크레이트 API 설계 — 전과 후</a></h2>
+<p>문자열에 의존하던 내부 API를 인체공학적이고 타입 안전한 공개 API로 바꾸는 예입니다. 설정 파서 크레이트를 가정합니다.</p>
+<p><strong>전</strong> (문자열 중심, 오용하기 쉬움):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 매개변수가 모두 문자열 — 컴파일 타임 검증 없음
+pub fn parse_config(path: &amp;str, format: &amp;str, strict: bool) -&gt; Result&lt;Config, String&gt; {
+    // 허용 포맷이 "json"? "JSON"? "Json"?
+    // path는 파일 경로인가 URL인가?
+    // strict는 정확히 무슨 뜻인가?
+    todo!()
+}
+<span class="boring">}</span></code></pre>
+<p><strong>후</strong> (타입 안전, 자기 설명적):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::path::Path;
+
+/// 지원하는 설정 포맷
+#[derive(Debug, Clone, Copy)]
+#[non_exhaustive]  // 포맷 추가 시 하위 호환 유지
+pub enum Format {
+    Json,
+    Toml,
+    Yaml,
+}
+
+/// 파싱 엄격도
+#[derive(Debug, Clone, Copy, Default)]
+pub enum Strictness {
+    /// 알 수 없는 필드 거부(라이브러리 기본)
+    #[default]
+    Strict,
+    /// 알 수 없는 필드 무시(앞으로 호환되는 설정에 유용)
+    Lenient,
+}
+
+pub fn parse_config(
+    path: &amp;Path,          // 타입으로 강제: 파일 시스템 경로
+    format: Format,       // enum: 잘못된 포맷 문자열 불가
+    strictness: Strictness,  // 이름 있는 대안, raw bool 아님
+) -&gt; Result&lt;Config, ConfigError&gt; {
+    todo!()
+}
+<span class="boring">}</span></code></pre>
+<p><strong>개선된 점</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>측면</th><th>전</th><th>후</th></tr>
+</thead>
+<tbody>
+<tr><td>포맷 검증</td><td>런타임 문자열 비교</td><td>컴파일 타임 enum</td></tr>
+<tr><td>경로 타입</td><td>raw <code>&amp;str</code> (무엇이든 될 수 있음)</td><td><code>&amp;Path</code> (파일 시스템 전용)</td></tr>
+<tr><td>엄격도</td><td>의미 불명 <code>bool</code></td><td>자기 설명 enum</td></tr>
+<tr><td>에러 타입</td><td>불투명 <code>String</code></td><td>구조화된 <code>ConfigError</code></td></tr>
+<tr><td>확장성</td><td>호환 깨지는 변경</td><td><code>#[non_exhaustive]</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>경험칙</strong>: 문자열에 <code>match</code>를 쓰고 있다면 매개변수를 enum으로 바꿔 보라는 신호입니다.
+문맥 없이 bool이 불명확하면 두 변형 enum을 쓰세요.</p>
+</blockquote>
+<hr>
+<p><a id="parse-dont-validate"></a></p>
+<h3 id="파싱하고-검증하지-말-것--tryfrom과-검증된-타입"><a class="header" href="#파싱하고-검증하지-말-것--tryfrom과-검증된-타입">파싱하고 검증하지 말 것 — <code>TryFrom</code>과 검증된 타입</a></h3>
+<p>“Parse, don’t validate”는 <strong>데이터를 검사한 뒤에도 raw 형태로 돌려보내지 말고,
+유효할 때만 존재할 수 있는 타입으로 파싱하라</strong>는 원칙입니다. Rust에서는 <code>TryFrom</code>이 표준 도구입니다.</p>
+<h4 id="문제-검증만-하고-강제는-없음"><a class="header" href="#문제-검증만-하고-강제는-없음">문제: 검증만 하고 강제는 없음</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 검증 후 사용: 검사 후에도 잘못된 값 사용을 막지 못함
+fn process_port(port: u16) {
+    if port == 0 || port &gt; 65535 {
+        panic!("Invalid port");
+    }
+    start_server(port);  // 그런데 누가 start_server(0)를 직접 부르면?
+}
+
+// ❌ 문자열 중심: 이메일이 String일 뿐 — 쓰레기도 통과
+fn send_email(to: String, body: String) {
+    // `to`가 진짜 이메일인지 알 수 없음
+}
+<span class="boring">}</span></code></pre>
+<h4 id="해결-tryfrom으로-검증된-뉴타입"><a class="header" href="#해결-tryfrom으로-검증된-뉴타입">해결: <code>TryFrom</code>으로 검증된 뉴타입</a></h4>
+<pre class="playground"><code class="language-rust">use std::convert::TryFrom;
+use std::fmt;
+
+/// 검증된 TCP 포트(1–65535). `Port`를 가지면 유효하다고 가정할 수 있음
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Port(u16);
+
+impl TryFrom&lt;u16&gt; for Port {
+    type Error = PortError;
+
+    fn try_from(value: u16) -&gt; Result&lt;Self, Self::Error&gt; {
+        if value == 0 {
+            Err(PortError::Zero)
+        } else {
+            Ok(Port(value))
+        }
+    }
+}
+
+impl Port {
+    pub fn get(&amp;self) -&gt; u16 { self.0 }
+}
+
+#[derive(Debug)]
+pub enum PortError {
+    Zero,
+    InvalidFormat,
+}
+
+impl fmt::Display for PortError {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        match self {
+            PortError::Zero =&gt; write!(f, "port must be non-zero"),
+            PortError::InvalidFormat =&gt; write!(f, "invalid port format"),
+        }
+    }
+}
+
+impl std::error::Error for PortError {}
+
+// 타입 시스템이 유효성을 강제:
+fn start_server(port: Port) {
+    println!("Listening on port {}", port.get());
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let port = Port::try_from(8080)?;   // 경계에서 한 번만 검증
+    start_server(port);
+
+    let bad = Port::try_from(0);        // ❌ Err(PortError::Zero)
+    Ok(())
+}</code></pre>
+<h4 id="실무-예-검증된-ipmi-주소"><a class="header" href="#실무-예-검증된-ipmi-주소">실무 예: 검증된 IPMI 주소</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 검증된 IPMI 슬레이브 주소(0x20–0xFE, 짝수만)
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct IpmiAddr(u8);
+
+#[derive(Debug)]
+pub enum IpmiAddrError {
+    Odd(u8),
+    OutOfRange(u8),
+}
+
+impl fmt::Display for IpmiAddrError {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        match self {
+            IpmiAddrError::Odd(v) =&gt; write!(f, "IPMI address 0x{v:02X} must be even"),
+            IpmiAddrError::OutOfRange(v) =&gt; {
+                write!(f, "IPMI address 0x{v:02X} out of range (0x20..=0xFE)")
+            }
+        }
+    }
+}
+
+impl TryFrom&lt;u8&gt; for IpmiAddr {
+    type Error = IpmiAddrError;
+
+    fn try_from(value: u8) -&gt; Result&lt;Self, Self::Error&gt; {
+        if value % 2 != 0 {
+            Err(IpmiAddrError::Odd(value))
+        } else if value &lt; 0x20 || value &gt; 0xFE {
+            Err(IpmiAddrError::OutOfRange(value))
+        } else {
+            Ok(IpmiAddr(value))
+        }
+    }
+}
+
+impl IpmiAddr {
+    pub fn get(&amp;self) -&gt; u8 { self.0 }
+}
+
+fn send_ipmi_command(addr: IpmiAddr, cmd: u8, data: &amp;[u8]) -&gt; Result&lt;Vec&lt;u8&gt;, IpmiError&gt; {
+    raw_ipmi_send(addr.get(), cmd, data)
+}
+<span class="boring">}</span></code></pre>
+<h4 id="fromstr로-문자열-파싱"><a class="header" href="#fromstr로-문자열-파싱"><code>FromStr</code>로 문자열 파싱</a></h4>
+<p>CLI·설정 파일에서 자주 쓰이면 <code>FromStr</code>을 구현합니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::str::FromStr;
+
+impl FromStr for Port {
+    type Err = PortError;
+
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        let n: u16 = s.parse().map_err(|_| PortError::InvalidFormat)?;
+        Port::try_from(n)
+    }
+}
+
+let port: Port = "8080".parse()?;
+
+// clap:
+// #[derive(Parser)]
+// struct Args {
+//     #[arg(short, long)]
+//     port: Port,
+// }
+<span class="boring">}</span></code></pre>
+<h4 id="복합-검증의-tryfrom-체인"><a class="header" href="#복합-검증의-tryfrom-체인">복합 검증의 <code>TryFrom</code> 체인</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이 예의 스텁 타입 — 실제로는 모듈별 TryFrom이 있음
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct Hostname(String);
+</span><span class="boring">impl TryFrom&lt;String&gt; for Hostname {
+</span><span class="boring">    type Error = String;
+</span><span class="boring">    fn try_from(s: String) -&gt; Result&lt;Self, String&gt; { Ok(Hostname(s)) }
+</span><span class="boring">}
+</span><span class="boring">struct Timeout(u64);
+</span><span class="boring">impl TryFrom&lt;u64&gt; for Timeout {
+</span><span class="boring">    type Error = String;
+</span><span class="boring">    fn try_from(ms: u64) -&gt; Result&lt;Self, String&gt; {
+</span><span class="boring">        if ms == 0 { Err("timeout must be &gt; 0".into()) } else { Ok(Timeout(ms)) }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">struct RawConfig { host: String, port: u16, timeout_ms: u64 }
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum ConfigError {
+</span><span class="boring">    InvalidHost(String),
+</span><span class="boring">    InvalidPort(PortError),
+</span><span class="boring">    InvalidTimeout(String),
+</span><span class="boring">}
+</span><span class="boring">impl From&lt;std::io::Error&gt; for ConfigError {
+</span><span class="boring">    fn from(e: std::io::Error) -&gt; Self { ConfigError::InvalidHost(e.to_string()) }
+</span><span class="boring">}
+</span><span class="boring">impl From&lt;serde_json::Error&gt; for ConfigError {
+</span><span class="boring">    fn from(e: serde_json::Error) -&gt; Self { ConfigError::InvalidHost(e.to_string()) }
+</span><span class="boring">}
+</span>/// 모든 필드가 유효할 때만 존재할 수 있는 설정
+pub struct ValidConfig {
+    pub host: Hostname,
+    pub port: Port,
+    pub timeout_ms: Timeout,
+}
+
+impl TryFrom&lt;RawConfig&gt; for ValidConfig {
+    type Error = ConfigError;
+
+    fn try_from(raw: RawConfig) -&gt; Result&lt;Self, Self::Error&gt; {
+        Ok(ValidConfig {
+            host: Hostname::try_from(raw.host)
+                .map_err(ConfigError::InvalidHost)?,
+            port: Port::try_from(raw.port)
+                .map_err(ConfigError::InvalidPort)?,
+            timeout_ms: Timeout::try_from(raw.timeout_ms)
+                .map_err(ConfigError::InvalidTimeout)?,
+        })
+    }
+}
+
+fn load_config(path: &amp;str) -&gt; Result&lt;ValidConfig, ConfigError&gt; {
+    let raw: RawConfig = serde_json::from_str(&amp;std::fs::read_to_string(path)?)?;
+    ValidConfig::try_from(raw)
+}
+<span class="boring">}</span></code></pre>
+<h4 id="요약-검증-vs-파싱"><a class="header" href="#요약-검증-vs-파싱">요약: 검증 vs 파싱</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>접근</th><th style="text-align: center">데이터 검사?</th><th style="text-align: center">컴파일러가 유효성 강제?</th><th style="text-align: center">재검증?</th></tr>
+</thead>
+<tbody>
+<tr><td>런타임 검사(if/assert)</td><td style="text-align: center">✅</td><td style="text-align: center">❌</td><td style="text-align: center">함수 경계마다</td></tr>
+<tr><td>검증 뉴타입 + <code>TryFrom</code></td><td style="text-align: center">✅</td><td style="text-align: center">✅</td><td style="text-align: center">없음 — 타입이 증명</td></tr>
+</tbody>
+</table>
+</div>
+<p>규칙: <strong>경계에서 파싱하고, 내부에서는 검증된 타입만 씁니다.</strong>
+raw 문자열·정수·바이트 슬라이스는 <code>TryFrom</code>/<code>FromStr</code>로 파싱된 뒤부터 타입이 보장합니다.</p>
+<p><a id="feature-flags-and-conditional-compilation"></a></p>
+<h3 id="기능-플래그와-조건부-컴파일"><a class="header" href="#기능-플래그와-조건부-컴파일">기능 플래그와 조건부 컴파일</a></h3>
+<pre><code class="language-toml"></code></pre>
+<h1 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h1>
+<p>[features]
+default = [“json”]          # 기본 활성화
+json = [“dep:serde_json”]   # JSON 지원
+xml = [“dep:quick-xml”]     # XML 지원
+full = [“json”, “xml”]      # 메타 기능: 전부</p>
+<p>[dependencies]
+serde = “1”
+serde_json = { version = “1”, optional = true }
+quick-xml = { version = “0.31”, optional = true }</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(feature = "json")]
+pub fn to_json&lt;T: serde::Serialize&gt;(value: &amp;T) -&gt; String {
+    serde_json::to_string(value).unwrap()
+}
+
+#[cfg(feature = "xml")]
+pub fn to_xml&lt;T: serde::Serialize&gt;(value: &amp;T) -&gt; String {
+    quick_xml::se::to_string(value).unwrap()
+}
+
+#[cfg(not(any(feature = "json", feature = "xml")))]
+compile_error!("At least one format feature (json, xml) must be enabled");
+<span class="boring">}</span></code></pre>
+<p><strong>권장 사항</strong>:</p>
+<ul>
+<li><code>default</code> 기능은 최소로 — 사용자가 옵트인</li>
+<li>선택 의존성에는 Rust 1.60+ <code>dep:</code> 문법으로 암시적 기능 생성 방지</li>
+<li>README와 크레이트 문서에 기능을 설명</li>
+</ul>
+<p><a id="workspace-organization"></a></p>
+<h3 id="워크스페이스-구성"><a class="header" href="#워크스페이스-구성">워크스페이스 구성</a></h3>
+<p>큰 프로젝트는 Cargo 워크스페이스로 의존성과 빌드 산출물을 공유합니다:</p>
+<pre><code class="language-toml"></code></pre>
+<h1 id="루트-cargotoml"><a class="header" href="#루트-cargotoml">루트 Cargo.toml</a></h1>
+<p>[workspace]
+members = [
+“core”,         # 공유 타입·트레잇
+“parser”,       # 파싱 라이브러리
+“server”,       # 바이너리 — 메인 앱
+“client”,       # 클라이언트 라이브러리
+“cli”,          # CLI 바이너리
+]</p>
+<p>[workspace.dependencies]
+serde = { version = “1”, features = [“derive”] }
+tokio = { version = “1”, features = [“full”] }
+tracing = “0.1”</p>
+<h1 id="각-멤버-cargotoml"><a class="header" href="#각-멤버-cargotoml">각 멤버 Cargo.toml:</a></h1>
+<h1 id="dependencies"><a class="header" href="#dependencies">[dependencies]</a></h1>
+<h1 workspace="" true="" id="serde-"><a class="header" href="#serde-">serde =</a></h1>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>
+**이점**:
+<span class="boring">}</span></code></pre>
+<ul>
+<li>하나의 <code>Cargo.lock</code> — 모든 크레이트가 같은 의존성 버전</li>
+<li><code>cargo test --workspace</code>로 전체 테스트</li>
+<li>공유 빌드 캐시 — 한 크레이트 컴파일이 모두에 도움</li>
+<li>구성 요소 간 의존 경계가 명확</li>
+</ul>
+<p><a id="cargoconfigtoml-project-level-configuration"></a></p>
+<h3 id="cargoconfigtoml-프로젝트-단위-설정"><a class="header" href="#cargoconfigtoml-프로젝트-단위-설정"><code>.cargo/config.toml</code>: 프로젝트 단위 설정</a></h3>
+<p>워크스페이스 루트나 <code>$HOME/.cargo/</code>의 <code>.cargo/config.toml</code>로
+<code>Cargo.toml</code>을 바꾸지 않고 Cargo 동작을 조정합니다:</p>
+<pre><code class="language-toml"></code></pre>
+<h1 id="cargoconfigtoml"><a class="header" href="#cargoconfigtoml">.cargo/config.toml</a></h1>
+<p>[build]
+target = “x86_64-unknown-linux-gnu”</p>
+<p>[target.aarch64-unknown-linux-gnu]
+runner = “qemu-aarch64-static”
+linker = “aarch64-linux-gnu-gcc”</p>
+<p>[alias]
+xt = “test –workspace –release”
+ci = “clippy –workspace – -D warnings”
+cov = “llvm-cov –workspace”</p>
+<p>[env]
+IPMI_LIB_PATH = “/usr/lib/bmc”</p>
+<h1 id="registriesinternal"><a class="header" href="#registriesinternal">[registries.internal]</a></h1>
+<h1 id="index--httpsgitlabinternalcratesindex"><a class="header" href="#index--httpsgitlabinternalcratesindex">index = “https://gitlab.internal/crates/index”</a></h1>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>
+자주 쓰는 설정:
+
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>설정</th><th>목적</th><th>예</th></tr>
+</thead>
+<tbody>
+<tr><td><code>[build] target</code></td><td>기본 컴파일 타깃</td><td>정적 빌드에 <code>x86_64-unknown-linux-musl</code></td></tr>
+<tr><td><code>[target.X] runner</code></td><td>바이너리 실행 방법</td><td>크로스 빌드에 <code>"qemu-aarch64-static"</code></td></tr>
+<tr><td><code>[target.X] linker</code></td><td>사용할 링커</td><td><code>"aarch64-linux-gnu-gcc"</code></td></tr>
+<tr><td><code>[alias]</code></td><td><code>cargo</code> 하위 명령 단축</td><td><code>xt = "test --workspace"</code></td></tr>
+<tr><td><code>[env]</code></td><td>빌드 시 환경 변수</td><td>라이브러리 경로, 기능 토글</td></tr>
+<tr><td><code>[net] offline</code></td><td>네트워크 차단</td><td>에어갭 빌드에 <code>true</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="compile-time-environment-variables"></a></p>
+<h3 id="컴파일-타임-환경-변수-env와-option_env"><a class="header" href="#컴파일-타임-환경-변수-env와-option_env">컴파일 타임 환경 변수: <code>env!()</code>와 <code>option_env!()</code></a></h3>
+<p>버전 문자열, 빌드 메타데이터에 바이너리 안에 환경 변수를 넣을 수 있습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const VERSION: &amp;str = env!("CARGO_PKG_VERSION");
+const PKG_NAME: &amp;str = env!("CARGO_PKG_NAME");
+
+const BUILD_SHA: Option&lt;&amp;str&gt; = option_env!("GIT_SHA");
+const BUILD_TIME: Option&lt;&amp;str&gt; = option_env!("BUILD_TIMESTAMP");
+
+fn print_version() {
+    println!("{PKG_NAME} v{VERSION}");
+    if let Some(sha) = BUILD_SHA {
+        println!("  commit: {sha}");
+    }
+    if let Some(time) = BUILD_TIME {
+        println!("  built:  {time}");
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>Cargo가 자주 쓰는 변수:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>변수</th><th>값</th><th>용도</th></tr>
+</thead>
+<tbody>
+<tr><td><code>CARGO_PKG_VERSION</code></td><td><code>"1.2.3"</code></td><td>버전 표시</td></tr>
+<tr><td><code>CARGO_PKG_NAME</code></td><td><code>"diag_tool"</code></td><td>바이너리 식별</td></tr>
+<tr><td><code>CARGO_PKG_AUTHORS</code></td><td><code>Cargo.toml</code>에서</td><td>도움말 등</td></tr>
+<tr><td><code>CARGO_MANIFEST_DIR</code></td><td><code>Cargo.toml</code> 절대 경로</td><td>테스트 데이터 위치</td></tr>
+<tr><td><code>OUT_DIR</code></td><td>빌드 출력</td><td><code>build.rs</code> 생성물</td></tr>
+<tr><td><code>TARGET</code></td><td>타깃 트리플</td><td><code>build.rs</code>에서 플랫폼 분기</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>build.rs</code>에서 사용자 정의 env 출력:</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("cargo::rustc-env=GIT_SHA={}", git_sha());
+    println!("cargo::rustc-env=BUILD_TIMESTAMP={}", timestamp());
+}</code></pre>
+<p><a id="cfg_attr-conditional-attributes"></a></p>
+<h3 id="cfg_attr-조건부-어트리뷰트"><a class="header" href="#cfg_attr-조건부-어트리뷰트"><code>cfg_attr</code>: 조건부 어트리뷰트</a></h3>
+<p>조건이 참일 때만 어트리뷰트를 붙입니다. 항목 전체를 넣거나 빼는 <code>#[cfg()]</code>보다 세밀합니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
+pub struct DiagResult {
+    pub fc: u32,
+    pub passed: bool,
+    pub message: String,
+}
+
+#[cfg_attr(test, derive(PartialEq))]
+pub struct LargeStruct { /* ... */ }
+
+#[cfg_attr(target_os = "linux", link_name = "ioctl")]
+#[cfg_attr(target_os = "freebsd", link_name = "__ioctl")]
+extern "C" fn platform_ioctl(fd: i32, request: u64) -&gt; i32;
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>패턴</th><th>동작</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#[cfg(feature = "x")]</code></td><td>항목 전체 포함/제외</td></tr>
+<tr><td><code>#[cfg_attr(feature = "x", derive(Foo))]</code></td><td>기능 “x“일 때만 <code>derive(Foo)</code></td></tr>
+<tr><td><code>#[cfg_attr(test, allow(unused))]</code></td><td>테스트 빌드에서만 경고 억제</td></tr>
+<tr><td><code>#[cfg_attr(doc, doc = "...")]</code></td><td><code>cargo doc</code>에서만 보이는 문서</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="cargo-deny-and-cargo-audit"></a></p>
+<h3 id="cargo-deny와-cargo-audit-공급망-보안"><a class="header" href="#cargo-deny와-cargo-audit-공급망-보안"><code>cargo deny</code>와 <code>cargo audit</code>: 공급망 보안</a></h3>
+<pre><code class="language-bash"></code></pre>
+<p>cargo install cargo-deny
+cargo install cargo-audit</p>
+<p>cargo audit</p>
+<p>cargo deny check</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>
+워크스페이스 루트에 `deny.toml`로 `cargo deny` 설정:
+
+<span class="boring">}</span></code></pre>
+<pre><code class="language-toml"></code></pre>
+<h1 id="denytoml"><a class="header" href="#denytoml">deny.toml</a></h1>
+<p>[advisories]
+vulnerability = “deny”
+unmaintained = “warn”</p>
+<p>[licenses]
+allow = [“MIT”, “Apache-2.0”, “BSD-2-Clause”, “BSD-3-Clause”]
+deny = [“GPL-3.0”]</p>
+<p>[bans]
+multiple-versions = “warn”
+deny = [</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    { name = "openssl" },
+]
+
+[sources]
+allow-git = []
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>도구</th><th>목적</th><th>실행 시점</th></tr>
+</thead>
+<tbody>
+<tr><td><code>cargo audit</code></td><td>의존성의 알려진 CVE</td><td>CI, 릴리스 전</td></tr>
+<tr><td><code>cargo deny check</code></td><td>라이선스, 금지, 권고, 소스</td><td>CI</td></tr>
+<tr><td><code>cargo deny check licenses</code></td><td>라이선스만</td><td>오픈소스 전</td></tr>
+<tr><td><code>cargo deny check bans</code></td><td>특정 크레이트 차단</td><td>아키텍처 정책</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="doc-tests-tests-inside-documentation"></a></p>
+<h3 id="문서-테스트-문서-안의-테스트"><a class="header" href="#문서-테스트-문서-안의-테스트">문서 테스트: 문서 안의 테스트</a></h3>
+<p><code>///</code> 안의 코드 블록은 <strong>컴파일되어 테스트로 실행</strong>됩니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 문자열에서 진단 fault 코드를 파싱합니다.
+///
+/// # 예제
+///
+/// ```
+/// use my_crate::parse_fc;
+///
+/// let fc = parse_fc("FC:12345").unwrap();
+/// assert_eq!(fc, 12345);
+/// ```
+///
+/// 잘못된 입력은 에러:
+///
+/// ```
+/// use my_crate::parse_fc;
+///
+/// assert!(parse_fc("not-a-fc").is_err());
+/// ```
+pub fn parse_fc(input: &amp;str) -&gt; Result&lt;u32, ParseError&gt; {
+    input.strip_prefix("FC:")
+        .ok_or(ParseError::MissingPrefix)?
+        .parse()
+        .map_err(ParseError::InvalidNumber)
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-bash">cargo test --doc
+cargo test
+</code></pre>
+<p><strong>모듈 수준 문서</strong>는 파일 맨 위 <code>//!</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! # Diagnostic Framework
+//!
+//! 이 크레이트는 진단 실행 엔진을 제공합니다.
+//!
+//! ## Quick Start
+//!
+//! ```no_run
+//! use diag_framework::Framework;
+//!
+//! let mut fw = Framework::new("config.json")?;
+//! fw.run_all_tests()?;
+//! ```
+<span class="boring">}</span></code></pre>
+<p><a id="benchmarking-with-criterion-architecture"></a></p>
+<h3 id="criterion으로-벤치마킹"><a class="header" href="#criterion으로-벤치마킹">Criterion으로 벤치마킹</a></h3>
+<blockquote>
+<p><strong>전체 설명</strong>: <a href="ch14-testing-and-benchmarking-patterns.html#benchmarking-with-criterion">criterion으로 벤치마킹</a>(14장 테스트와 벤치마킹 패턴)에
+<code>criterion</code> 설정, API 예, <code>cargo bench</code>와의 비교 표가 있습니다.
+여기서는 아키텍처 관점 요약만 다룹니다.</p>
+</blockquote>
+<p>공개 API를 벤치마크할 때는 <code>benches/</code>에 두고 핫 패스(파서, 직렬화, 검증 경계)에 집중합니다:</p>
+<pre><code class="language-bash">cargo bench
+cargo bench -- parse_config
+# 결과: target/criterion/ HTML 리포트
+</code></pre>
+<blockquote>
+<p><strong>핵심 정리 — 아키텍처와 API 설계</strong></p>
+<ul>
+<li>받을 때는 가장 일반적인 타입(<code>impl Into</code>, <code>impl AsRef</code>, <code>Cow</code>), 돌려줄 때는 가장 구체적으로</li>
+<li>파싱하고 검증하지 말 것: <code>TryFrom</code>으로 “구성 시점에 유효한” 타입 만들기</li>
+<li>공개 enum에는 <code>#[non_exhaustive]</code>로 변형 추가 시 호환 유지</li>
+<li><code>#[must_use]</code>로 중요한 값의 묵시적 폐기 방지</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>참고:</strong> 공개 API의 에러 타입은 <a href="ch09-error-handling-patterns.html">9장 — 에러 처리</a>. 크레이트 공개 API 테스트는 <a href="ch14-testing-and-benchmarking-patterns.html">14장 — 테스트</a>.</p>
+</blockquote>
+<hr>
+<p><a id="exercise-crate-api-refactoring"></a></p>
+<h3 id="연습-크레이트-api-리팩터링--30분"><a class="header" href="#연습-크레이트-api-리팩터링--30분">연습: 크레이트 API 리팩터링 ★★ (~30분)</a></h3>
+<p>아래 “문자열 중심” API를 <code>TryFrom</code>, 뉴타입, 빌더 패턴을 쓰도록 바꾸세요:</p>
+<pre><code class="language-rust ignore">// 전: 오용하기 쉬움
+fn create_server(host: &amp;str, port: &amp;str, max_conn: &amp;str) -&gt; Server { ... }</code></pre>
+<p><code>Host</code>, <code>Port</code>(1–65535), <code>MaxConnections</code>(1–10000)로 검증된 <code>ServerConfig</code>를 설계하고, 잘못된 값은 파싱 시점에 거절하게 하세요.</p>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust">#[derive(Debug, Clone)]
+struct Host(String);
+
+impl TryFrom&lt;&amp;str&gt; for Host {
+    type Error = String;
+    fn try_from(s: &amp;str) -&gt; Result&lt;Self, String&gt; {
+        if s.is_empty() { return Err("host cannot be empty".into()); }
+        if s.contains(' ') { return Err("host cannot contain spaces".into()); }
+        Ok(Host(s.to_string()))
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Port(u16);
+
+impl TryFrom&lt;u16&gt; for Port {
+    type Error = String;
+    fn try_from(p: u16) -&gt; Result&lt;Self, String&gt; {
+        if p == 0 { return Err("port must be &gt;= 1".into()); }
+        Ok(Port(p))
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct MaxConnections(u32);
+
+impl TryFrom&lt;u32&gt; for MaxConnections {
+    type Error = String;
+    fn try_from(n: u32) -&gt; Result&lt;Self, String&gt; {
+        if n == 0 || n &gt; 10_000 {
+            return Err(format!("max_connections must be 1–10000, got {n}"));
+        }
+        Ok(MaxConnections(n))
+    }
+}
+
+#[derive(Debug)]
+struct ServerConfig {
+    host: Host,
+    port: Port,
+    max_connections: MaxConnections,
+}
+
+impl ServerConfig {
+    fn new(host: Host, port: Port, max_connections: MaxConnections) -&gt; Self {
+        ServerConfig { host, port, max_connections }
+    }
+}
+
+fn main() {
+    let config = ServerConfig::new(
+        Host::try_from("localhost").unwrap(),
+        Port::try_from(8080).unwrap(),
+        MaxConnections::try_from(100).unwrap(),
+    );
+    println!("{config:?}");
+
+    assert!(Host::try_from("").is_err());
+    assert!(Port::try_from(0).is_err());
+    assert!(MaxConnections::try_from(99999).is_err());
+}</code></pre>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch14-testing-and-benchmarking-patterns.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch16-asyncawait-essentials.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch14-testing-and-benchmarking-patterns.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch16-asyncawait-essentials.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

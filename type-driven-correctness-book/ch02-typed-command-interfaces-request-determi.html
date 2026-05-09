@@ -1,0 +1,947 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2. 타입이 있는 명령 인터페이스 — 요청이 응답을 결정한다 - Rust의 타입 주도 정확성</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-d7038b1f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-020eda16.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust의 타입 주도 정확성</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="타입이-있는-명령-인터페이스--요청이-응답을-결정한다-"><a class="header" href="#타입이-있는-명령-인터페이스--요청이-응답을-결정한다-">타입이 있는 명령 인터페이스 — 요청이 응답을 결정한다 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong> 명령 트레잇의 연관 타입이 요청과 응답을 컴파일 타임에 묶어, IPMI·Redfish·NVMe 프로토콜 전반에서 파싱 불일치, 단위 혼동, 조용한 타입 강제 변환을 없애는 방법입니다.</p>
+<p><strong>교차 참조:</strong> <a href="ch01-the-philosophy-why-types-beat-tests.html">ch01</a>(철학), <a href="ch06-dimensional-analysis-making-the-compiler.html">ch06</a>(차원 타입), <a href="ch07-validated-boundaries-parse-dont-validate.html">ch07</a>(검증된 경계), <a href="ch10-putting-it-all-together-a-complete-diagn.html">ch10</a>(통합)</p>
+</blockquote>
+<p><a id="the-untyped-swamp"></a></p>
+<h2 id="타입-없는-늪"><a class="header" href="#타입-없는-늪">타입 없는 늪</a></h2>
+<p>대부분의 하드웨어 관리 스택 — IPMI, Redfish, NVMe Admin, PLDM —은 처음에
+<code>바이트 들어가고 바이트 나온다</code>로 시작합니다. 테스트가 부분적으로만 찾을 수 있는 버그 클래스가 생깁니다.</p>
+<pre><code class="language-rust ignore">use std::io;
+
+struct BmcRaw { /* ipmitool handle */ }
+
+impl BmcRaw {
+    fn raw_command(&amp;self, net_fn: u8, cmd: u8, data: &amp;[u8]) -&gt; io::Result&lt;Vec&lt;u8&gt;&gt; {
+        // ... shells out to ipmitool ...
+        Ok(vec![0x00, 0x19, 0x00]) // stub
+    }
+}
+
+fn diagnose_thermal(bmc: &amp;BmcRaw) -&gt; io::Result&lt;()&gt; {
+    let raw = bmc.raw_command(0x04, 0x2D, &amp;[0x20])?;
+    let cpu_temp = raw[0] as f64;        // 🤞 바이트 0이 읽기 값인가?
+
+    let raw = bmc.raw_command(0x04, 0x2D, &amp;[0x30])?;
+    let fan_rpm = raw[0] as u32;         // 🐛 팬 속도는 2바이트 LE
+
+    let raw = bmc.raw_command(0x04, 0x2D, &amp;[0x40])?;
+    let voltage = raw[0] as f64;         // 🐛 1000으로 나눠야 함
+
+    if cpu_temp &gt; fan_rpm as f64 {       // 🐛 °C와 RPM 비교
+        println!("uh oh");
+    }
+
+    log_temp(voltage);                   // 🐛 볼트를 온도 로거에 전달
+    Ok(())
+}
+
+fn log_temp(t: f64) { println!("Temp: {t}°C"); }</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>버그</th><th>발견 시점</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>팬 RPM을 1바이트로 파싱</td><td>프로덕션, 새벽 3시</td></tr>
+<tr><td>2</td><td>전압 스케일 미적용</td><td>모든 PSU가 과전압으로 표시</td></tr>
+<tr><td>3</td><td>°C와 RPM 비교</td><td>아마 영원히 없음</td></tr>
+<tr><td>4</td><td>볼트를 온도 로거에 전달</td><td>6개월 뒤, 과거 데이터 조회 중</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>근본 원인:</strong> 모두 <code>Vec&lt;u8&gt;</code> → <code>f64</code> → 기도입니다.</p>
+<p><a id="the-typed-command-pattern"></a></p>
+<h2 id="타입이-있는-명령-패턴"><a class="header" href="#타입이-있는-명령-패턴">타입이 있는 명령 패턴</a></h2>
+<p><a id="step-1-domain-newtypes"></a></p>
+<h3 id="1단계--도메인-뉴타입"><a class="header" href="#1단계--도메인-뉴타입">1단계 — 도메인 뉴타입</a></h3>
+<pre><code class="language-rust ignore">#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Celsius(pub f64);
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Rpm(pub u32);  // u32: 원시 IPMI 센서 값(정수 RPM)
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Volts(pub f64);
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Watts(pub f64);</code></pre>
+<blockquote>
+<p><strong><code>Rpm(u32)</code> vs <code>Rpm(f64)</code>에 대한 참고:</strong> 이 장에서는 내부 타입이 <code>u32</code>인 이유는 IPMI 센서 읽기가 정수 값이기 때문입니다. ch06(차원 분석)에서는 <code>Rpm</code>이 <code>f64</code>를 씁니다(평균, 스케일링 등 산술). 둘 다 유효하며, 뉴타입이 내부 타입과 관계없이 단위 혼동을 막습니다.</p>
+</blockquote>
+<p><a id="step-2-the-command-trait"></a></p>
+<h3 id="2단계--명령-트레잇타입-인덱스-디스패치"><a class="header" href="#2단계--명령-트레잇타입-인덱스-디스패치">2단계 — 명령 트레잇(타입 인덱스 디스패치)</a></h3>
+<blockquote>
+<p><strong>배경: GADT를 한 단락으로.</strong>
+Haskell 등에서는 <em>일반화 대수 자료형</em>(GADT,
+<a href="https://wiki.haskell.org/GADTs_for_dummies">GADT</a>)이 자료형의 각 생성자마다
+타입 매개변수를 특정 값으로 고정할 수 있습니다. 예를 들어
+<code>ReadTemp :: SensorId -&gt; Cmd Celsius</code>는 “<code>ReadTemp</code> 값을 만들면
+타입 매개변수가 항상 <code>Celsius</code>인 <code>Cmd</code>가 된다“는 뜻입니다.
+Rust는 <strong>연관 타입</strong>으로 같은 효과를 냅니다. 각 구현 구조체가 응답 타입을
+컴파일 타임에 고정합니다. Haskell을 몰라도 이 패턴을 쓸 수 있으며,
+Rust 버전만으로도 충분합니다.</p>
+</blockquote>
+<p>연관 타입 <code>Response</code>가 핵심입니다. 각 명령 구조체에 반환 타입을 묶어
+<code>execute()</code>가 항상 정확한 타입만 돌려줍니다.</p>
+<pre><code class="language-rust ignore">pub trait IpmiCmd {
+    /// "타입 인덱스" — execute()가 무엇을 반환할지 결정합니다.
+    type Response;
+
+    fn net_fn(&amp;self) -&gt; u8;
+    fn cmd_byte(&amp;self) -&gt; u8;
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt;;
+
+    /// 파싱은 여기에 캡슐화 — 각 명령이 자신의 바이트 레이아웃을 앎.
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Self::Response&gt;;
+}</code></pre>
+<p><a id="step-3-one-struct-per-command"></a></p>
+<h3 id="3단계--명령마다-구조체-하나"><a class="header" href="#3단계--명령마다-구조체-하나">3단계 — 명령마다 구조체 하나</a></h3>
+<pre><code class="language-rust ignore">pub struct ReadTemp { pub sensor_id: u8 }
+impl IpmiCmd for ReadTemp {
+    type Response = Celsius;
+    fn net_fn(&amp;self) -&gt; u8 { 0x04 }
+    fn cmd_byte(&amp;self) -&gt; u8 { 0x2D }
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt; { vec![self.sensor_id] }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Celsius&gt; {
+        if raw.is_empty() {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "empty response"));
+        }
+        // 참고: ch01의 타입 없는 예는 SDR 메타데이터 없이 일반 파싱을 보여주기 위해
+        // `raw[0] as i8 as f64`(부호 있음)를 썼습니다. 여기서는 부호 없음(`as f64`)을 쓰는데,
+        // IPMI 규격 §35.5의 SDR 선형화는 부호 없는 원시 읽기를 보정값으로 바꿉니다. 프로덕션에서는
+        // 전체 SDR 공식을 적용하세요: result = (M × raw + B) × 10^(R_exp).
+        Ok(Celsius(raw[0] as f64))  // 부호 없는 원시 바이트, SDR 공식에 따라 변환
+    }
+}
+
+pub struct ReadFanSpeed { pub fan_id: u8 }
+impl IpmiCmd for ReadFanSpeed {
+    type Response = Rpm;
+    fn net_fn(&amp;self) -&gt; u8 { 0x04 }
+    fn cmd_byte(&amp;self) -&gt; u8 { 0x2D }
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt; { vec![self.fan_id] }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Rpm&gt; {
+        if raw.len() &lt; 2 {
+            return Err(io::Error::new(io::ErrorKind::InvalidData,
+                format!("fan speed needs 2 bytes, got {}", raw.len())));
+        }
+        Ok(Rpm(u16::from_le_bytes([raw[0], raw[1]]) as u32))
+    }
+}
+
+pub struct ReadVoltage { pub rail: u8 }
+impl IpmiCmd for ReadVoltage {
+    type Response = Volts;
+    fn net_fn(&amp;self) -&gt; u8 { 0x04 }
+    fn cmd_byte(&amp;self) -&gt; u8 { 0x2D }
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt; { vec![self.rail] }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Volts&gt; {
+        if raw.len() &lt; 2 {
+            return Err(io::Error::new(io::ErrorKind::InvalidData,
+                format!("voltage needs 2 bytes, got {}", raw.len())));
+        }
+        Ok(Volts(u16::from_le_bytes([raw[0], raw[1]]) as f64 / 1000.0))
+    }
+}</code></pre>
+<p><a id="step-4-the-executor"></a></p>
+<h3 id="4단계--실행기dyn-없음-단형화"><a class="header" href="#4단계--실행기dyn-없음-단형화">4단계 — 실행기(<code>dyn</code> 없음, 단형화)</a></h3>
+<pre><code class="language-rust ignore">pub struct BmcConnection { pub timeout_secs: u32 }
+
+impl BmcConnection {
+    pub fn execute&lt;C: IpmiCmd&gt;(&amp;self, cmd: &amp;C) -&gt; io::Result&lt;C::Response&gt; {
+        let raw = self.raw_send(cmd.net_fn(), cmd.cmd_byte(), &amp;cmd.payload())?;
+        cmd.parse_response(&amp;raw)
+    }
+
+    fn raw_send(&amp;self, _nf: u8, _cmd: u8, _data: &amp;[u8]) -&gt; io::Result&lt;Vec&lt;u8&gt;&gt; {
+        Ok(vec![0x19, 0x00]) // stub
+    }
+}</code></pre>
+<p><a id="step-5-all-four-bugs-become-compile-errors"></a></p>
+<h3 id="5단계--네-가지-버그가-모두-컴파일-에러로"><a class="header" href="#5단계--네-가지-버그가-모두-컴파일-에러로">5단계 — 네 가지 버그가 모두 컴파일 에러로</a></h3>
+<pre><code class="language-rust ignore">fn diagnose_thermal_typed(bmc: &amp;BmcConnection) -&gt; io::Result&lt;()&gt; {
+    let cpu_temp: Celsius = bmc.execute(&amp;ReadTemp { sensor_id: 0x20 })?;
+    let fan_rpm:  Rpm     = bmc.execute(&amp;ReadFanSpeed { fan_id: 0x30 })?;
+    let voltage:  Volts   = bmc.execute(&amp;ReadVoltage { rail: 0x40 })?;
+
+    // 버그 #1 — 불가능: 파싱은 ReadFanSpeed::parse_response에 있음
+    // 버그 #2 — 불가능: 단위 스케일은 ReadVoltage::parse_response에 있음
+
+    // 버그 #3 — 컴파일 에러:
+    // if cpu_temp &gt; fan_rpm { }
+    //    ^^^^^^^^   ^^^^^^^ Celsius vs Rpm → "mismatched types" ❌
+
+    // 버그 #4 — 컴파일 에러:
+    // log_temperature(voltage);
+    //                 ^^^^^^^ Volts, expected Celsius ❌
+
+    if cpu_temp &gt; Celsius(85.0) { println!("CPU overheating: {:?}", cpu_temp); }
+    if fan_rpm &lt; Rpm(4000)      { println!("Fan too slow: {:?}", fan_rpm); }
+
+    Ok(())
+}
+
+fn log_temperature(t: Celsius) { println!("Temp: {:?}", t); }
+fn log_voltage(v: Volts)       { println!("Voltage: {:?}", v); }</code></pre>
+<p><a id="ipmi-sensor-reads-that-cant-be-confused"></a></p>
+<h2 id="ipmi-혼동할-수-없는-센서-읽기"><a class="header" href="#ipmi-혼동할-수-없는-센서-읽기">IPMI: 혼동할 수 없는 센서 읽기</a></h2>
+<p>새 센서는 구조체 하나 + impl 하나로 추가 — 파싱이 여기저기 흩어지지 않습니다.</p>
+<pre><code class="language-rust ignore">pub struct ReadPowerDraw { pub domain: u8 }
+impl IpmiCmd for ReadPowerDraw {
+    type Response = Watts;
+    fn net_fn(&amp;self) -&gt; u8 { 0x04 }
+    fn cmd_byte(&amp;self) -&gt; u8 { 0x2D }
+    fn payload(&amp;self) -&gt; Vec&lt;u8&gt; { vec![self.domain] }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Watts&gt; {
+        if raw.len() &lt; 2 {
+            return Err(io::Error::new(io::ErrorKind::InvalidData,
+                format!("power draw needs 2 bytes, got {}", raw.len())));
+        }
+        Ok(Watts(u16::from_le_bytes([raw[0], raw[1]]) as f64))
+    }
+}
+
+// bmc.execute(&amp;ReadPowerDraw { domain: 0 })를 쓰는 모든 호출자는
+// 자동으로 Watts를 받음 — 다른 곳에 파싱 코드가 없음</code></pre>
+<p><a id="testing-each-command-in-isolation"></a></p>
+<h3 id="명령을-각각-격리해-테스트"><a class="header" href="#명령을-각각-격리해-테스트">명령을 각각 격리해 테스트</a></h3>
+<pre><code class="language-rust ignore">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct StubBmc {
+        responses: std::collections::HashMap&lt;u8, Vec&lt;u8&gt;&gt;,
+    }
+
+    impl StubBmc {
+        fn execute&lt;C: IpmiCmd&gt;(&amp;self, cmd: &amp;C) -&gt; io::Result&lt;C::Response&gt; {
+            let key = cmd.payload()[0];
+            let raw = self.responses.get(&amp;key)
+                .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "no stub"))?;
+            cmd.parse_response(raw)
+        }
+    }
+
+    #[test]
+    fn read_temp_parses_raw_byte() {
+        let bmc = StubBmc {
+            responses: [(0x20, vec![0x19])].into(), // 25 decimal = 0x19
+        };
+        let temp = bmc.execute(&amp;ReadTemp { sensor_id: 0x20 }).unwrap();
+        assert_eq!(temp, Celsius(25.0));
+    }
+
+    #[test]
+    fn read_fan_parses_two_byte_le() {
+        let bmc = StubBmc {
+            responses: [(0x30, vec![0x00, 0x19])].into(), // 0x1900 = 6400
+        };
+        let rpm = bmc.execute(&amp;ReadFanSpeed { fan_id: 0x30 }).unwrap();
+        assert_eq!(rpm, Rpm(6400));
+    }
+
+    #[test]
+    fn read_voltage_scales_millivolts() {
+        let bmc = StubBmc {
+            responses: [(0x40, vec![0xE8, 0x2E])].into(), // 0x2EE8 = 12008 mV
+        };
+        let v = bmc.execute(&amp;ReadVoltage { rail: 0x40 }).unwrap();
+        assert!((v.0 - 12.008).abs() &lt; 0.001);
+    }
+}</code></pre>
+<p><a id="redfish-schema-typed-rest-endpoints"></a></p>
+<h2 id="redfish-스키마로-타입이-정해진-rest-엔드포인트"><a class="header" href="#redfish-스키마로-타입이-정해진-rest-엔드포인트">Redfish: 스키마로 타입이 정해진 REST 엔드포인트</a></h2>
+<p>Redfish는 더 잘 맞습니다 — 각 엔드포인트가 DMTF가 정의한 JSON 스키마를 반환합니다.</p>
+<pre><code class="language-rust ignore">use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+pub struct ThermalResponse {
+    #[serde(rename = "Temperatures")]
+    pub temperatures: Vec&lt;RedfishTemp&gt;,
+    #[serde(rename = "Fans")]
+    pub fans: Vec&lt;RedfishFan&gt;,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RedfishTemp {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "ReadingCelsius")]
+    pub reading: f64,
+    #[serde(rename = "UpperThresholdCritical")]
+    pub critical_hi: Option&lt;f64&gt;,
+    #[serde(rename = "Status")]
+    pub status: RedfishHealth,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RedfishFan {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Reading")]
+    pub rpm: u32,
+    #[serde(rename = "Status")]
+    pub status: RedfishHealth,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PowerResponse {
+    #[serde(rename = "Voltages")]
+    pub voltages: Vec&lt;RedfishVoltage&gt;,
+    #[serde(rename = "PowerSupplies")]
+    pub psus: Vec&lt;RedfishPsu&gt;,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RedfishVoltage {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "ReadingVolts")]
+    pub reading: f64,
+    #[serde(rename = "Status")]
+    pub status: RedfishHealth,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RedfishPsu {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "PowerOutputWatts")]
+    pub output_watts: Option&lt;f64&gt;,
+    #[serde(rename = "Status")]
+    pub status: RedfishHealth,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProcessorResponse {
+    #[serde(rename = "Model")]
+    pub model: String,
+    #[serde(rename = "TotalCores")]
+    pub cores: u32,
+    #[serde(rename = "Status")]
+    pub status: RedfishHealth,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RedfishHealth {
+    #[serde(rename = "State")]
+    pub state: String,
+    #[serde(rename = "Health")]
+    pub health: Option&lt;String&gt;,
+}
+
+/// 타입이 정해진 Redfish 엔드포인트 — 각각 응답 타입을 앎.
+pub trait RedfishEndpoint {
+    type Response: serde::de::DeserializeOwned;
+    fn method(&amp;self) -&gt; &amp;'static str;
+    fn path(&amp;self) -&gt; String;
+}
+
+pub struct GetThermal { pub chassis_id: String }
+impl RedfishEndpoint for GetThermal {
+    type Response = ThermalResponse;
+    fn method(&amp;self) -&gt; &amp;'static str { "GET" }
+    fn path(&amp;self) -&gt; String {
+        format!("/redfish/v1/Chassis/{}/Thermal", self.chassis_id)
+    }
+}
+
+pub struct GetPower { pub chassis_id: String }
+impl RedfishEndpoint for GetPower {
+    type Response = PowerResponse;
+    fn method(&amp;self) -&gt; &amp;'static str { "GET" }
+    fn path(&amp;self) -&gt; String {
+        format!("/redfish/v1/Chassis/{}/Power", self.chassis_id)
+    }
+}
+
+pub struct GetProcessor { pub system_id: String, pub proc_id: String }
+impl RedfishEndpoint for GetProcessor {
+    type Response = ProcessorResponse;
+    fn method(&amp;self) -&gt; &amp;'static str { "GET" }
+    fn path(&amp;self) -&gt; String {
+        format!("/redfish/v1/Systems/{}/Processors/{}", self.system_id, self.proc_id)
+    }
+}
+
+pub struct RedfishClient {
+    pub base_url: String,
+    pub auth_token: String,
+}
+
+impl RedfishClient {
+    pub fn execute&lt;E: RedfishEndpoint&gt;(&amp;self, endpoint: &amp;E) -&gt; io::Result&lt;E::Response&gt; {
+        let url = format!("{}{}", self.base_url, endpoint.path());
+        let json_bytes = self.http_request(endpoint.method(), &amp;url)?;
+        serde_json::from_slice(&amp;json_bytes)
+            .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
+    }
+
+    fn http_request(&amp;self, _method: &amp;str, _url: &amp;str) -&gt; io::Result&lt;Vec&lt;u8&gt;&gt; {
+        Ok(vec![]) // stub — 실제 구현은 reqwest/hyper 사용
+    }
+}
+
+// 사용 — 완전히 타입이 정해져 있고 자기 설명적
+fn redfish_pre_flight(client: &amp;RedfishClient) -&gt; io::Result&lt;()&gt; {
+    let thermal: ThermalResponse = client.execute(&amp;GetThermal {
+        chassis_id: "1".into(),
+    })?;
+    let power: PowerResponse = client.execute(&amp;GetPower {
+        chassis_id: "1".into(),
+    })?;
+
+    // ❌ 컴파일 에러 — PowerResponse를 thermal 검사에 넘길 수 없음:
+    // check_thermals(&amp;power);  → "expected ThermalResponse, found PowerResponse"
+
+    for temp in &amp;thermal.temperatures {
+        if let Some(crit) = temp.critical_hi {
+            if temp.reading &gt; crit {
+                println!("CRITICAL: {} at {}°C (threshold: {}°C)",
+                    temp.name, temp.reading, crit);
+            }
+        }
+    }
+    Ok(())
+}</code></pre>
+<p><a id="nvme-admin-identify-doesnt-return-log-pages"></a></p>
+<h2 id="nvme-admin-identify는-로그-페이지를-반환하지-않음"><a class="header" href="#nvme-admin-identify는-로그-페이지를-반환하지-않음">NVMe Admin: Identify는 로그 페이지를 반환하지 않음</a></h2>
+<p>NVMe admin 명령도 같은 형태입니다. 컨트롤러가 명령 코드로 구분하지만, C에서는 호출자가 4KB 완료 버퍼에 어떤 구조체를 올릴지 알아야 합니다. 타입이 있는 명령 패턴은 이런 실수를 컴파일 단계에서 막습니다.</p>
+<pre><code class="language-rust ignore">use std::io;
+
+/// NVMe Admin 명령 트레잇 — IpmiCmd와 같은 형태.
+pub trait NvmeAdminCmd {
+    type Response;
+    fn opcode(&amp;self) -&gt; u8;
+    fn parse_completion(&amp;self, data: &amp;[u8]) -&gt; io::Result&lt;Self::Response&gt;;
+}
+
+// ── Identify (opcode 0x06) ──
+
+#[derive(Debug, Clone)]
+pub struct IdentifyResponse {
+    pub model_number: String,   // bytes 24–63
+    pub serial_number: String,  // bytes 4–23
+    pub firmware_rev: String,   // bytes 64–71
+    pub total_capacity_gb: u64,
+}
+
+pub struct Identify {
+    pub nsid: u32, // 0 = controller, &gt;0 = namespace
+}
+
+impl NvmeAdminCmd for Identify {
+    type Response = IdentifyResponse;
+    fn opcode(&amp;self) -&gt; u8 { 0x06 }
+    fn parse_completion(&amp;self, data: &amp;[u8]) -&gt; io::Result&lt;IdentifyResponse&gt; {
+        if data.len() &lt; 4096 {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "short identify"));
+        }
+        Ok(IdentifyResponse {
+            serial_number: String::from_utf8_lossy(&amp;data[4..24]).trim().to_string(),
+            model_number: String::from_utf8_lossy(&amp;data[24..64]).trim().to_string(),
+            firmware_rev: String::from_utf8_lossy(&amp;data[64..72]).trim().to_string(),
+            total_capacity_gb: u64::from_le_bytes(
+                data[280..288].try_into().unwrap()
+            ) / (1024 * 1024 * 1024),
+        })
+    }
+}
+
+// ── Get Log Page (opcode 0x02) ──
+
+#[derive(Debug, Clone)]
+pub struct SmartLog {
+    pub critical_warning: u8,
+    pub temperature_kelvin: u16,
+    pub available_spare_pct: u8,
+    pub data_units_read: u128,
+}
+
+pub struct GetLogPage {
+    pub log_id: u8, // 0x02 = SMART/Health
+}
+
+impl NvmeAdminCmd for GetLogPage {
+    type Response = SmartLog;
+    fn opcode(&amp;self) -&gt; u8 { 0x02 }
+    fn parse_completion(&amp;self, data: &amp;[u8]) -&gt; io::Result&lt;SmartLog&gt; {
+        if data.len() &lt; 512 {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "short log page"));
+        }
+        Ok(SmartLog {
+            critical_warning: data[0],
+            temperature_kelvin: u16::from_le_bytes([data[1], data[2]]),
+            available_spare_pct: data[3],
+            data_units_read: u128::from_le_bytes(data[32..48].try_into().unwrap()),
+        })
+    }
+}
+
+// ── 실행기 ──
+
+pub struct NvmeController { /* fd, BAR, etc. */ }
+
+impl NvmeController {
+    pub fn admin_cmd&lt;C: NvmeAdminCmd&gt;(&amp;self, cmd: &amp;C) -&gt; io::Result&lt;C::Response&gt; {
+        let raw = self.submit_and_wait(cmd.opcode())?;
+        cmd.parse_completion(&amp;raw)
+    }
+
+    fn submit_and_wait(&amp;self, _opcode: u8) -&gt; io::Result&lt;Vec&lt;u8&gt;&gt; {
+        Ok(vec![0u8; 4096]) // stub — 실제 구현은 doorbell 발행 + CQ 엔트리 대기
+    }
+}
+
+// ── 사용 ──
+
+fn nvme_health_check(ctrl: &amp;NvmeController) -&gt; io::Result&lt;()&gt; {
+    let id: IdentifyResponse = ctrl.admin_cmd(&amp;Identify { nsid: 0 })?;
+    let smart: SmartLog = ctrl.admin_cmd(&amp;GetLogPage { log_id: 0x02 })?;
+
+    // ❌ 컴파일 에러 — Identify는 IdentifyResponse를 반환하고 SmartLog가 아님:
+    // let smart: SmartLog = ctrl.admin_cmd(&amp;Identify { nsid: 0 })?;
+
+    println!("{} (FW {}): {}°C, {}% spare",
+        id.model_number, id.firmware_rev,
+        smart.temperature_kelvin.saturating_sub(273),
+        smart.available_spare_pct);
+
+    Ok(())
+}</code></pre>
+<p>세 프로토콜 진행은 <strong>단계적으로 깊어지는 호</strong>(ch07의 검증된 경계와 같은 기법)를 따릅니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">단계</th><th>프로토콜</th><th>복잡도</th><th>추가되는 것</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">1</td><td>IPMI</td><td>단순: 센서 ID → 읽기</td><td>핵심 패턴: <code>trait + 연관 타입</code></td></tr>
+<tr><td style="text-align: center">2</td><td>Redfish</td><td>REST: 엔드포인트 → 타입이 정해진 JSON</td><td>Serde 연동, 스키마로 타입이 정해진 응답</td></tr>
+<tr><td style="text-align: center">3</td><td>NVMe</td><td>바이너리: opcode → 4KB 구조체 오버레이</td><td>원시 버퍼 파싱, 여러 구조체 완료 데이터</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="extension-macro-dsl-for-command-scripts"></a></p>
+<h2 id="확장-명령-스크립트용-매크로-dsl"><a class="header" href="#확장-명령-스크립트용-매크로-dsl">확장: 명령 스크립트용 매크로 DSL</a></h2>
+<pre><code class="language-rust ignore">/// 타입이 정해진 IPMI 명령 시퀀스를 실행하고 결과 튜플을 반환합니다.
+macro_rules! diag_script {
+    ($bmc:expr; $($cmd:expr),+ $(,)?) =&gt; {{
+        ( $( $bmc.execute(&amp;$cmd)?, )+ )
+    }};
+}
+
+fn full_pre_flight(bmc: &amp;BmcConnection) -&gt; io::Result&lt;()&gt; {
+    let (temp, rpm, volts) = diag_script!(bmc;
+        ReadTemp     { sensor_id: 0x20 },
+        ReadFanSpeed { fan_id:    0x30 },
+        ReadVoltage  { rail:      0x40 },
+    );
+    // 타입: (Celsius, Rpm, Volts) — 완전히 추론됨, 순서 바꾸면 컴파일 에러
+    assert!(temp  &lt; Celsius(95.0), "CPU too hot");
+    assert!(rpm   &gt; Rpm(3000),     "Fan too slow");
+    assert!(volts &gt; Volts(11.4),   "12V rail sagging");
+    Ok(())
+}</code></pre>
+<p><a id="extension-enum-dispatch-for-dynamic-scripts"></a></p>
+<h2 id="확장-동적-스크립트를-위한-열거형-디스패치"><a class="header" href="#확장-동적-스크립트를-위한-열거형-디스패치">확장: 동적 스크립트를 위한 열거형 디스패치</a></h2>
+<p>런타임에 JSON 설정에서 명령이 오는 경우:</p>
+<pre><code class="language-rust ignore">pub enum AnyReading {
+    Temp(Celsius),
+    Rpm(Rpm),
+    Volt(Volts),
+    Watt(Watts),
+}
+
+pub enum AnyCmd {
+    Temp(ReadTemp),
+    Fan(ReadFanSpeed),
+    Voltage(ReadVoltage),
+    Power(ReadPowerDraw),
+}
+
+impl AnyCmd {
+    pub fn execute(&amp;self, bmc: &amp;BmcConnection) -&gt; io::Result&lt;AnyReading&gt; {
+        match self {
+            AnyCmd::Temp(c)    =&gt; Ok(AnyReading::Temp(bmc.execute(c)?)),
+            AnyCmd::Fan(c)     =&gt; Ok(AnyReading::Rpm(bmc.execute(c)?)),
+            AnyCmd::Voltage(c) =&gt; Ok(AnyReading::Volt(bmc.execute(c)?)),
+            AnyCmd::Power(c)   =&gt; Ok(AnyReading::Watt(bmc.execute(c)?)),
+        }
+    }
+}
+
+fn run_dynamic_script(bmc: &amp;BmcConnection, script: &amp;[AnyCmd]) -&gt; io::Result&lt;Vec&lt;AnyReading&gt;&gt; {
+    script.iter().map(|cmd| cmd.execute(bmc)).collect()
+}</code></pre>
+<p><a id="the-pattern-family"></a></p>
+<h2 id="패턴-패밀리"><a class="header" href="#패턴-패밀리">패턴 패밀리</a></h2>
+<p>이 패턴은 <strong>모든</strong> 하드웨어 관리 프로토콜에 적용됩니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>프로토콜</th><th>요청 타입</th><th>응답 타입</th></tr>
+</thead>
+<tbody>
+<tr><td>IPMI 센서 읽기</td><td><code>ReadTemp</code></td><td><code>Celsius</code></td></tr>
+<tr><td>Redfish REST</td><td><code>GetThermal</code></td><td><code>ThermalResponse</code></td></tr>
+<tr><td>NVMe Admin</td><td><code>Identify</code></td><td><code>IdentifyResponse</code></td></tr>
+<tr><td>PLDM</td><td><code>GetFwParams</code></td><td><code>FwParamsResponse</code></td></tr>
+<tr><td>MCTP</td><td><code>GetEid</code></td><td><code>EidResponse</code></td></tr>
+<tr><td>PCIe 설정 공간</td><td><code>ReadCapability</code></td><td><code>CapabilityHeader</code></td></tr>
+<tr><td>SMBIOS/DMI</td><td><code>ReadType17</code></td><td><code>MemoryDeviceInfo</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>요청 타입이 응답 타입을 <strong>결정</strong>합니다 — 컴파일러가 어디서나 강제합니다.</p>
+<p><a id="aside-how-this-compares-to-haskell-gadts"></a></p>
+<h3 id="곁다리-haskell-gadt와-비교"><a class="header" href="#곁다리-haskell-gadt와-비교">곁다리: Haskell GADT와 비교</a></h3>
+<p>Haskell GADT를 본 적이 있다면 직접 대응 관계는 아래와 같습니다. 없다면 이 표는 건너뛰어도 됩니다 — 위의 Rust 버전만으로도 전체 그림입니다.</p>
+<pre><code class="language-text">Haskell GADT                         Rust 대응
+────────────────                     ───────────────────────
+data Cmd a where                     trait IpmiCmd {
+  ReadTemp :: Id -&gt; Cmd Celsius          type Response;
+  ReadFan  :: Id -&gt; Cmd Rpm              ...
+                                     }
+
+eval :: Cmd a -&gt; IO a                fn execute&lt;C: IpmiCmd&gt;(&amp;self, cmd: &amp;C)
+                                         -&gt; io::Result&lt;C::Response&gt;
+</code></pre>
+<p>둘 다 <strong>명령이 반환 타입을 결정</strong>한다는 보장을 줍니다.</p>
+<p><a id="typed-command-flow"></a></p>
+<h2 id="타입이-있는-명령-흐름"><a class="header" href="#타입이-있는-명령-흐름">타입이 있는 명령 흐름</a></h2>
+<pre class="mermaid">flowchart LR
+    subgraph "컴파일 타임"
+        RT["ReadTemp"] --&gt;|"type Response = Celsius"| C[Celsius]
+        RF["ReadFanSpeed"] --&gt;|"type Response = Rpm"| R[Rpm]
+        RV["ReadVoltage"] --&gt;|"type Response = Volts"| V[Volts]
+    end
+    subgraph "런타임"
+        E["bmc.execute(&amp;cmd)"] --&gt;|"단형화"| P["cmd.parse_response(raw)"]
+    end
+    style RT fill:#e1f5fe,color:#000
+    style RF fill:#e1f5fe,color:#000
+    style RV fill:#e1f5fe,color:#000
+    style C fill:#c8e6c9,color:#000
+    style R fill:#c8e6c9,color:#000
+    style V fill:#c8e6c9,color:#000
+    style E fill:#fff3e0,color:#000
+    style P fill:#fff3e0,color:#000
+</pre>
+
+<p><a id="exercise-pldm-typed-commands"></a></p>
+<h2 id="연습문제-pldm-타입이-있는-명령"><a class="header" href="#연습문제-pldm-타입이-있는-명령">연습문제: PLDM 타입이 있는 명령</a></h2>
+<p><code>IpmiCmd</code>와 같은 형태의 <code>PldmCmd</code> 트레잇을 두 PLDM 명령용으로 설계하세요.</p>
+<ul>
+<li><code>GetFwParams</code> → <code>FwParamsResponse { active_version: String, pending_version: Option&lt;String&gt; }</code></li>
+<li><code>QueryDeviceIds</code> → <code>DeviceIdResponse { descriptors: Vec&lt;Descriptor&gt; }</code></li>
+</ul>
+<p>요구사항: 정적 디스패치, <code>parse_response</code>는 <code>io::Result&lt;Self::Response&gt;</code>를 반환.</p>
+<details>
+<summary>해답</summary>
+<pre><code class="language-rust ignore">use std::io;
+
+pub trait PldmCmd {
+    type Response;
+    fn pldm_type(&amp;self) -&gt; u8;
+    fn command_code(&amp;self) -&gt; u8;
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;Self::Response&gt;;
+}
+
+#[derive(Debug, Clone)]
+pub struct FwParamsResponse {
+    pub active_version: String,
+    pub pending_version: Option&lt;String&gt;,
+}
+
+pub struct GetFwParams;
+impl PldmCmd for GetFwParams {
+    type Response = FwParamsResponse;
+    fn pldm_type(&amp;self) -&gt; u8 { 0x05 } // Firmware Update
+    fn command_code(&amp;self) -&gt; u8 { 0x02 }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;FwParamsResponse&gt; {
+        // 단순화 — 실제 구현은 PLDM FW Update 규격 필드를 디코딩
+        if raw.len() &lt; 4 {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "too short"));
+        }
+        Ok(FwParamsResponse {
+            active_version: String::from_utf8_lossy(&amp;raw[..4]).to_string(),
+            pending_version: None,
+        })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Descriptor { pub descriptor_type: u16, pub data: Vec&lt;u8&gt; }
+
+#[derive(Debug, Clone)]
+pub struct DeviceIdResponse { pub descriptors: Vec&lt;Descriptor&gt; }
+
+pub struct QueryDeviceIds;
+impl PldmCmd for QueryDeviceIds {
+    type Response = DeviceIdResponse;
+    fn pldm_type(&amp;self) -&gt; u8 { 0x05 }
+    fn command_code(&amp;self) -&gt; u8 { 0x04 }
+    fn parse_response(&amp;self, raw: &amp;[u8]) -&gt; io::Result&lt;DeviceIdResponse&gt; {
+        Ok(DeviceIdResponse { descriptors: vec![] }) // stub
+    }
+}</code></pre>
+</details>
+<p><a id="key-takeaways"></a></p>
+<h2 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h2>
+<ol>
+<li><strong>연관 타입 = 컴파일 타임 계약</strong> — 명령 트레잇의 <code>type Response</code>가 각 요청을 정확히 하나의 응답 타입에 고정합니다.</li>
+<li><strong>파싱은 캡슐화</strong> — 바이트 레이아웃 지식은 <code>parse_response</code>에만 있고 호출자 전역에 흩어지지 않습니다.</li>
+<li><strong>제로 코스트 디스패치</strong> — 제네릭 <code>execute&lt;C: IpmiCmd&gt;</code>는 vtable 없이 단형화되어 직접 호출로 갑니다.</li>
+<li><strong>한 패턴, 여러 프로토콜</strong> — IPMI, Redfish, NVMe, PLDM, MCTP 모두 <code>trait Cmd { type Response; }</code> 형태에 맞습니다.</li>
+<li><strong>열거형 디스패치로 정적·동적 연결</strong> — 타입이 있는 명령을 열거형으로 감싸 런타임 주도 스크립트에 쓰되, 각 팔 안에서는 타입 안전성을 유지합니다.</li>
+<li><strong>복잡도를 단계적으로 쌓아 직관을 강화</strong> — IPMI(센서 ID → 읽기), Redfish(엔드포인트 → JSON 스키마), NVMe(opcode → 4KB 구조체 오버레이)는 같은 트레잇 형태지만, 단계마다 파싱 복잡도가 한 겹씩 더해집니다.</li>
+</ol>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch01-the-philosophy-why-types-beat-tests.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch03-single-use-types-cryptographic-guarantee.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch01-the-philosophy-why-types-beat-tests.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch03-single-use-types-cryptographic-guarantee.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

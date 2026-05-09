@@ -1,0 +1,915 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>9. 스마트 포인터와 내부 가변성 - Rust 패턴과 엔지니어링 활용 가이드</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-414debd0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-34cb9765.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 패턴과 엔지니어링 활용 가이드</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="smart-pointers-and-interior-mutability"></a></p>
+<h1 id="9-스마트-포인터와-내부-가변성-"><a class="header" href="#9-스마트-포인터와-내부-가변성-">9. 스마트 포인터와 내부 가변성 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong></p>
+<ul>
+<li>힙 할당·공유 소유권을 위한 Box, Rc, Arc</li>
+<li>Rc/Arc 순환 참조를 끊기 위한 Weak 참조</li>
+<li>내부 가변성 패턴을 위한 Cell, RefCell, Cow</li>
+<li>자기 참조 타입을 위한 Pin과 수명 주기 제어를 위한 ManuallyDrop</li>
+</ul>
+</blockquote>
+<p><a id="box-rc-arc--heap-allocation-and-sharing"></a></p>
+<h2 id="box-rc-arc--힙-할당과-공유"><a class="header" href="#box-rc-arc--힙-할당과-공유">Box, Rc, Arc — 힙 할당과 공유</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// --- Box&lt;T&gt;: 단일 소유자, 힙 할당 ---
+// 사용: 재귀 타입, 큰 값, 트레잇 객체
+let boxed: Box&lt;i32&gt; = Box::new(42);
+println!("{}", *boxed); // i32로 Deref
+
+// 재귀 타입에는 Box 필요(그렇지 않으면 크기가 무한):
+enum List&lt;T&gt; {
+    Cons(T, Box&lt;List&lt;T&gt;&gt;),
+    Nil,
+}
+
+// 트레잇 객체(동적 디스패치):
+let writer: Box&lt;dyn std::io::Write&gt; = Box::new(std::io::stdout());
+
+// --- Rc&lt;T&gt;: 다중 소유자, 단일 스레드 ---
+// 사용: 한 스레드 안에서 공유 소유권(Send/Sync 없음)
+use std::rc::Rc;
+
+let a = Rc::new(vec![1, 2, 3]);
+let b = Rc::clone(&amp;a); // 참조 카운트 증가(깊은 복제 아님)
+let c = Rc::clone(&amp;a);
+println!("Ref count: {}", Rc::strong_count(&amp;a)); // 3
+
+// 셋이 같은 Vec을 가리킴. 마지막 Rc가 드롭되면 Vec이 해제됨.
+
+// --- Arc&lt;T&gt;: 다중 소유자, 스레드 안전 ---
+// 사용: 스레드 간 공유 소유권
+use std::sync::Arc;
+
+let shared = Arc::new(String::from("shared data"));
+let handles: Vec&lt;_&gt; = (0..5).map(|_| {
+    let shared = Arc::clone(&amp;shared);
+    std::thread::spawn(move || println!("{shared}"))
+}).collect();
+for h in handles { h.join().unwrap(); }
+<span class="boring">}</span></code></pre>
+<p><a id="weak-references--breaking-reference-cycles"></a></p>
+<h3 id="weak-참조--순환-참조-끊기"><a class="header" href="#weak-참조--순환-참조-끊기">Weak 참조 — 순환 참조 끊기</a></h3>
+<p><code>Rc</code>와 <code>Arc</code>는 참조 카운트를 쓰므로 순환(A → B → A)을 해제할 수 없습니다.
+<code>Weak&lt;T&gt;</code>는 <strong>강한 카운트를 올리지 않는</strong> 비소유 핸들입니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct Node {
+    value: i32,
+    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,   // 부모를 살려 두지 않음
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+
+let parent = Rc::new(Node {
+    value: 0, parent: RefCell::new(Weak::new()), children: RefCell::new(vec![]),
+});
+let child = Rc::new(Node {
+    value: 1, parent: RefCell::new(Rc::downgrade(&amp;parent)), children: RefCell::new(vec![]),
+});
+parent.children.borrow_mut().push(Rc::clone(&amp;child));
+
+// 자식에서 부모 접근 — Option&lt;Rc&lt;Node&gt;&gt; 반환:
+if let Some(p) = child.parent.borrow().upgrade() {
+    println!("Child's parent value: {}", p.value); // 0
+}
+// `parent`가 드롭되면 strong_count → 0, 메모리 해제.
+// 그 후 `child.parent.upgrade()`는 `None`.
+<span class="boring">}</span></code></pre>
+<p><strong>경험칙</strong>: 소유권 방향에는 <code>Rc</code>/<code>Arc</code>, 역참조·캐시에는 <code>Weak</code>. 스레드 안전 코드에는 <code>Arc&lt;T&gt;</code>와 <code>sync::Weak&lt;T&gt;</code>.</p>
+<p><a id="cell-and-refcell--interior-mutability"></a></p>
+<h3 id="cell과-refcell--내부-가변성"><a class="header" href="#cell과-refcell--내부-가변성">Cell과 RefCell — 내부 가변성</a></h3>
+<p>공유(<code>&amp;</code>) 참조 뒤에서 데이터를 바꿔야 할 때가 있습니다. Rust는 <strong>내부 가변성</strong>을 런타임 빌림 검사로 제공합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::cell::{Cell, RefCell};
+
+// --- Cell&lt;T&gt;: Copy 기반 내부 가변성 ---
+// Copy 타입에만(또는 swap으로 교체)
+struct Counter {
+    count: Cell&lt;u32&gt;,
+}
+
+impl Counter {
+    fn new() -&gt; Self { Counter { count: Cell::new(0) } }
+
+    fn increment(&amp;self) { // &amp;self, &amp;mut self 아님!
+        self.count.set(self.count.get() + 1);
+    }
+
+    fn value(&amp;self) -&gt; u32 { self.count.get() }
+}
+
+// --- RefCell&lt;T&gt;: 런타임 빌림 검사 ---
+// 빌림 규칙을 런타임에 위반하면 패닉
+struct Cache {
+    data: RefCell&lt;Vec&lt;String&gt;&gt;,
+}
+
+impl Cache {
+    fn new() -&gt; Self { Cache { data: RefCell::new(Vec::new()) } }
+
+    fn add(&amp;self, item: String) { // 밖에서는 불변처럼 보임
+        self.data.borrow_mut().push(item); // 런타임 검사 &amp;mut
+    }
+
+    fn get_all(&amp;self) -&gt; Vec&lt;String&gt; {
+        self.data.borrow().clone() // 런타임 검사 &amp;
+    }
+
+    fn bad_example(&amp;self) {
+        let _guard1 = self.data.borrow();
+        // let _guard2 = self.data.borrow_mut();
+        // ❌ 런타임 패닉 — &amp;가 있는 동안 &amp;mut 불가
+    }
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>Cell vs RefCell</strong>: <code>Cell</code>은 가져오기/설정하기로 복사·스왑하므로 패닉이 없지만 <code>Copy</code>에만 해당하거나 <code>swap()</code>/<code>replace()</code>로 처리합니다. <code>RefCell</code>은 모든 타입에 쓸 수 있으나 가변 이중 빌림에서 패닉합니다. 둘 다 <code>Sync</code>가 아님 — 멀티스레드는 <code>Mutex</code>/<code>RwLock</code>을 보세요.</p>
+</blockquote>
+<p><a id="cow--clone-on-write"></a></p>
+<h3 id="cow--필요할-때만-복제"><a class="header" href="#cow--필요할-때만-복제">Cow — 필요할 때만 복제</a></h3>
+<p><code>Cow</code>(Clone on Write)는 빌려 온 값 또는 소유한 값을 담습니다. <strong>변경이 필요할 때만</strong> 복제합니다.</p>
+<pre class="playground"><code class="language-rust">use std::borrow::Cow;
+
+// 수정이 없으면 할당을 피함:
+fn normalize(input: &amp;str) -&gt; Cow&lt;'_, str&gt; {
+    if input.contains('\t') {
+        // 탭을 바꿀 때만 할당
+        Cow::Owned(input.replace('\t', "    "))
+    } else {
+        // 할당 없음 — 참조만 반환
+        Cow::Borrowed(input)
+    }
+}
+
+fn main() {
+    let clean = "no tabs here";
+    let dirty = "tabs\there";
+
+    let r1 = normalize(clean); // Cow::Borrowed — 할당 0
+    let r2 = normalize(dirty); // Cow::Owned — 새 String 할당
+
+    println!("{r1}");
+    println!("{r2}");
+}
+
+// 소유권이 필요할 수도 있는 매개변수에도 유용:
+fn process(data: Cow&lt;'_, [u8]&gt;) {
+    // 복사 없이 읽을 수 있음
+    println!("Length: {}", data.len());
+    // 변경이 필요하면 Cow가 자동으로 복제:
+    let mut owned = data.into_owned(); // Borrowed일 때만 복제
+    owned.push(0xFF);
+}</code></pre>
+<p><a id="cow-u8-for-binary-data"></a></p>
+<h4 id="바이너리-데이터용-cow_-u8"><a class="header" href="#바이너리-데이터용-cow_-u8">바이너리 데이터용 <code>Cow&lt;'_, [u8]&gt;</code></a></h4>
+<p><code>Cow</code>는 체크섬 삽입·패딩·이스케이프 등 변환이 필요할 수도 있는 바이트 API에 특히 유용합니다. 흔한 빠른 경로에서 <code>Vec&lt;u8&gt;</code> 할당을 피합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::borrow::Cow;
+
+/// 프레임을 최소 길이까지 패딩. 패딩이 없으면 빌림.
+fn pad_frame(frame: &amp;[u8], min_len: usize) -&gt; Cow&lt;'_, [u8]&gt; {
+    if frame.len() &gt;= min_len {
+        Cow::Borrowed(frame)  // 이미 충분히 김 — 할당 0
+    } else {
+        let mut padded = frame.to_vec();
+        padded.resize(min_len, 0x00);
+        Cow::Owned(padded)    // 패딩이 필요할 때만 할당
+    }
+}
+
+let short = pad_frame(&amp;[0xDE, 0xAD], 8);    // 소유 — 8바이트로 패딩
+let long  = pad_frame(&amp;[0; 64], 8);          // 빌림 — 이미 ≥ 8
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>팁</strong>: 변환된 버퍼를 참조 카운트로 공유해야 하면 <code>Cow&lt;[u8]&gt;</code>와 <code>bytes::Bytes</code>(10장)를 함께 쓰세요.</p>
+</blockquote>
+<p><a id="when-to-use-which-pointer"></a></p>
+<h3 id="어떤-포인터를-쓸지"><a class="header" href="#어떤-포인터를-쓸지">어떤 포인터를 쓸지</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>포인터</th><th style="text-align: center">소유자 수</th><th style="text-align: center">스레드 안전</th><th style="text-align: center">가변성</th><th>쓸 때</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Box&lt;T&gt;</code></td><td style="text-align: center">1</td><td style="text-align: center">✅ (T: Send이면)</td><td style="text-align: center"><code>&amp;mut</code>로</td><td>힙, 트레잇 객체, 재귀 타입</td></tr>
+<tr><td><code>Rc&lt;T&gt;</code></td><td style="text-align: center">N</td><td style="text-align: center">❌</td><td style="text-align: center">없음(Cell/RefCell로 감쌈)</td><td>단일 스레드 공유, 그래프/트리</td></tr>
+<tr><td><code>Arc&lt;T&gt;</code></td><td style="text-align: center">N</td><td style="text-align: center">✅</td><td style="text-align: center">없음(Mutex/RwLock로 감쌈)</td><td>스레드 간 공유</td></tr>
+<tr><td><code>Cell&lt;T&gt;</code></td><td style="text-align: center">—</td><td style="text-align: center">❌</td><td style="text-align: center"><code>.get()</code> / <code>.set()</code></td><td>Copy 타입 내부 가변성</td></tr>
+<tr><td><code>RefCell&lt;T&gt;</code></td><td style="text-align: center">—</td><td style="text-align: center">❌</td><td style="text-align: center"><code>.borrow()</code> / <code>.borrow_mut()</code></td><td>임의 타입, 단일 스레드</td></tr>
+<tr><td><code>Cow&lt;'_, T&gt;</code></td><td style="text-align: center">0 또는 1</td><td style="text-align: center">✅ (T: Send이면)</td><td style="text-align: center">쓸 때 복제</td><td>자주 바뀌지 않을 때 할당 회피</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="pin-and-self-referential-types"></a></p>
+<h3 id="pin과-자기-참조-타입"><a class="header" href="#pin과-자기-참조-타입">Pin과 자기 참조 타입</a></h3>
+<p><code>Pin&lt;P&gt;</code>는 값이 메모리에서 <strong>이동하지 않도록</strong> 막습니다. <strong>자기 참조 타입</strong> — 자기 데이터를 가리키는 포인터를 품은 구조체 — 과 <code>.await</code> 지점에 참조를 걸 수 있는 <code>Future</code>에 필수입니다.</p>
+<pre class="playground"><code class="language-rust">use std::pin::Pin;
+use std::marker::PhantomPinned;
+
+// 자기 참조 구조체(단순화):
+struct SelfRef {
+    data: String,
+    ptr: *const String, // 위 `data`를 가리킴
+    _pin: PhantomPinned, // Unpin 해제 — 이동 불가
+}
+
+impl SelfRef {
+    fn new(s: &amp;str) -&gt; Pin&lt;Box&lt;Self&gt;&gt; {
+        let val = SelfRef {
+            data: s.to_string(),
+            ptr: std::ptr::null(),
+            _pin: PhantomPinned,
+        };
+        let mut boxed = Box::pin(val);
+
+        // SAFETY: 포인터를 설정한 뒤 데이터를 이동하지 않음
+        let self_ptr: *const String = &amp;boxed.data;
+        unsafe {
+            let mut_ref = Pin::as_mut(&amp;mut boxed);
+            Pin::get_unchecked_mut(mut_ref).ptr = self_ptr;
+        }
+        boxed
+    }
+
+    fn data(&amp;self) -&gt; &amp;str {
+        &amp;self.data
+    }
+
+    fn ptr_data(&amp;self) -&gt; &amp;str {
+        // SAFETY: ptr은 고정된 동안 self.data를 가리키도록 설정됨
+        unsafe { &amp;*self.ptr }
+    }
+}
+
+fn main() {
+    let pinned = SelfRef::new("hello");
+    assert_eq!(pinned.data(), pinned.ptr_data()); // 둘 다 "hello"
+    // std::mem::swap은 ptr을 무효화할 수 있음 — Pin이 막음
+}</code></pre>
+<p><strong>개념 요약</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>개념</th><th>의미</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Unpin</code>(자동 트레잇)</td><td>“이 타입은 이동해도 안전.” 대부분 기본이 <code>Unpin</code>.</td></tr>
+<tr><td><code>!Unpin</code> / <code>PhantomPinned</code></td><td>“내부 포인터가 있음 — 이동하지 마.”</td></tr>
+<tr><td><code>Pin&lt;&amp;mut T&gt;</code></td><td><code>T</code>가 움직이지 않을 것이라는 보장이 있는 가변 참조</td></tr>
+<tr><td><code>Pin&lt;Box&lt;T&gt;&gt;</code></td><td>소유·힙에 고정된 값</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>async와의 관계</strong>: 모든 <code>async fn</code>은 <code>.await</code> 지점에 참조를 걸 수 있는 <code>Future</code>로 역설어 <strong>자기 참조</strong>가 될 수 있습니다. 런타임은 <code>Future::poll</code>을 호출하기 전에 <code>Pin&lt;&amp;mut Future&gt;</code>로 future를 고정합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 이렇게 쓰면:
+async fn fetch(url: &amp;str) -&gt; String {
+    let response = http_get(url).await; // await에 걸친 참조
+    response.text().await
+}
+
+// 컴파일러는 상태 머신 구조체를 생성하고 !Unpin이며,
+// 런타임은 poll 전에 Pin으로 고정합니다.
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>Pin을 언제 신경 쓸지</strong>: (1) <code>Future</code>를 직접 구현할 때, (2) async 런타임이나 컴비네이터를 쓸 때, (3) 자기 참조 포인터가 있는 타입. 일반 애플리케이션 코드에서는 <code>async/await</code>가 Pin을 투명하게 처리합니다. 심화는 동반서 <em>Async Rust Training</em>을 보세요.</p>
+<p><strong>크레이트 대안</strong>: 수동 <code>Pin</code> 없이 자기 참조 구조체를 쓰려면 <a href="https://crates.io/crates/ouroboros"><code>ouroboros</code></a>나 <a href="https://crates.io/crates/self_cell"><code>self_cell</code></a>을 고려하세요 — 고정과 드롭 의미가 맞는 안전한 래퍼를 생성합니다.</p>
+</blockquote>
+<p><a id="pin-projections--structural-pinning"></a></p>
+<h3 id="pin-프로젝션--구조적-고정"><a class="header" href="#pin-프로젝션--구조적-고정">Pin 프로젝션 — 구조적 고정</a></h3>
+<p><code>Pin&lt;&amp;mut MyStruct&gt;</code>가 있을 때 필드에 접근해야 합니다.
+<strong>Pin 프로젝션</strong>은 <code>Pin&lt;&amp;mut Struct&gt;</code>에서 <code>Pin&lt;&amp;mut Field&gt;</code>(고정된 필드) 또는 <code>&amp;mut Field</code>(고정되지 않은 필드)로 가는 패턴입니다.</p>
+<p><a id="the-problem-field-access-on-pinned-types"></a></p>
+<h4 id="문제-고정된-타입의-필드-접근"><a class="header" href="#문제-고정된-타입의-필드-접근">문제: 고정된 타입의 필드 접근</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::marker::PhantomPinned;
+
+struct MyFuture {
+    data: String,              // 일반 필드 — 이동해도 됨
+    state: InternalState,      // 자기 참조 — 고정해야 함
+    _pin: PhantomPinned,
+}
+
+enum InternalState {
+    Waiting { ptr: *const String }, // `data`를 가리킴 — 자기 참조
+    Done,
+}
+
+// `Pin&lt;&amp;mut MyFuture&gt;`가 있을 때 `data`와 `state`에 어떻게 접근?
+// 그냥 `pinned.data`는 안 됨 — 컴파일러가 고정된 값의 필드에
+// &amp;mut을 얻기 위해 unsafe 없이는 막음.
+<span class="boring">}</span></code></pre>
+<p><a id="manual-pin-projection-unsafe"></a></p>
+<h4 id="수동-pin-프로젝션unsafe"><a class="header" href="#수동-pin-프로젝션unsafe">수동 Pin 프로젝션(unsafe)</a></h4>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl MyFuture {
+    // `data`로 프로젝션 — 구조적으로 고정되지 않음(이동해도 안전)
+    fn data(self: Pin&lt;&amp;mut Self&gt;) -&gt; &amp;mut String {
+        // SAFETY: `data`만 구조적으로 고정되지 않음. `data`만 옮겨도
+        // 전체 구조체가 옮겨진 것은 아니므로 Pin 보장이 유지됨.
+        unsafe { &amp;mut self.get_unchecked_mut().data }
+    }
+
+    // `state`로 프로젝션 — 이 필드는 구조적으로 고정됨
+    fn state(self: Pin&lt;&amp;mut Self&gt;) -&gt; Pin&lt;&amp;mut InternalState&gt; {
+        // SAFETY: `state`는 구조적으로 고정 — Pin&lt;&amp;mut InternalState&gt;를 반환해
+        // pin 불변식을 유지함.
+        unsafe { Pin::new_unchecked(&amp;mut self.get_unchecked_mut().state) }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>구조적 고정 규칙</strong> — 필드가 “구조적으로 고정“된다는 것은:</p>
+<ol>
+<li>그 필드만 옮기거나 스왑하면 자기 참조가 무효화될 수 있음</li>
+<li>구조체의 <code>Drop</code> 구현이 그 필드를 옮기면 안 됨</li>
+<li>구조체는 <code>!Unpin</code>이어야 함(<code>PhantomPinned</code>나 <code>!Unpin</code> 필드로 강제)</li>
+</ol>
+<p><a id="pin-project--safe-pin-projections-zero-unsafe"></a></p>
+<h4 id="pin-project--안전한-pin-프로젝션unsafe-없음"><a class="header" href="#pin-project--안전한-pin-프로젝션unsafe-없음"><code>pin-project</code> — 안전한 Pin 프로젝션(unsafe 없음)</a></h4>
+<p><code>pin-project</code> 크레이트는 컴파일 타임에 올바른 프로젝션을 생성해 수동 <code>unsafe</code>를 없앱니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use pin_project::pin_project;
+use std::pin::Pin;
+use std::future::Future;
+use std::task::{Context, Poll};
+
+#[pin_project]                   // &lt;-- 프로젝션 메서드 생성
+struct TimedFuture&lt;F: Future&gt; {
+    #[pin]                       // &lt;-- 구조적으로 고정(Future)
+    inner: F,
+    started_at: std::time::Instant, // 고정 아님 — 일반 데이터
+}
+
+impl&lt;F: Future&gt; Future for TimedFuture&lt;F&gt; {
+    type Output = (F::Output, std::time::Duration);
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let this = self.project();  // 안전! pin_project가 생성
+        //   this.inner   : Pin&lt;&amp;mut F&gt;              — 고정 필드
+        //   this.started_at : &amp;mut std::time::Instant — 비고정 필드
+
+        match this.inner.poll(cx) {
+            Poll::Ready(output) =&gt; {
+                let elapsed = this.started_at.elapsed();
+                Poll::Ready((output, elapsed))
+            }
+            Poll::Pending =&gt; Poll::Pending,
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="pin-project-vs-manual-projection"></a></p>
+<h4 id="pin-project-vs-수동-프로젝션"><a class="header" href="#pin-project-vs-수동-프로젝션"><code>pin-project</code> vs 수동 프로젝션</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>측면</th><th>수동(<code>unsafe</code>)</th><th><code>pin-project</code></th></tr>
+</thead>
+<tbody>
+<tr><td>안전성</td><td>불변식을 직접 증명</td><td>컴파일러가 검증</td></tr>
+<tr><td>보일러플레이트</td><td>적지만 실수하기 쉬움</td><td>없음 — derive 매크로</td></tr>
+<tr><td><code>Drop</code> 상호작용</td><td>고정 필드를 옮기면 안 됨</td><td>강제: <code>#[pinned_drop]</code></td></tr>
+<tr><td>컴파일 비용</td><td>없음</td><td>프로시 매크로 확장</td></tr>
+<tr><td>사용처</td><td>저수준, <code>no_std</code></td><td>애플리케이션·라이브러리 코드</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="pinned-drop--drop-for-pinned-types"></a></p>
+<h4 id="pinned_drop--고정된-타입의-drop"><a class="header" href="#pinned_drop--고정된-타입의-drop"><code>#[pinned_drop]</code> — 고정된 타입의 Drop</a></h4>
+<p><code>#[pin]</code> 필드가 있으면 <code>pin-project</code>는 일반 <code>Drop</code> 대신 <code>#[pinned_drop]</code>을 요구해 고정 필드를 실수로 옮기지 않게 합니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use pin_project::{pin_project, pinned_drop};
+use std::pin::Pin;
+
+#[pin_project(PinnedDrop)]
+struct Connection&lt;F&gt; {
+    #[pin]
+    future: F,
+    buffer: Vec&lt;u8&gt;,  // 고정 아님 — drop에서 이동 가능
+}
+
+#[pinned_drop]
+impl&lt;F&gt; PinnedDrop for Connection&lt;F&gt; {
+    fn drop(self: Pin&lt;&amp;mut Self&gt;) {
+        let this = self.project();
+        // `this.future`는 Pin&lt;&amp;mut F&gt; — 옮길 수 없고 제자리에서만 드롭
+        // `this.buffer`는 &amp;mut Vec&lt;u8&gt; — drain, clear 등 가능
+        this.buffer.clear();
+        println!("Connection dropped, buffer cleared");
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="when-pin-projections-matter-in-practice"></a></p>
+<h4 id="실무에서-pin-프로젝션이-중요할-때"><a class="header" href="#실무에서-pin-프로젝션이-중요할-때">실무에서 Pin 프로젝션이 중요할 때</a></h4>
+<blockquote>
+<p><strong>참고</strong>: 아래 다이어그램은 Mermaid 문법입니다. GitHub와 Mermaid를 지원하는 도구(mdBook + mermaid 플러그인, VS Code Mermaid 확장)에서 렌더됩니다. 일반 Markdown 뷰어에서는 원문 그대로 보입니다.</p>
+</blockquote>
+<pre class="mermaid">graph TD
+    A["Future를 직접 구현하나?"] --&gt;|Yes| B["Future가 .await 지점에 걸친&lt;br/&gt;참조를 가지나?"]
+    A --&gt;|No| C["async/await가 Pin을 처리&lt;br/&gt;✅ 프로젝션 불필요"]
+    B --&gt;|Yes| D["future 구조체에 #[pin_project] 사용"]
+    B --&gt;|No| E["Future가 Unpin&lt;br/&gt;✅ 프로젝션 불필요"]
+    D --&gt; F["Future/스트림은 #[pin]&lt;br/&gt;데이터 필드는 비고정"]
+    
+    style C fill:#91e5a3,color:#000
+    style E fill:#91e5a3,color:#000
+    style D fill:#ffa07a,color:#000
+    style F fill:#ffa07a,color:#000
+</pre>
+
+<blockquote>
+<p><strong>경험칙</strong>: 다른 <code>Future</code>나 <code>Stream</code>을 감싸면 <code>pin-project</code>를 쓰세요. 애플리케이션에서 <code>async/await</code>만 쓰면 Pin 프로젝션은 직접 필요 없습니다. Pin 프로젝션을 쓰는 async 컴비네이터는 동반서 <em>Async Rust Training</em>을 보세요.</p>
+</blockquote>
+<p><a id="drop-ordering-and-manuallydrop"></a></p>
+<h3 id="드롭-순서와-manuallydrop"><a class="header" href="#드롭-순서와-manuallydrop">드롭 순서와 ManuallyDrop</a></h3>
+<p>Rust의 드롭 순서는 결정적이지만 알아둘 규칙이 있습니다.</p>
+<p><a id="drop-order-rules"></a></p>
+<h4 id="드롭-순서-규칙"><a class="header" href="#드롭-순서-규칙">드롭 순서 규칙</a></h4>
+<pre class="playground"><code class="language-rust">struct Label(&amp;'static str);
+
+impl Drop for Label {
+    fn drop(&amp;mut self) { println!("Dropping {}", self.0); }
+}
+
+fn main() {
+    let a = Label("first");   // 먼저 선언
+    let b = Label("second");  // 다음
+    let c = Label("third");   // 마지막
+}
+// 출력:
+//   Dropping third    ← 지역 변수는 선언의 **역순**으로 드롭
+//   Dropping second
+//   Dropping first</code></pre>
+<p><strong>세 가지 규칙</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>대상</th><th>드롭 순서</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>지역 변수</strong></td><td>선언 역순</td><td>나중 변수가 앞을 참조할 수 있음</td></tr>
+<tr><td><strong>구조체 필드</strong></td><td>선언 순서(위→아래)</td><td>생성 순서와 일치(Rust 1.0 이후 안정, <a href="https://rust-lang.github.io/rfcs/1857-stabilize-drop-order.html">RFC 1857</a> 보장)</td></tr>
+<tr><td><strong>튜플 원소</strong></td><td>선언 순서(왼→오)</td><td><code>(a, b, c)</code> → <code>a</code>, 그다음 <code>b</code>, 그다음 <code>c</code> 드롭</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Server {
+    listener: Label,  // 1번째 드롭
+    handler: Label,   // 2번째
+    logger: Label,    // 3번째
+}
+// 필드는 위에서 아래로 드롭.
+// 필드가 서로 참조하거나 리소스를 쥘 때 중요합니다.
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>실무 영향</strong>: 구조체에 <code>JoinHandle</code>과 <code>Sender</code>가 있으면 필드 순서가 먼저 드롭되는 쪽을 바꿉니다. 스레드가 채널에서 읽으면 <code>Sender</code>를 먼저 드롭(채널 닫기)해 스레드가 끝나게 한 뒤 핸들을 조인하세요. 구조체에서 <code>JoinHandle</code>보다 위에 <code>Sender</code>를 두세요.</p>
+</blockquote>
+<p><a id="manuallydropt--suppressing-automatic-drop"></a></p>
+<h4 id="manuallydropt--자동-drop-억제"><a class="header" href="#manuallydropt--자동-drop-억제"><code>ManuallyDrop&lt;T&gt;</code> — 자동 Drop 억제</a></h4>
+<p><code>ManuallyDrop&lt;T&gt;</code>는 값을 감싸고 소멸자가 <strong>자동으로</strong> 돌지 않게 합니다. 직접 드롭 책임을 지거나(또는 의도적 누수):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::mem::ManuallyDrop;
+
+// Use case 1: unsafe 코드에서 이중 해제 방지
+struct TwoPhaseBuffer {
+    // Vec을 직접 드롭해 타이밍을 제어해야 함
+    data: ManuallyDrop&lt;Vec&lt;u8&gt;&gt;,
+    committed: bool,
+}
+
+impl TwoPhaseBuffer {
+    fn new(capacity: usize) -&gt; Self {
+        TwoPhaseBuffer {
+            data: ManuallyDrop::new(Vec::with_capacity(capacity)),
+            committed: false,
+        }
+    }
+
+    fn write(&amp;mut self, bytes: &amp;[u8]) {
+        self.data.extend_from_slice(bytes);
+    }
+
+    fn commit(&amp;mut self) {
+        self.committed = true;
+        println!("Committed {} bytes", self.data.len());
+    }
+}
+
+impl Drop for TwoPhaseBuffer {
+    fn drop(&amp;mut self) {
+        if !self.committed {
+            println!("Rolling back — dropping uncommitted data");
+        }
+        // SAFETY: data는 여기서 항상 유효; 한 번만 드롭
+        unsafe { ManuallyDrop::drop(&amp;mut self.data); }
+    }
+}
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use case 2: 의도적 누수(예: 전역 싱글톤)
+fn leaked_string() -&gt; &amp;'static str {
+    // Box::leak()이 &amp;'static을 만드는 관용적 방법:
+    let s = String::from("lives forever");
+    Box::leak(s.into_boxed_str())
+    // ⚠️ 통제된 메모리 누수. String 힙 할당이 영원히 해제되지 않음.
+    // 오래 사는 싱글톤에만 사용.
+}
+
+// ManuallyDrop 대안(unsafe):
+// ⚠️ 위 Box::leak()을 선호 — ManuallyDrop 의미만 설명
+fn leaked_string_manual() -&gt; &amp;'static str {
+    use std::mem::ManuallyDrop;
+    let md = ManuallyDrop::new(String::from("lives forever"));
+    // SAFETY: ManuallyDrop이 해제를 막음; 힙 데이터는 영구히 살아 있으므로
+    // 'static 참조가 유효함.
+    unsafe { &amp;*(md.as_str() as *const str) }
+}
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use case 3: union 필드(한 번에 하나의 변형만 유효)
+use std::mem::ManuallyDrop;
+
+union IntOrString {
+    i: u64,
+    s: ManuallyDrop&lt;String&gt;,
+    // String에 Drop이 있으므로 union 안에서는 **반드시** ManuallyDrop으로 감쌈
+    // — 컴파일러는 어떤 필드가 활성인지 모름.
+}
+
+// 자동 Drop 없음 — IntOrString을 만든 코드가 정리도 담당.
+// String 변형이 활성이면:
+//   unsafe { ManuallyDrop::drop(&amp;mut value.s); }
+// Drop impl 없이 union은 그냥 누수(UB는 아님, 누수만).
+<span class="boring">}</span></code></pre>
+<p><strong>ManuallyDrop vs <code>mem::forget</code></strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th><code>ManuallyDrop&lt;T&gt;</code></th><th><code>mem::forget(value)</code></th></tr>
+</thead>
+<tbody>
+<tr><td>언제</td><td>생성 시 감쌈</td><td>나중에 소비할 때</td></tr>
+<tr><td>내부 접근</td><td><code>&amp;*md</code> / <code>&amp;mut *md</code></td><td>값은 사라짐</td></tr>
+<tr><td>나중 드롭</td><td><code>ManuallyDrop::drop(&amp;mut md)</code></td><td>불가</td></tr>
+<tr><td>사용처</td><td>세밀한 수명 주기 제어</td><td>일회성 누수</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>규칙</strong>: 소멸자가 <strong>정확히 언제</strong> 실행되어야 하는지 제어해야 하는 unsafe 추상화에 <code>ManuallyDrop</code>을 쓰세요. 안전한 애플리케이션 코드에서는 거의 필요 없습니다 — 자동 드롭 순서가 맞습니다.</p>
+</blockquote>
+<blockquote>
+<p><strong>핵심 정리 — 스마트 포인터</strong></p>
+<ul>
+<li>힙 단일 소유는 <code>Box</code>; <code>Rc</code>/<code>Arc</code>는 공유 소유(단일/다중 스레드)</li>
+<li><code>Cell</code>/<code>RefCell</code>은 내부 가변성; <code>RefCell</code>은 위반 시 런타임 패닉</li>
+<li><code>Cow</code>는 흔한 경로에서 할당 회피; <code>Pin</code>은 자기 참조 타입의 이동 방지</li>
+<li>드롭 순서: 필드는 선언 순서(RFC 1857); 지역은 선언 역순</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>함께 보기:</strong> <code>Arc</code> + <code>Mutex</code> 패턴은 <a href="ch06-concurrency-vs-parallelism-vs-threads.html">6장 — 동시성</a>. 스마트 포인터와 함께 쓰는 <code>PhantomData</code>는 <a href="ch04-phantomdata-types-that-carry-no-data.html">4장 — PhantomData</a>.</p>
+</blockquote>
+<pre class="mermaid">graph TD
+    Box["Box&amp;lt;T&amp;gt;&lt;br&gt;단일 소유, 힙"] --&gt; Heap["힙 할당"]
+    Rc["Rc&amp;lt;T&amp;gt;&lt;br&gt;공유, 단일 스레드"] --&gt; Heap
+    Arc["Arc&amp;lt;T&amp;gt;&lt;br&gt;공유, 다중 스레드"] --&gt; Heap
+
+    Rc --&gt; Weak1["Weak&amp;lt;T&amp;gt;&lt;br&gt;비소유"]
+    Arc --&gt; Weak2["Weak&amp;lt;T&amp;gt;&lt;br&gt;비소유"]
+
+    Cell["Cell&amp;lt;T&amp;gt;&lt;br&gt;Copy 내부 가변"] --&gt; Stack["스택 / 내부"]
+    RefCell["RefCell&amp;lt;T&amp;gt;&lt;br&gt;런타임 빌림 검사"] --&gt; Stack
+    Cow["Cow&amp;lt;T&amp;gt;&lt;br&gt;쓸 때 복제"] --&gt; Stack
+
+    style Box fill:#d4efdf,stroke:#27ae60,color:#000
+    style Rc fill:#e8f4f8,stroke:#2980b9,color:#000
+    style Arc fill:#e8f4f8,stroke:#2980b9,color:#000
+    style Weak1 fill:#fef9e7,stroke:#f1c40f,color:#000
+    style Weak2 fill:#fef9e7,stroke:#f1c40f,color:#000
+    style Cell fill:#fdebd0,stroke:#e67e22,color:#000
+    style RefCell fill:#fdebd0,stroke:#e67e22,color:#000
+    style Cow fill:#fdebd0,stroke:#e67e22,color:#000
+    style Heap fill:#f5f5f5,stroke:#999,color:#000
+    style Stack fill:#f5f5f5,stroke:#999,color:#000
+</pre>
+
+<hr>
+<p><a id="exercise-reference-counted-graph"></a></p>
+<h3 id="연습-참조-카운트-그래프--30분"><a class="header" href="#연습-참조-카운트-그래프--30분">연습: 참조 카운트 그래프 ★★ (~30분)</a></h3>
+<p><code>Rc&lt;RefCell&lt;Node&gt;&gt;</code>로 방향 그래프를 만드세요. 각 노드는 이름과 자식 목록을 가집니다. <code>Weak</code>로 역간을 끊어 순환(A → B → C → A)을 만드세요. <code>Rc::strong_count</code>로 메모리 누수가 없음을 확인하세요.</p>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+struct Node {
+    name: String,
+    children: Vec&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt;,
+    back_ref: Option&lt;Weak&lt;RefCell&lt;Node&gt;&gt;&gt;,
+}
+
+impl Node {
+    fn new(name: &amp;str) -&gt; Rc&lt;RefCell&lt;Self&gt;&gt; {
+        Rc::new(RefCell::new(Node {
+            name: name.to_string(),
+            children: Vec::new(),
+            back_ref: None,
+        }))
+    }
+}
+
+impl Drop for Node {
+    fn drop(&amp;mut self) {
+        println!("Dropping {}", self.name);
+    }
+}
+
+fn main() {
+    let a = Node::new("A");
+    let b = Node::new("B");
+    let c = Node::new("C");
+
+    // A → B → C, C가 Weak로 A를 역참조
+    a.borrow_mut().children.push(Rc::clone(&amp;b));
+    b.borrow_mut().children.push(Rc::clone(&amp;c));
+    c.borrow_mut().back_ref = Some(Rc::downgrade(&amp;a)); // Weak!
+
+    println!("A strong count: {}", Rc::strong_count(&amp;a)); // 1 (`a`만)
+    println!("B strong count: {}", Rc::strong_count(&amp;b)); // 2 (b + A의 자식)
+    println!("C strong count: {}", Rc::strong_count(&amp;c)); // 2 (c + B의 자식)
+
+    // Weak를 실제로 올려 동작 확인:
+    let c_ref = c.borrow();
+    if let Some(back) = &amp;c_ref.back_ref {
+        if let Some(a_ref) = back.upgrade() {
+            println!("C points back to: {}", a_ref.borrow().name);
+        }
+    }
+    // a, b, c가 스코프를 벗어나면 모든 노드 드롭(순환 누수 없음!)
+}</code></pre>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch08-functional-vs-imperative-when-elegance-wins.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch10-error-handling-patterns.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch08-functional-vs-imperative-when-elegance-wins.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch10-error-handling-patterns.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

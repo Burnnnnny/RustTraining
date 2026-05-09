@@ -1,0 +1,608 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>13. 동시성 - C# 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-89f02b98.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-00223320.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">C# 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="thread-safety-convention-vs-type-system-guarantees"></a></p>
+<h2 id="스레드-안전성-관례-vs-타입-시스템의-보장"><a class="header" href="#스레드-안전성-관례-vs-타입-시스템의-보장">스레드 안전성: 관례 vs 타입 시스템의 보장</a></h2>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong> C#의 관례 기반 접근과 달리 Rust가 스레드 안전성을 컴파일 시점에 어떻게 강제하는지, <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>와 <code>lock</code>의 차이, 채널과 <code>ConcurrentQueue</code>의 차이, <code>Send</code>/<code>Sync</code> 트레잇, scoped thread, 그리고 <code>async/await</code>로 이어지는 연결 지점을 배웁니다.</p>
+<p><strong>난이도:</strong> 🔴 고급</p>
+</blockquote>
+<blockquote>
+<p><strong>심화 학습:</strong> 프로덕션 환경의 async 패턴(스트림 처리, graceful shutdown, 커넥션 풀링, cancellation safety)은 별도 가이드인 <a href="../../source-docs/ASYNC_RUST_TRAINING.html">Async Rust Training</a>을 참고하세요.</p>
+<p><strong>선행 학습:</strong> <a href="ch07-ownership-and-borrowing.html">소유권과 대여</a>, <a href="ch07-3-smart-pointers-beyond-single-ownership.html">스마트 포인터</a> (<code>Rc</code> vs <code>Arc</code> 선택 기준).</p>
+</blockquote>
+<h3 id="c---관례에-의존하는-스레드-안전성"><a class="header" href="#c---관례에-의존하는-스레드-안전성">C# - 관례에 의존하는 스레드 안전성</a></h3>
+<pre><code class="language-csharp">// C# 컬렉션은 기본적으로 스레드 안전하지 않다
+public class UserService
+{
+    private readonly List&lt;string&gt; items = new();
+    private readonly Dictionary&lt;int, User&gt; cache = new();
+
+    // 데이터 레이스를 일으킬 수 있다:
+    public void AddItem(string item)
+    {
+        items.Add(item);  // 스레드 안전하지 않다!
+    }
+
+    // 락을 수동으로 사용해야 한다:
+    private readonly object lockObject = new();
+
+    public void SafeAddItem(string item)
+    {
+        lock (lockObject)
+        {
+            items.Add(item);  // 안전하지만 런타임 오버헤드가 있다
+        }
+        // 다른 곳에서 락을 빼먹기 쉽다
+    }
+
+    // ConcurrentCollection이 도움이 되지만 한계가 있다:
+    private readonly ConcurrentBag&lt;string&gt; safeItems = new();
+    
+    public void ConcurrentAdd(string item)
+    {
+        safeItems.Add(item);  // 스레드 안전하지만 연산이 제한적이다
+    }
+
+    // 복잡한 공유 상태 관리
+    private readonly ConcurrentDictionary&lt;int, User&gt; threadSafeCache = new();
+    private volatile bool isShutdown = false;
+    
+    public async Task ProcessUser(int userId)
+    {
+        if (isShutdown) return;  // 경쟁 상태 가능!
+        
+        var user = await GetUser(userId);
+        threadSafeCache.TryAdd(userId, user);  // 어떤 컬렉션이 안전한지 직접 기억해야 한다
+    }
+
+    // 스레드 로컬 저장소도 주의 깊게 관리해야 한다
+    private static readonly ThreadLocal&lt;Random&gt; threadLocalRandom = 
+        new ThreadLocal&lt;Random&gt;(() =&gt; new Random());
+        
+    public int GetRandomNumber()
+    {
+        return threadLocalRandom.Value.Next();  // 안전하지만 수동 관리가 필요하다
+    }
+}
+
+// 경쟁 상태가 생길 수 있는 이벤트 처리
+public class EventProcessor
+{
+    public event Action&lt;string&gt; DataReceived;
+    private readonly List&lt;string&gt; eventLog = new();
+    
+    public void OnDataReceived(string data)
+    {
+        // 경쟁 상태 - 검사와 호출 사이에 event가 null이 될 수 있다
+        if (DataReceived != null)
+        {
+            DataReceived(data);
+        }
+        
+        // 또 다른 경쟁 상태 - list가 스레드 안전하지 않다
+        eventLog.Add($"Processed: {data}");
+    }
+}
+</code></pre>
+<h3 id="rust---타입-시스템이-보장하는-스레드-안전성"><a class="header" href="#rust---타입-시스템이-보장하는-스레드-안전성">Rust - 타입 시스템이 보장하는 스레드 안전성</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::{Arc, Mutex, RwLock};
+use std::thread;
+use std::collections::HashMap;
+use tokio::sync::{mpsc, broadcast};
+
+// Rust는 데이터 레이스를 컴파일 시점에 막는다
+pub struct UserService {
+    items: Arc&lt;Mutex&lt;Vec&lt;String&gt;&gt;&gt;,
+    cache: Arc&lt;RwLock&lt;HashMap&lt;i32, User&gt;&gt;&gt;,
+}
+
+impl UserService {
+    pub fn new() -&gt; Self {
+        UserService {
+            items: Arc::new(Mutex::new(Vec::new())),
+            cache: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+    
+    pub fn add_item(&amp;self, item: String) {
+        let mut items = self.items.lock().unwrap();
+        items.push(item);
+        // `items`가 스코프를 벗어나면 락이 자동으로 해제된다
+    }
+    
+    // 여러 읽기, 단일 쓰기 - 자동으로 강제된다
+    pub async fn get_user(&amp;self, user_id: i32) -&gt; Option&lt;User&gt; {
+        let cache = self.cache.read().unwrap();
+        cache.get(&amp;user_id).cloned()
+    }
+    
+    pub async fn cache_user(&amp;self, user_id: i32, user: User) {
+        let mut cache = self.cache.write().unwrap();
+        cache.insert(user_id, user);
+    }
+    
+    // 스레드 간 공유를 위해 Arc를 복제한다
+    pub fn process_in_background(&amp;self) {
+        let items = Arc::clone(&amp;self.items);
+        
+        thread::spawn(move || {
+            let items = items.lock().unwrap();
+            for item in items.iter() {
+                println!("Processing: {}", item);
+            }
+        });
+    }
+}
+
+// 채널 기반 통신 - 공유 상태가 필요 없다
+pub struct MessageProcessor {
+    sender: mpsc::UnboundedSender&lt;String&gt;,
+}
+
+impl MessageProcessor {
+    pub fn new() -&gt; (Self, mpsc::UnboundedReceiver&lt;String&gt;) {
+        let (tx, rx) = mpsc::unbounded_channel();
+        (MessageProcessor { sender: tx }, rx)
+    }
+    
+    pub fn send_message(&amp;self, message: String) -&gt; Result&lt;(), mpsc::error::SendError&lt;String&gt;&gt; {
+        self.sender.send(message)
+    }
+}
+
+// 이 코드는 컴파일되지 않는다 - Rust가 가변 데이터를 안전하지 않게 공유하는 것을 막는다:
+fn impossible_data_race() {
+    let mut items = vec![1, 2, 3];
+    
+    // 이 코드는 컴파일되지 않는다 - `items`를 여러 클로저로 옮길 수 없다
+    /*
+    thread::spawn(move || {
+        items.push(4);  // 오류: 이동된 값을 사용함
+    });
+    
+    thread::spawn(move || {
+        items.push(5);  // 오류: 이동된 값을 사용함
+    });
+    */
+}
+
+// 안전한 동시 데이터 처리
+use rayon::prelude::*;
+
+fn parallel_processing() {
+    let data = vec![1, 2, 3, 4, 5];
+    
+    // 병렬 이터레이션 - 스레드 안전성이 보장된다
+    let results: Vec&lt;i32&gt; = data
+        .par_iter()
+        .map(|&amp;x| x * x)
+        .collect();
+        
+    println!("{:?}", results);
+}
+
+// 메시지 전달 기반 비동기 동시성
+async fn async_message_passing() {
+    let (tx, mut rx) = mpsc::channel(100);
+    
+    // 생산자 태스크
+    let producer = tokio::spawn(async move {
+        for i in 0..10 {
+            if tx.send(i).await.is_err() {
+                break;
+            }
+        }
+    });
+    
+    // 소비자 태스크
+    let consumer = tokio::spawn(async move {
+        while let Some(value) = rx.recv().await {
+            println!("Received: {}", value);
+        }
+    });
+    
+    // 두 태스크가 모두 끝날 때까지 기다린다
+    let (producer_result, consumer_result) = tokio::join!(producer, consumer);
+    producer_result.unwrap();
+    consumer_result.unwrap();
+}
+
+#[derive(Clone)]
+struct User {
+    id: i32,
+    name: String,
+}
+<span class="boring">}</span></code></pre>
+<pre class="mermaid">graph TD
+    subgraph "C# 스레드 안전성의 과제"
+        CS_MANUAL["수동 동기화"]
+        CS_LOCKS["lock 문"]
+        CS_CONCURRENT["ConcurrentCollection"]
+        CS_VOLATILE["volatile 필드"]
+        CS_FORGET["😰 락을 빼먹기 쉬움"]
+        CS_DEADLOCK["💀 데드락 가능"]
+        CS_RACE["🏃 경쟁 상태"]
+        CS_OVERHEAD["⚡ 런타임 오버헤드"]
+        
+        CS_MANUAL --&gt; CS_LOCKS
+        CS_MANUAL --&gt; CS_CONCURRENT
+        CS_MANUAL --&gt; CS_VOLATILE
+        CS_LOCKS --&gt; CS_FORGET
+        CS_LOCKS --&gt; CS_DEADLOCK
+        CS_FORGET --&gt; CS_RACE
+        CS_LOCKS --&gt; CS_OVERHEAD
+    end
+    
+    subgraph "Rust 타입 시스템의 보장"
+        RUST_OWNERSHIP["소유권 시스템"]
+        RUST_BORROWING["borrow checker"]
+        RUST_SEND["Send 트레잇"]
+        RUST_SYNC["Sync 트레잇"]
+        RUST_ARC["Arc&lt;Mutex&lt;T&gt;&gt;"]
+        RUST_CHANNELS["메시지 전달"]
+        RUST_SAFE["✅ 데이터 레이스 불가능"]
+        RUST_FAST["⚡ 제로코스트 추상화"]
+        
+        RUST_OWNERSHIP --&gt; RUST_BORROWING
+        RUST_BORROWING --&gt; RUST_SEND
+        RUST_SEND --&gt; RUST_SYNC
+        RUST_SYNC --&gt; RUST_ARC
+        RUST_ARC --&gt; RUST_CHANNELS
+        RUST_CHANNELS --&gt; RUST_SAFE
+        RUST_SAFE --&gt; RUST_FAST
+    end
+    
+    style CS_FORGET fill:#ffcdd2,color:#000
+    style CS_DEADLOCK fill:#ffcdd2,color:#000
+    style CS_RACE fill:#ffcdd2,color:#000
+    style RUST_SAFE fill:#c8e6c9,color:#000
+    style RUST_FAST fill:#c8e6c9,color:#000
+</pre>
+
+<hr><details>
+<summary><strong>🏋️ 연습문제: 스레드 안전 카운터</strong> (클릭하여 펼치기)</summary>
+<p><strong>문제</strong>: 10개의 스레드가 동시에 증가시킬 수 있는 스레드 안전 카운터를 구현하세요. 각 스레드는 1000번씩 증가합니다. 최종 카운트는 정확히 10,000이어야 합니다.</p>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0u64));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&amp;counter);
+        handles.push(thread::spawn(move || {
+            for _ in 0..1000 {
+                let mut count = counter.lock().unwrap();
+                *count += 1;
+            }
+        }));
+    }
+
+    for h in handles { h.join().unwrap(); }
+    assert_eq!(*counter.lock().unwrap(), 10_000);
+    println!("Final count: {}", counter.lock().unwrap());
+}</code></pre>
+<p><strong>또는 atomic 사용(더 빠르고 락이 없음):</strong></p>
+<pre class="playground"><code class="language-rust">use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(AtomicU64::new(0));
+    let handles: Vec&lt;_&gt; = (0..10).map(|_| {
+        let counter = Arc::clone(&amp;counter);
+        thread::spawn(move || {
+            for _ in 0..1000 {
+                counter.fetch_add(1, Ordering::Relaxed);
+            }
+        })
+    }).collect();
+
+    for h in handles { h.join().unwrap(); }
+    assert_eq!(counter.load(Ordering::SeqCst), 10_000);
+}</code></pre>
+<p><strong>핵심 요점</strong>: <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>가 가장 일반적인 패턴입니다. 단순한 카운터라면 <code>AtomicU64</code>를 사용해 락 오버헤드를 완전히 피할 수 있습니다.</p>
+</details>
+</details>
+<p><a id="why-rust-prevents-data-races-send-and-sync"></a></p>
+<h3 id="rust가-데이터-레이스를-막는-이유-send와-sync"><a class="header" href="#rust가-데이터-레이스를-막는-이유-send와-sync">Rust가 데이터 레이스를 막는 이유: <code>Send</code>와 <code>Sync</code></a></h3>
+<p>Rust는 두 개의 마커 트레잇으로 스레드 안전성을 <strong>컴파일 시점에</strong> 강제합니다. C#에는 정확히 대응되는 개념이 없습니다.</p>
+<ul>
+<li><code>Send</code>: 어떤 타입을 다른 스레드로 안전하게 <strong>전달</strong>할 수 있음 (<code>thread::spawn</code>에 넘기는 클로저로 move 가능)</li>
+<li><code>Sync</code>: 어떤 타입을 스레드 간에 (<code>&amp;T</code>를 통해) 안전하게 <strong>공유</strong>할 수 있음</li>
+</ul>
+<p>대부분의 타입은 자동으로 <code>Send + Sync</code>를 만족합니다. 주목할 만한 예외는 다음과 같습니다.</p>
+<ul>
+<li><code>Rc&lt;T&gt;</code>는 <code>Send</code>도 <code>Sync</code>도 아닙니다. 컴파일러가 이를 <code>thread::spawn</code>으로 넘기지 못하게 막습니다. 대신 <code>Arc&lt;T&gt;</code>를 사용하세요.</li>
+<li><code>Cell&lt;T&gt;</code>와 <code>RefCell&lt;T&gt;</code>는 <code>Sync</code>가 아닙니다. 스레드 안전한 interior mutability가 필요하다면 <code>Mutex&lt;T&gt;</code>나 <code>RwLock&lt;T&gt;</code>를 사용하세요.</li>
+<li>로 포인터(<code>*const T</code>, <code>*mut T</code>)는 <code>Send</code>도 <code>Sync</code>도 아닙니다.</li>
+</ul>
+<p>C#에서는 <code>List&lt;T&gt;</code>가 스레드 안전하지 않아도 컴파일러가 여러 스레드에서 공유하는 실수를 막지 못합니다. Rust에서는 같은 실수가 런타임 경쟁 상태가 아니라 <strong>컴파일 오류</strong>가 됩니다.</p>
+<p><a id="scoped-threads-borrowing-from-the-stack"></a></p>
+<h3 id="스코프-스레드-스택-데이터-빌려오기"><a class="header" href="#스코프-스레드-스택-데이터-빌려오기">스코프 스레드: 스택 데이터 빌려오기</a></h3>
+<p><code>thread::scope()</code>를 사용하면 생성한 스레드가 지역 변수를 빌릴 수 있습니다. <code>Arc</code>가 필요 없습니다.</p>
+<pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let data = vec![1, 2, 3, 4, 5];
+    
+    // scoped thread는 'data'를 빌릴 수 있다. scope가 모든 스레드가 끝날 때까지 기다린다.
+    thread::scope(|s| {
+        s.spawn(|| println!("Thread 1: {data:?}"));
+        s.spawn(|| println!("Thread 2: sum = {}", data.iter().sum::&lt;i32&gt;()));
+    });
+    // 여기서도 'data'는 여전히 유효하다. 스레드가 모두 종료되었기 때문이다.
+}</code></pre>
+<p>이 점은 호출한 코드가 완료를 기다린다는 면에서 C#의 <code>Parallel.ForEach</code>와 비슷하지만, Rust는 borrow checker가 데이터 레이스가 없음을 컴파일 시점에 <strong>증명</strong>한다는 점이 다릅니다.</p>
+<p><a id="bridging-to-asyncawait"></a></p>
+<h3 id="asyncawait로-이어지기"><a class="header" href="#asyncawait로-이어지기"><code>async/await</code>로 이어지기</a></h3>
+<p>C# 개발자는 보통 로 스레드보다 <code>Task</code>와 <code>async/await</code>를 먼저 떠올립니다. Rust에도 두 패러다임이 모두 있습니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Rust</th><th>언제 쓰나</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Thread</code></td><td><code>std::thread::spawn</code></td><td>CPU 바운드 작업, 태스크당 OS 스레드 하나</td></tr>
+<tr><td><code>Task.Run</code></td><td><code>tokio::spawn</code></td><td>런타임 위에서 실행되는 async 태스크</td></tr>
+<tr><td><code>async/await</code></td><td><code>async/await</code></td><td>I/O 바운드 동시성</td></tr>
+<tr><td><code>lock</code></td><td><code>Mutex&lt;T&gt;</code></td><td>동기식 상호 배제</td></tr>
+<tr><td><code>SemaphoreSlim</code></td><td><code>tokio::sync::Semaphore</code></td><td>비동기 동시성 제한</td></tr>
+<tr><td><code>Interlocked</code></td><td><code>std::sync::atomic</code></td><td>락 없는 원자적 연산</td></tr>
+<tr><td><code>CancellationToken</code></td><td><code>tokio_util::sync::CancellationToken</code></td><td>협력적 취소</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>다음 장인 <a href="ch13-1-asyncawait-deep-dive.html">Async/Await 심화</a>에서는 Rust의 async 모델과 C#의 <code>Task</code> 기반 모델이 어떻게 다른지 자세히 살펴봅니다.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch12-1-macros-primer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch13-1-asyncawait-deep-dive.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch12-1-macros-primer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch13-1-asyncawait-deep-dive.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

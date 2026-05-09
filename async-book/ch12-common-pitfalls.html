@@ -1,0 +1,832 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>12. 흔한 함정 - Async Rust: Future부터 프로덕션까지</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-2505fb89.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-55c9c436.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Async Rust: Future부터 프로덕션까지</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="common-pitfalls"></a></p>
+<h1 id="12-흔한-함정-"><a class="header" href="#12-흔한-함정-">12. 흔한 함정 🔴</a></h1>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong></p>
+<ul>
+<li>async Rust에서 자주 나오는 9가지 버그와 각각의 해결법</li>
+<li>왜 실행기를 막아버리는 일이 가장 흔한 실수인지, 그리고 <code>spawn_blocking</code>이 어떻게 해결하는지</li>
+<li>취소 위험: <code>await</code> 도중 future가 drop되면 무슨 일이 생기는지</li>
+<li>디버깅: <code>tokio-console</code>, <code>tracing</code>, <code>#[instrument]</code></li>
+<li>테스트: <code>#[tokio::test]</code>, <code>time::pause()</code>, 트레잇 기반 모킹</li>
+</ul>
+</blockquote>
+<p><a id="blocking-the-executor"></a></p>
+<h2 id="실행기를-막아버리기"><a class="header" href="#실행기를-막아버리기">실행기를 막아버리기</a></h2>
+<p>async Rust에서 가장 흔한 실수는 async 실행기 스레드 위에서 블로킹 코드를 돌리는 것입니다. 그러면 다른 태스크들이 굶주리게 됩니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 잘못된 예: 실행기 스레드 전체를 막아 버린다
+async fn bad_handler() -&gt; String {
+    let data = std::fs::read_to_string("big_file.txt").unwrap(); // 블로킹된다!
+    process(&amp;data)
+}
+
+// ✅ 올바른 예: 블로킹 작업을 전용 스레드 풀로 넘긴다
+async fn good_handler() -&gt; String {
+    let data = tokio::task::spawn_blocking(|| {
+        std::fs::read_to_string("big_file.txt").unwrap()
+    }).await.unwrap();
+    process(&amp;data)
+}
+
+// ✅ 이것도 올바른 예: tokio의 async fs 사용
+async fn also_good_handler() -&gt; String {
+    let data = tokio::fs::read_to_string("big_file.txt").await.unwrap();
+    process(&amp;data)
+}
+<span class="boring">}</span></code></pre>
+<pre class="mermaid">graph TB
+    subgraph "❌ 실행기 위의 블로킹 호출"
+        T1_BAD["Thread 1: std::fs::read()&lt;br/&gt;🔴 500ms 동안 블록"]
+        T2_BAD["Thread 2: 요청 처리 중&lt;br/&gt;🟢 혼자 작업 중"]
+        TASKS_BAD["대기 중인 태스크 100개&lt;br/&gt;⏳ 굶주림"]
+        T1_BAD --&gt;|"poll할 수 없음"| TASKS_BAD
+    end
+
+    subgraph "✅ spawn_blocking"
+        T1_GOOD["Thread 1: future poll 중&lt;br/&gt;🟢 사용 가능"]
+        T2_GOOD["Thread 2: future poll 중&lt;br/&gt;🟢 사용 가능"]
+        BT["블로킹 풀 스레드:&lt;br/&gt;std::fs::read()&lt;br/&gt;🔵 별도 풀"]
+        TASKS_GOOD["태스크 100개&lt;br/&gt;✅ 모두 진행 중"]
+        T1_GOOD --&gt;|"poll"| TASKS_GOOD
+        T2_GOOD --&gt;|"poll"| TASKS_GOOD
+    end
+</pre>
+
+<p><a id="stdthreadsleep-vs-tokiotimesleep"></a></p>
+<h3 id="stdthreadsleep-vs-tokiotimesleep"><a class="header" href="#stdthreadsleep-vs-tokiotimesleep"><code>std::thread::sleep</code> vs <code>tokio::time::sleep</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 잘못된 예: 실행기 스레드를 5초 동안 막아 버린다
+async fn bad_delay() {
+    std::thread::sleep(Duration::from_secs(5)); // 이 스레드는 다른 어떤 것도 poll할 수 없다!
+}
+
+// ✅ 올바른 예: 실행기에 제어를 넘기므로 다른 태스크가 돌 수 있다
+async fn good_delay() {
+    tokio::time::sleep(Duration::from_secs(5)).await; // 블로킹되지 않는다!
+}
+<span class="boring">}</span></code></pre>
+<p><a id="holding-mutexguard-across-await"></a></p>
+<h3 id="await를-가로질러-mutexguard-유지하기"><a class="header" href="#await를-가로질러-mutexguard-유지하기"><code>.await</code>를 가로질러 <code>MutexGuard</code> 유지하기</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::Mutex; // std Mutex — async를 인식하지 못한다
+
+// ❌ 잘못된 예: MutexGuard를 .await 너머까지 들고 간다
+async fn bad_mutex(data: &amp;Mutex&lt;Vec&lt;String&gt;&gt;) {
+    let mut guard = data.lock().unwrap();
+    guard.push("item".into());
+    some_io().await; // 💥 여기서 Guard가 살아 있으므로 다른 스레드가 lock하지 못한다!
+    guard.push("another".into());
+}
+// 또한 std::sync::MutexGuard는 !Send이므로
+// tokio의 멀티스레드 런타임에서는 이 코드가 컴파일되지 않는다.
+
+// ✅ 해결 1: Guard가 .await 전에 drop되도록 스코프를 나눈다
+async fn good_mutex_scoped(data: &amp;Mutex&lt;Vec&lt;String&gt;&gt;) {
+    {
+        let mut guard = data.lock().unwrap();
+        guard.push("item".into());
+    } // 여기서 Guard drop
+    some_io().await; // 안전함 — lock이 해제되었다
+    {
+        let mut guard = data.lock().unwrap();
+        guard.push("another".into());
+    }
+}
+
+// ✅ 해결 2: tokio::sync::Mutex 사용 (async 인식)
+use tokio::sync::Mutex as AsyncMutex;
+
+async fn good_async_mutex(data: &amp;AsyncMutex&lt;Vec&lt;String&gt;&gt;) {
+    let mut guard = data.lock().await; // async lock — 스레드를 블로킹하지 않는다
+    guard.push("item".into());
+    some_io().await; // OK — tokio Mutex guard는 Send다
+    guard.push("another".into());
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>어떤 Mutex를 언제 쓸까</strong></p>
+<ul>
+<li><code>std::sync::Mutex</code>: <code>.await</code> 없이 짧은 임계 구역만 있을 때</li>
+<li><code>tokio::sync::Mutex</code>: lock을 <code>.await</code> 지점 너머까지 들고 있어야 할 때</li>
+<li><code>parking_lot::Mutex</code>: <code>std</code> 대체품이 필요할 때. 더 빠르고 더 작지만 여전히 <code>.await</code>와는 함께 쓰지 않습니다</li>
+</ul>
+</blockquote>
+<p><a id="cancellation-hazards"></a></p>
+<h3 id="취소-위험"><a class="header" href="#취소-위험">취소 위험</a></h3>
+<p>future를 drop하면 해당 future는 취소됩니다. 문제는 이것이 상태를 일관되지 않게 남길 수 있다는 점입니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 위험: 취소되면 자원이 새어 나갈 수 있다
+async fn transfer(from: &amp;Account, to: &amp;Account, amount: u64) {
+    from.debit(amount).await;  // 여기서 취소되면...
+    to.credit(amount).await;   // ...돈이 사라진다!
+}
+
+// ✅ 안전: 작업을 원자적으로 만들거나 보상 로직을 둔다
+async fn safe_transfer(from: &amp;Account, to: &amp;Account, amount: u64) -&gt; Result&lt;(), Error&gt; {
+    // 데이터베이스 트랜잭션 사용 (전부 성공하거나 전부 실패)
+    let tx = db.begin_transaction().await?;
+    tx.debit(from, amount).await?;
+    tx.credit(to, amount).await?;
+    tx.commit().await?; // 모든 단계가 성공했을 때만 커밋
+    Ok(())
+}
+
+// ✅ 이것도 안전: tokio::select!를 취소 인지 방식으로 사용
+tokio::select! {
+    result = transfer(from, to, amount) =&gt; {
+        // 송금 완료
+    }
+    _ = shutdown_signal() =&gt; {
+        // 중간에 취소하지 말고 완료까지 기다린다
+        // 또는: 명시적으로 롤백한다
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="no-async-drop"></a></p>
+<h3 id="async-drop은-없다"><a class="header" href="#async-drop은-없다">Async Drop은 없다</a></h3>
+<p>Rust의 <code>Drop</code> 트레잇은 동기적이므로 <code>drop()</code> 안에서는 <strong><code>.await</code>를 사용할 수 없습니다</strong>. 이것은 자주 혼동되는 지점입니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DbConnection { /* ... */ }
+
+impl Drop for DbConnection {
+    fn drop(&amp;mut self) {
+        // ❌ 이렇게는 못 한다 — drop()은 동기 함수다!
+        // self.connection.shutdown().await;
+
+        // ✅ 우회책 1: 정리 태스크를 spawn한다 (fire-and-forget)
+        let conn = self.connection.take();
+        tokio::spawn(async move {
+            let _ = conn.shutdown().await;
+        });
+
+        // ✅ 우회책 2: 동기 close를 사용한다
+        // self.connection.blocking_close();
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>권장 사항</strong>: 명시적인 <code>async fn close(self)</code> 메서드를 제공하고, 호출자가 그것을 사용해야 한다고 문서화하세요. <code>Drop</code>은 기본 정리 경로가 아니라 최후의 안전망으로만 두는 편이 좋습니다.</p>
+<p><a id="select-fairness-and-starvation"></a></p>
+<h3 id="select의-공정성과-기아"><a class="header" href="#select의-공정성과-기아"><code>select!</code>의 공정성과 기아</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tokio::sync::mpsc;
+
+// ❌ 불공정: busy_stream이 항상 이기고, slow_stream은 굶주린다
+async fn unfair(mut fast: mpsc::Receiver&lt;i32&gt;, mut slow: mpsc::Receiver&lt;i32&gt;) {
+    loop {
+        tokio::select! {
+            Some(v) = fast.recv() =&gt; println!("fast: {v}"),
+            Some(v) = slow.recv() =&gt; println!("slow: {v}"),
+            // 둘 다 준비되어 있으면 tokio가 무작위로 하나를 고른다.
+            // 하지만 `fast`가 항상 준비되어 있으면 `slow`는 거의 poll되지 않는다.
+        }
+    }
+}
+
+// ✅ 공정: biased select를 쓰거나 배치로 비운다
+async fn fair(mut fast: mpsc::Receiver&lt;i32&gt;, mut slow: mpsc::Receiver&lt;i32&gt;) {
+    loop {
+        tokio::select! {
+            biased; // 항상 순서대로 검사 — 우선순위를 명시한다
+
+            Some(v) = slow.recv() =&gt; println!("slow: {v}"),  // 우선순위!
+            Some(v) = fast.recv() =&gt; println!("fast: {v}"),
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><a id="accidental-sequential-execution"></a></p>
+<h3 id="의도치-않은-순차-실행"><a class="header" href="#의도치-않은-순차-실행">의도치 않은 순차 실행</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ❌ 순차 실행: 총 2초 걸린다
+async fn slow() {
+    let a = fetch("url_a").await; // 1초
+    let b = fetch("url_b").await; // 1초 (a가 끝날 때까지 기다린다!)
+}
+
+// ✅ 동시 실행: 총 1초 걸린다
+async fn fast() {
+    let (a, b) = tokio::join!(
+        fetch("url_a"), // 둘 다 즉시 시작한다
+        fetch("url_b"),
+    );
+}
+
+// ✅ 이것도 동시 실행: let + join 사용
+async fn also_fast() {
+    let fut_a = fetch("url_a"); // future 생성 (lazy — 아직 시작되지 않음)
+    let fut_b = fetch("url_b"); // future 생성
+    let (a, b) = tokio::join!(fut_a, fut_b); // 이제 둘 다 동시에 실행된다
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p><strong>함정</strong>: <code>let a = fetch(url).await; let b = fetch(url).await;</code>는 순차 실행입니다.
+두 번째 <code>.await</code>는 첫 번째가 끝난 뒤에야 시작됩니다. 동시성이 필요하면 <code>join!</code>이나 <code>spawn</code>을 사용하세요.</p>
+</blockquote>
+<p><a id="case-study-debugging-a-hung-production-service"></a></p>
+<h2 id="사례-연구-멈춰-버린-프로덕션-서비스-디버깅"><a class="header" href="#사례-연구-멈춰-버린-프로덕션-서비스-디버깅">사례 연구: 멈춰 버린 프로덕션 서비스 디버깅</a></h2>
+<p>실제 운영에서 흔한 시나리오를 보겠습니다. 서비스가 10분 동안은 요청을 잘 처리하다가, 그 뒤로는 응답을 멈춥니다. 로그에 에러는 없고 CPU 사용률은 0%입니다.</p>
+<p><strong>진단 단계:</strong></p>
+<ol>
+<li><strong><code>tokio-console</code> 연결</strong> — <code>Pending</code> 상태에 멈춘 태스크 200개 이상이 보입니다</li>
+<li><strong>태스크 상세 확인</strong> — 모두 같은 <code>Mutex::lock().await</code>를 기다리고 있습니다</li>
+<li><strong>근본 원인</strong> — 한 태스크가 <code>std::sync::MutexGuard</code>를 <code>.await</code> 너머까지 들고 있다가 panic을 내며 mutex를 poison 상태로 만들었습니다. 그 뒤 다른 태스크들은 모두 <code>lock().unwrap()</code>에서 실패합니다</li>
+</ol>
+<p><strong>수정 내용:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>이전 (문제 있음)</th><th>이후 (수정됨)</th></tr>
+</thead>
+<tbody>
+<tr><td><code>std::sync::Mutex</code></td><td><code>tokio::sync::Mutex</code></td></tr>
+<tr><td><code>.lock().unwrap()</code>을 <code>.await</code> 너머까지 유지</td><td><code>.await</code> 전에 lock 스코프 종료</td></tr>
+<tr><td>lock 획득 타임아웃 없음</td><td><code>tokio::time::timeout(dur, mutex.lock())</code></td></tr>
+<tr><td>poison 상태 복구 없음</td><td><code>tokio::sync::Mutex</code>는 poison되지 않음</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>예방 체크리스트:</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Guard가 어떤 <code>.await</code>라도 넘는다면 <code>tokio::sync::Mutex</code>를 사용한다</li>
+<li><input disabled="" type="checkbox"> async 함수에 <code>#[tracing::instrument]</code>를 붙여 span 추적을 남긴다</li>
+<li><input disabled="" type="checkbox"> staging 환경에서 <code>tokio-console</code>을 돌려 멈춘 태스크를 일찍 잡는다</li>
+<li><input disabled="" type="checkbox"> 태스크 응답성을 확인하는 헬스 체크 엔드포인트를 추가한다</li>
+</ul>
+<details>
+<summary><strong>🏋️ 연습문제: 버그 찾기</strong> (클릭하여 펼치기)</summary>
+<p><strong>도전 과제</strong>: 아래 코드에 있는 async 함정들을 모두 찾아 고쳐 보세요.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::Mutex;
+
+async fn process_requests(urls: Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
+    let results = Mutex::new(Vec::new());
+    
+    for url in &amp;urls {
+        let response = reqwest::get(url).await.unwrap().text().await.unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(100)); // 속도 제한
+        let mut guard = results.lock().unwrap();
+        guard.push(response);
+        expensive_parse(&amp;guard).await; // 지금까지의 모든 결과를 파싱
+    }
+    
+    results.into_inner().unwrap()
+}
+<span class="boring">}</span></code></pre>
+<details>
+<summary>해답 (클릭하여 펼치기)</summary>
+<p><strong>찾아낸 문제:</strong></p>
+<ol>
+<li><strong>순차 fetch</strong> — URL을 동시에 가져오지 않고 하나씩 가져옵니다</li>
+<li><strong><code>std::thread::sleep</code></strong> — 실행기 스레드를 막아 버립니다</li>
+<li><strong><code>.await</code>를 넘겨 살아 있는 <code>MutexGuard</code></strong> — <code>expensive_parse</code>를 기다릴 때도 <code>guard</code>가 살아 있습니다</li>
+<li><strong>동시성 부재</strong> — <code>join!</code>이나 <code>FuturesUnordered</code>를 써야 합니다</li>
+</ol>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tokio::sync::Mutex;
+use std::sync::Arc;
+use futures::stream::{self, StreamExt};
+
+async fn process_requests(urls: Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
+    // 해결 4: buffer_unordered로 URL을 동시에 처리한다
+    let results: Vec&lt;String&gt; = stream::iter(urls)
+        .map(|url| async move {
+            let response = reqwest::get(&amp;url).await.unwrap().text().await.unwrap();
+            // 해결 2: std::thread::sleep 대신 tokio::time::sleep 사용
+            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            response
+        })
+        .buffer_unordered(10) // 최대 10개 요청 동시 처리
+        .collect()
+        .await;
+
+    // 해결 3: 먼저 모은 뒤 파싱 — 아예 mutex가 필요 없다!
+    for result in &amp;results {
+        expensive_parse(result).await;
+    }
+
+    results
+}
+<span class="boring">}</span></code></pre>
+<p><strong>핵심 포인트</strong>: async 코드는 구조를 조금만 바꿔도 mutex를 아예 없앨 수 있는 경우가 많습니다. stream이나 <code>join</code>으로 결과를 모은 뒤 처리하세요. 더 단순하고, 더 빠르며, 데드락 위험도 없습니다.</p>
+</details>
+</details>
+<hr>
+<p><a id="debugging-async-code"></a></p>
+<h3 id="async-코드-디버깅"><a class="header" href="#async-코드-디버깅">Async 코드 디버깅</a></h3>
+<p>Async 스택 트레이스는 악명이 높을 정도로 난해합니다. 논리적인 호출 체인 대신 실행기의 poll 루프가 보이기 때문입니다. 아래는 가장 중요한 디버깅 도구들입니다.</p>
+<p><a id="tokio-console-real-time-task-inspector"></a></p>
+<h4 id="tokio-console-실시간-태스크-검사기"><a class="header" href="#tokio-console-실시간-태스크-검사기"><code>tokio-console</code>: 실시간 태스크 검사기</a></h4>
+<p><a href="https://github.com/tokio-rs/console"><code>tokio-console</code></a>은 <code>htop</code> 같은 화면으로 모든 spawned task를 보여 줍니다. 각 태스크의 상태, poll 시간, waker 활동, 자원 사용량까지 확인할 수 있습니다.</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+console-subscriber = "0.4"
+tokio = { version = "1", features = ["full", "tracing"] }
+</code></pre>
+<pre class="playground"><code class="language-rust">#[tokio::main]
+async fn main() {
+    console_subscriber::init(); // 기본 tracing subscriber를 대체한다
+    // ... 애플리케이션 나머지 부분
+}</code></pre>
+<p>다른 터미널에서 실행:</p>
+<pre><code class="language-bash">$ RUSTFLAGS="--cfg tokio_unstable" cargo run   # 필요한 컴파일 타임 플래그
+$ tokio-console                                # 127.0.0.1:6669로 연결
+</code></pre>
+<p><a id="tracing--instrument-structured-logging-for-async"></a></p>
+<h4 id="tracing--instrument-async용-구조화-로깅"><a class="header" href="#tracing--instrument-async용-구조화-로깅"><code>tracing</code> + <code>#[instrument]</code>: Async용 구조화 로깅</a></h4>
+<p><a href="https://docs.rs/tracing"><code>tracing</code></a> 크레이트는 <code>Future</code>의 생명주기를 이해합니다. span은 <code>.await</code> 지점을 지나도 열린 상태를 유지하므로, OS 스레드가 바뀌어도 논리적인 호출 스택을 따라갈 수 있습니다:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tracing::{info, instrument};
+
+#[instrument(skip(db_pool), fields(user_id = %user_id))]
+async fn handle_request(user_id: u64, db_pool: &amp;Pool) -&gt; Result&lt;Response&gt; {
+    info!("looking up user");
+    let user = db_pool.get_user(user_id).await?;  // span은 .await를 지나도 열린 채로 유지된다
+    info!(email = %user.email, "found user");
+    let orders = fetch_orders(user_id).await?;     // 여전히 같은 span 안이다
+    Ok(build_response(user, orders))
+}
+<span class="boring">}</span></code></pre>
+<p>출력 예시 (<code>tracing_subscriber::fmt::json()</code> 사용):</p>
+<pre><code class="language-json">{"timestamp":"...","level":"INFO","span":{"name":"handle_request","user_id":"42"},"message":"looking up user"}
+{"timestamp":"...","level":"INFO","span":{"name":"handle_request","user_id":"42"},"fields":{"email":"a@b.com"},"message":"found user"}
+</code></pre>
+<p><a id="debugging-checklist"></a></p>
+<h4 id="디버깅-체크리스트"><a class="header" href="#디버깅-체크리스트">디버깅 체크리스트</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>증상</th><th>가능한 원인</th><th>도구</th></tr>
+</thead>
+<tbody>
+<tr><td>태스크가 영원히 멈춤</td><td><code>.await</code> 누락 또는 <code>Mutex</code> 데드락</td><td><code>tokio-console</code> 태스크 뷰</td></tr>
+<tr><td>처리량이 낮음</td><td>async 스레드에서 블로킹 호출</td><td><code>tokio-console</code> poll 시간 히스토그램</td></tr>
+<tr><td><code>Future is not Send</code></td><td><code>.await</code> 너머에 <code>!Send</code> 타입 보관</td><td>컴파일러 에러 + 위치 파악용 <code>#[instrument]</code></td></tr>
+<tr><td>원인 모를 취소</td><td>부모 <code>select!</code>가 한 브랜치를 drop</td><td><code>tracing</code> span 생명주기 이벤트</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>팁</strong>: <code>tokio-console</code>에서 태스크 수준 메트릭을 보려면 <code>RUSTFLAGS="--cfg tokio_unstable"</code>를 켜세요.
+이것은 런타임 플래그가 아니라 컴파일 타임 플래그입니다.</p>
+</blockquote>
+<p><a id="testing-async-code"></a></p>
+<h3 id="async-코드-테스트"><a class="header" href="#async-코드-테스트">Async 코드 테스트</a></h3>
+<p>Async 코드는 테스트에서도 고유한 과제를 만듭니다. 런타임이 필요하고, 시간을 제어해야 하며, 동시 동작을 검증할 전략도 필요합니다.</p>
+<p><strong>기본 async 테스트</strong> (<code>#[tokio::test]</code> 사용):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Cargo.toml
+// [dev-dependencies]
+// tokio = { version = "1", features = ["full", "test-util"] }
+
+#[tokio::test]
+async fn test_basic_async() {
+    let result = fetch_data().await;
+    assert_eq!(result, "expected");
+}
+
+// 단일 스레드 테스트 (!Send 타입에 유용)
+#[tokio::test(flavor = "current_thread")]
+async fn test_single_threaded() {
+    let rc = std::rc::Rc::new(42);
+    let val = async { *rc }.await;
+    assert_eq!(val, 42);
+}
+
+// 워커 수를 명시한 멀티스레드 테스트
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_concurrent_behavior() {
+    // 실제 동시성으로 경쟁 조건을 시험한다
+    let counter = std::sync::Arc::new(std::sync::atomic::AtomicU32::new(0));
+    let c1 = counter.clone();
+    let c2 = counter.clone();
+    let (a, b) = tokio::join!(
+        tokio::spawn(async move { c1.fetch_add(1, std::sync::atomic::Ordering::SeqCst) }),
+        tokio::spawn(async move { c2.fetch_add(1, std::sync::atomic::Ordering::SeqCst) }),
+    );
+    a.unwrap();
+    b.unwrap();
+    assert_eq!(counter.load(std::sync::atomic::Ordering::SeqCst), 2);
+}
+<span class="boring">}</span></code></pre>
+<p><strong>시간 조작</strong> — 실제로 기다리지 않고 타임아웃 테스트하기:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tokio::time::{self, Duration, Instant};
+
+#[tokio::test]
+async fn test_timeout_behavior() {
+    // 시간을 멈춘다 — sleep()은 즉시 진행되며 실제 벽시계 시간은 흐르지 않는다
+    time::pause();
+
+    let start = Instant::now();
+    time::sleep(Duration::from_secs(3600)).await; // 1시간 "기다리지만" 실제로는 0ms
+    assert!(start.elapsed() &gt;= Duration::from_secs(3600));
+    // 테스트는 1시간이 아니라 밀리초 단위로 끝난다!
+}
+
+#[tokio::test]
+async fn test_retry_timing() {
+    time::pause();
+
+    // retry 로직이 예상한 시간만큼 기다리는지 확인한다
+    let start = Instant::now();
+    let result = retry_with_backoff(|| async {
+        Err::&lt;(), _&gt;("simulated failure")
+    }, 3, Duration::from_secs(1))
+    .await;
+
+    assert!(result.is_err());
+    // 1s + 2s + 4s = 7초의 백오프 (지수 증가)
+    assert!(start.elapsed() &gt;= Duration::from_secs(7));
+}
+
+#[tokio::test]
+async fn test_deadline_exceeded() {
+    time::pause();
+
+    let result = tokio::time::timeout(
+        Duration::from_secs(5),
+        async {
+            // 느린 작업을 흉내 낸다
+            time::sleep(Duration::from_secs(10)).await;
+            "done"
+        }
+    ).await;
+
+    assert!(result.is_err()); // 타임아웃 발생
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Async 의존성 모킹</strong> — 트레잇 객체나 제네릭을 사용하기:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 의존성을 위한 트레잇 정의:
+trait Storage {
+    async fn get(&amp;self, key: &amp;str) -&gt; Option&lt;String&gt;;
+    async fn set(&amp;self, key: &amp;str, value: String);
+}
+
+// 프로덕션 구현:
+struct RedisStorage { /* ... */ }
+impl Storage for RedisStorage {
+    async fn get(&amp;self, key: &amp;str) -&gt; Option&lt;String&gt; {
+        // 실제 Redis 호출
+        todo!()
+    }
+    async fn set(&amp;self, key: &amp;str, value: String) {
+        todo!()
+    }
+}
+
+// 테스트용 mock:
+struct MockStorage {
+    data: std::sync::Mutex&lt;std::collections::HashMap&lt;String, String&gt;&gt;,
+}
+
+impl MockStorage {
+    fn new() -&gt; Self {
+        MockStorage { data: std::sync::Mutex::new(std::collections::HashMap::new()) }
+    }
+}
+
+impl Storage for MockStorage {
+    async fn get(&amp;self, key: &amp;str) -&gt; Option&lt;String&gt; {
+        self.data.lock().unwrap().get(key).cloned()
+    }
+    async fn set(&amp;self, key: &amp;str, value: String) {
+        self.data.lock().unwrap().insert(key.to_string(), value);
+    }
+}
+
+// 테스트 대상 함수는 Storage에 대해 제네릭하다:
+async fn cache_lookup&lt;S: Storage&gt;(store: &amp;S, key: &amp;str) -&gt; String {
+    match store.get(key).await {
+        Some(val) =&gt; val,
+        None =&gt; {
+            let val = "computed".to_string();
+            store.set(key, val.clone()).await;
+            val
+        }
+    }
+}
+
+#[tokio::test]
+async fn test_cache_miss_then_hit() {
+    let mock = MockStorage::new();
+
+    // 첫 호출: miss → 계산 후 저장
+    let val = cache_lookup(&amp;mock, "key1").await;
+    assert_eq!(val, "computed");
+
+    // 두 번째 호출: hit → 저장된 값 반환
+    let val = cache_lookup(&amp;mock, "key1").await;
+    assert_eq!(val, "computed");
+    assert!(mock.data.lock().unwrap().contains_key("key1"));
+}
+<span class="boring">}</span></code></pre>
+<p><strong>채널과 태스크 통신 테스트</strong>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[tokio::test]
+async fn test_producer_consumer() {
+    let (tx, mut rx) = tokio::sync::mpsc::channel(10);
+
+    tokio::spawn(async move {
+        for i in 0..5 {
+            tx.send(i).await.unwrap();
+        }
+        // 여기서 tx가 drop되며 채널이 닫힌다
+    });
+
+    let mut received = Vec::new();
+    while let Some(val) = rx.recv().await {
+        received.push(val);
+    }
+
+    assert_eq!(received, vec![0, 1, 2, 3, 4]);
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>테스트 패턴</th><th>언제 쓰나</th><th>핵심 도구</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#[tokio::test]</code></td><td>모든 async 테스트</td><td><code>tokio = { features = ["macros", "rt"] }</code></td></tr>
+<tr><td><code>time::pause()</code></td><td>타임아웃, 재시도, 주기 작업 테스트</td><td><code>tokio::time::pause()</code></td></tr>
+<tr><td>트레잇 모킹</td><td>I/O 없이 비즈니스 로직 테스트</td><td>제네릭 <code>&lt;S: Storage&gt;</code></td></tr>
+<tr><td><code>current_thread</code> flavor</td><td><code>!Send</code> 타입 또는 결정적 스케줄링 테스트</td><td><code>#[tokio::test(flavor = "current_thread")]</code></td></tr>
+<tr><td><code>multi_thread</code> flavor</td><td>경쟁 조건 테스트</td><td><code>#[tokio::test(flavor = "multi_thread")]</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>핵심 정리 — 흔한 함정</strong></p>
+<ul>
+<li>실행기를 블로킹하지 마세요. CPU/동기 작업에는 <code>spawn_blocking</code>을 사용하세요</li>
+<li><code>MutexGuard</code>를 <code>.await</code> 너머까지 들고 가지 마세요. lock 범위를 좁히거나 <code>tokio::sync::Mutex</code>를 사용하세요</li>
+<li>취소는 future를 즉시 drop합니다. 부분 완료 작업에는 cancel-safe 패턴을 사용하세요</li>
+<li>async 코드를 디버깅할 때는 <code>tokio-console</code>과 <code>#[tracing::instrument]</code>가 강력합니다</li>
+<li>async 코드는 <code>#[tokio::test]</code>와 <code>time::pause()</code>로 결정적으로 테스트할 수 있습니다</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>함께 보기:</strong> 동기화 프리미티브는 <a href="ch08-tokio-deep-dive.html">8장 — Tokio 심화</a>, graceful shutdown과 구조적 동시성은 <a href="ch13-production-patterns.html">13장 — 프로덕션 패턴</a>에서 이어서 다룹니다</p>
+</blockquote>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch11-streams-and-asynciterator.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch13-production-patterns.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch11-streams-and-asynciterator.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch13-production-patterns.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

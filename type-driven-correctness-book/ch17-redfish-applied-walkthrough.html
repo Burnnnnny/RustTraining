@@ -1,0 +1,1277 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>13. 적용형 워크스루 — 타입 안전한 Redfish 클라이언트 - Rust의 타입 주도 정확성</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-d7038b1f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-020eda16.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust의 타입 주도 정확성</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="redfish-applied-walkthrough"></a></p>
+<h1 id="적용형-워크스루--타입-안전한-redfish-클라이언트-"><a class="header" href="#적용형-워크스루--타입-안전한-redfish-클라이언트-">적용형 워크스루 — 타입 안전한 Redfish 클라이언트 🟡</a></h1>
+<blockquote>
+<p><strong>배울 내용:</strong> 타입 상태 세션, capability token, 팬텀 타입 리소스 탐색, 차원 분석, 검증된 경계, 빌더 타입 상태, 단일 사용 타입을 조합해 오버헤드 없는 완전한 Redfish 클라이언트를 만드는 방법 — 모든 프로토콜 위반은 컴파일 에러입니다.</p>
+<p><strong>교차 참조:</strong> <a href="ch02-typed-command-interfaces-request-determi.html">ch02</a> (typed commands), <a href="ch03-single-use-types-cryptographic-guarantee.html">ch03</a> (single-use types), <a href="ch04-capability-tokens-zero-cost-proof-of-aut.html">ch04</a> (capability tokens), <a href="ch05-protocol-state-machines-type-state-for-r.html">ch05</a> (type-state), <a href="ch06-dimensional-analysis-making-the-compiler.html">ch06</a> (dimensional types), <a href="ch07-validated-boundaries-parse-dont-validate.html">ch07</a> (validated boundaries), <a href="ch09-phantom-types-for-resource-tracking.html">ch09</a> (phantom types), <a href="ch10-putting-it-all-together-a-complete-diagn.html">ch10</a> (IPMI integration), <a href="ch11-fourteen-tricks-from-the-trenches.html">ch11</a> (trick 4 — builder type-state)</p>
+</blockquote>
+<p><a id="why-redfish-deserves-its-own-chapter"></a></p>
+<h2 id="redfish에-왜-독립-장이-필요한가"><a class="header" href="#redfish에-왜-독립-장이-필요한가">Redfish에 왜 독립 장이 필요한가</a></h2>
+<p>10장은 IPMI — 바이트 수준 프로토콜 — 를 중심으로 핵심 패턴을 조합합니다. 하지만
+대부분의 BMC 플랫폼은 이제 IPMI와 함께(또는 대신) <strong>Redfish</strong> REST API를 노출하고,
+Redfish는 그만의 정확성 위험 범주를 만듭니다:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>위험</th><th>예</th><th>결과</th></tr>
+</thead>
+<tbody>
+<tr><td>잘못된 URI</td><td><code>GET /redfish/v1/Chassis/1/Processors</code> (부모 잘못됨)</td><td>404 또는 잘못된 데이터가 조용히 반환</td></tr>
+<tr><td>잘못된 전원 상태에서 동작</td><td>이미 꺼진 시스템에 <code>Reset(ForceOff)</code></td><td>BMC가 에러 반환 또는 더 나쁘게 다른 연산과 경합</td></tr>
+<tr><td>권한 부족</td><td>운영자 수준 코드가 <code>Manager.ResetToDefaults</code> 호출</td><td>프로덕션 403, 보안 감사 이슈</td></tr>
+<tr><td>불완전한 PATCH</td><td>PATCH 본문에서 필수 BIOS 속성 누락</td><td>조용한 무동작 또는 부분 설정 손상</td></tr>
+<tr><td>검증 없는 펌웨어 적용</td><td>이미지 무결성 검사 전 <code>SimpleUpdate</code> 호출</td><td>BMC 벽돌</td></tr>
+<tr><td>스키마 버전 불일치</td><td>v1.5 BMC에서 <code>LastResetTime</code> 접근(v1.13에 추가)</td><td><code>null</code> 필드 → 런타임 패닉</td></tr>
+<tr><td>텔레메트리 단위 혼동</td><td>입구 온도(°C)와 전력(W) 비교</td><td>무의미한 임계 결정</td></tr>
+</tbody>
+</table>
+</div>
+<p>C, Python, 타입 없는 Rust에서는 이 모두가 규율과 테스트로만 막습니다. 이 장에서는 <strong>컴파일 에러</strong>로 만듭니다.</p>
+<p><a id="the-untyped-redfish-client"></a></p>
+<h2 id="타입-없는-redfish-클라이언트"><a class="header" href="#타입-없는-redfish-클라이언트">타입 없는 Redfish 클라이언트</a></h2>
+<p>전형적인 Redfish 클라이언트는 이렇게 생깁니다:</p>
+<pre><code class="language-rust ignore">use std::collections::HashMap;
+
+struct RedfishClient {
+    base_url: String,
+    token: Option&lt;String&gt;,
+}
+
+impl RedfishClient {
+    fn get(&amp;self, path: &amp;str) -&gt; Result&lt;serde_json::Value, String&gt; {
+        // ... HTTP GET ...
+        Ok(serde_json::json!({})) // stub
+    }
+
+    fn patch(&amp;self, path: &amp;str, body: &amp;serde_json::Value) -&gt; Result&lt;(), String&gt; {
+        // ... HTTP PATCH ...
+        Ok(()) // stub
+    }
+
+    fn post_action(&amp;self, path: &amp;str, body: &amp;serde_json::Value) -&gt; Result&lt;(), String&gt; {
+        // ... HTTP POST ...
+        Ok(()) // stub
+    }
+}
+
+fn check_thermal(client: &amp;RedfishClient) -&gt; Result&lt;(), String&gt; {
+    let resp = client.get("/redfish/v1/Chassis/1/Thermal")?;
+
+    // 🐛 이 필드가 항상 있나? BMC가 null을 반환하면?
+    let cpu_temp = resp["Temperatures"][0]["ReadingCelsius"]
+        .as_f64().unwrap();
+
+    let fan_rpm = resp["Fans"][0]["Reading"]
+        .as_f64().unwrap();
+
+    // 🐛 °C와 RPM 비교 — 둘 다 f64
+    if cpu_temp &gt; fan_rpm {
+        println!("thermal issue");
+    }
+
+    // 🐛 경로가 맞나? 컴파일 타임 검사 없음.
+    client.post_action(
+        "/redfish/v1/Systems/1/Actions/ComputerSystem.Reset",
+        &amp;serde_json::json!({"ResetType": "ForceOff"})
+    )?;
+
+    Ok(())
+}</code></pre>
+<p>이 코드는 “동작“합니다 — 언젠가는 깨질 때까지. 모든 <code>unwrap()</code>은 잠재적 패닉이고,
+문자열 경로는 모두 검증되지 않은 가정이며, 단위 혼동은 눈에 보이지 않습니다.</p>
+<hr>
+<p><a id="section-1-session-lifecycle"></a></p>
+<h2 id="1절--세션-수명-주기-type-state-ch05"><a class="header" href="#1절--세션-수명-주기-type-state-ch05">1절 — 세션 수명 주기 (Type-State, ch05)</a></h2>
+<p>Redfish 세션은 엄격한 수명이 있습니다: 연결 → 인증 → 사용 → 종료.
+각 상태를 서로 다른 타입으로 인코딩합니다.</p>
+<pre class="mermaid">stateDiagram-v2
+    [*] --&gt; Disconnected
+    Disconnected --&gt; Connected : connect(host)
+    Connected --&gt; Authenticated : login(user, pass)
+    Authenticated --&gt; Authenticated : get() / patch() / post_action()
+    Authenticated --&gt; Closed : logout()
+    Closed --&gt; [*]
+
+    note right of Authenticated : API 호출은 여기서만
+    note right of Connected : get() → 컴파일 에러
+</pre>
+
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// ──── 세션 상태 ────
+
+pub struct Disconnected;
+pub struct Connected;
+pub struct Authenticated;
+
+pub struct RedfishSession&lt;S&gt; {
+    base_url: String,
+    auth_token: Option&lt;String&gt;,
+    _state: PhantomData&lt;S&gt;,
+}
+
+impl RedfishSession&lt;Disconnected&gt; {
+    pub fn new(host: &amp;str) -&gt; Self {
+        RedfishSession {
+            base_url: format!("https://{}", host),
+            auth_token: None,
+            _state: PhantomData,
+        }
+    }
+
+    /// 전이: Disconnected → Connected.
+    /// 서비스 루트에 도달 가능한지 검증.
+    pub fn connect(self) -&gt; Result&lt;RedfishSession&lt;Connected&gt;, RedfishError&gt; {
+        // GET /redfish/v1 — verify service root
+        println!("Connecting to {}/redfish/v1", self.base_url);
+        Ok(RedfishSession {
+            base_url: self.base_url,
+            auth_token: None,
+            _state: PhantomData,
+        })
+    }
+}
+
+impl RedfishSession&lt;Connected&gt; {
+    /// 전이: Connected → Authenticated.
+    /// POST /redfish/v1/SessionService/Sessions로 세션 생성.
+    pub fn login(
+        self,
+        user: &amp;str,
+        _pass: &amp;str,
+    ) -&gt; Result&lt;(RedfishSession&lt;Authenticated&gt;, LoginToken), RedfishError&gt; {
+        // POST /redfish/v1/SessionService/Sessions
+        println!("Authenticated as {}", user);
+        let token = "X-Auth-Token-abc123".to_string();
+        Ok((
+            RedfishSession {
+                base_url: self.base_url,
+                auth_token: Some(token),
+                _state: PhantomData,
+            },
+            LoginToken { _private: () },
+        ))
+    }
+}
+
+impl RedfishSession&lt;Authenticated&gt; {
+    /// Authenticated 세션에서만 사용 가능.
+    fn http_get(&amp;self, path: &amp;str) -&gt; Result&lt;serde_json::Value, RedfishError&gt; {
+        let _url = format!("{}{}", self.base_url, path);
+        // ... HTTP GET with auth_token header ...
+        Ok(serde_json::json!({})) // stub
+    }
+
+    fn http_patch(
+        &amp;self,
+        path: &amp;str,
+        body: &amp;serde_json::Value,
+    ) -&gt; Result&lt;serde_json::Value, RedfishError&gt; {
+        let _url = format!("{}{}", self.base_url, path);
+        let _ = body;
+        Ok(serde_json::json!({})) // stub
+    }
+
+    fn http_post(
+        &amp;self,
+        path: &amp;str,
+        body: &amp;serde_json::Value,
+    ) -&gt; Result&lt;serde_json::Value, RedfishError&gt; {
+        let _url = format!("{}{}", self.base_url, path);
+        let _ = body;
+        Ok(serde_json::json!({})) // stub
+    }
+
+    /// 전이: Authenticated → Closed (세션 소비).
+    pub fn logout(self) {
+        // DELETE /redfish/v1/SessionService/Sessions/{id}
+        println!("Session closed");
+        // self 소비 — 로그아웃 후 세션 사용 불가
+    }
+}
+
+// Authenticated가 아닌 세션에서 http_get 호출 시도:
+//
+//   let session = RedfishSession::new("bmc01").connect()?;
+//   session.http_get("/redfish/v1/Systems");
+//   ❌ ERROR: method `http_get` not found for `RedfishSession&lt;Connected&gt;`
+
+#[derive(Debug)]
+pub enum RedfishError {
+    ConnectionFailed(String),
+    AuthenticationFailed(String),
+    HttpError { status: u16, message: String },
+    ValidationError(String),
+}
+
+impl std::fmt::Display for RedfishError {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        match self {
+            Self::ConnectionFailed(msg) =&gt; write!(f, "connection failed: {msg}"),
+            Self::AuthenticationFailed(msg) =&gt; write!(f, "auth failed: {msg}"),
+            Self::HttpError { status, message } =&gt;
+                write!(f, "HTTP {status}: {message}"),
+            Self::ValidationError(msg) =&gt; write!(f, "validation: {msg}"),
+        }
+    }
+}</code></pre>
+<p><strong>제거된 버그 클래스:</strong> 연결 끊김 또는 미인증 세션으로 요청을 보내는 경우. 메서드 자체가 존재하지 않습니다 — 잊을 런타임 검사도 없습니다.</p>
+<hr>
+<p><a id="section-2-privilege-tokens"></a></p>
+<h2 id="2절--권한-토큰-capability-tokens-ch04"><a class="header" href="#2절--권한-토큰-capability-tokens-ch04">2절 — 권한 토큰 (Capability Tokens, ch04)</a></h2>
+<p>Redfish는 네 가지 권한 수준을 정의합니다: <code>Login</code>, <code>ConfigureComponents</code>,
+<code>ConfigureManager</code>, <code>ConfigureSelf</code>. 런타임에 권한을 검사하기보다
+제로 크기 증명 토큰으로 인코딩합니다.</p>
+<pre><code class="language-rust ignore">// ──── 권한 토큰 (제로 크기) ────
+
+/// 호출자가 Login 권한을 가짐을 증명.
+/// 성공한 로그인에서만 반환 — 얻을 수 있는 유일한 방법.
+pub struct LoginToken { _private: () }
+
+/// 호출자가 ConfigureComponents 권한을 가짐을 증명.
+/// 관리자 수준 인증으로만 획득 가능.
+pub struct ConfigureComponentsToken { _private: () }
+
+/// 호출자가 ConfigureManager 권한을 가짐을 증명(펌웨어 업데이트 등).
+pub struct ConfigureManagerToken { _private: () }
+
+// 역할에 따라 로그인이 권한 토큰을 반환하도록 확장:
+
+impl RedfishSession&lt;Connected&gt; {
+    /// 관리자 로그인 — 모든 권한 토큰 반환.
+    pub fn login_admin(
+        self,
+        user: &amp;str,
+        pass: &amp;str,
+    ) -&gt; Result&lt;(
+        RedfishSession&lt;Authenticated&gt;,
+        LoginToken,
+        ConfigureComponentsToken,
+        ConfigureManagerToken,
+    ), RedfishError&gt; {
+        let (session, login_tok) = self.login(user, pass)?;
+        Ok((
+            session,
+            login_tok,
+            ConfigureComponentsToken { _private: () },
+            ConfigureManagerToken { _private: () },
+        ))
+    }
+
+    /// 운영자 로그인 — Login + ConfigureComponents만 반환.
+    pub fn login_operator(
+        self,
+        user: &amp;str,
+        pass: &amp;str,
+    ) -&gt; Result&lt;(
+        RedfishSession&lt;Authenticated&gt;,
+        LoginToken,
+        ConfigureComponentsToken,
+    ), RedfishError&gt; {
+        let (session, login_tok) = self.login(user, pass)?;
+        Ok((
+            session,
+            login_tok,
+            ConfigureComponentsToken { _private: () },
+        ))
+    }
+
+    /// 읽기 전용 로그인 — Login 토큰만 반환.
+    pub fn login_readonly(
+        self,
+        user: &amp;str,
+        pass: &amp;str,
+    ) -&gt; Result&lt;(RedfishSession&lt;Authenticated&gt;, LoginToken), RedfishError&gt; {
+        self.login(user, pass)
+    }
+}</code></pre>
+<p>이제 권한 요구가 함수 시그니처의 일부입니다:</p>
+<pre><code class="language-rust ignore"><span class="boring">use std::marker::PhantomData;
+</span><span class="boring">pub struct Authenticated;
+</span><span class="boring">pub struct RedfishSession&lt;S&gt; { base_url: String, auth_token: Option&lt;String&gt;, _state: PhantomData&lt;S&gt; }
+</span><span class="boring">pub struct LoginToken { _private: () }
+</span><span class="boring">pub struct ConfigureComponentsToken { _private: () }
+</span><span class="boring">pub struct ConfigureManagerToken { _private: () }
+</span><span class="boring">#[derive(Debug)] pub enum RedfishError { HttpError { status: u16, message: String } }
+</span>
+/// Login이 있으면 누구나 온열 데이터 읽기 가능.
+fn get_thermal(
+    session: &amp;RedfishSession&lt;Authenticated&gt;,
+    _proof: &amp;LoginToken,
+) -&gt; Result&lt;serde_json::Value, RedfishError&gt; {
+    // GET /redfish/v1/Chassis/1/Thermal
+    Ok(serde_json::json!({})) // stub
+}
+
+/// 부팅 순서 변경에는 ConfigureComponents 필요.
+fn set_boot_order(
+    session: &amp;RedfishSession&lt;Authenticated&gt;,
+    _proof: &amp;ConfigureComponentsToken,
+    order: &amp;[&amp;str],
+) -&gt; Result&lt;(), RedfishError&gt; {
+    let _ = order;
+    // PATCH /redfish/v1/Systems/1
+    Ok(())
+}
+
+/// 공장 초기화에는 ConfigureManager 필요.
+fn reset_to_defaults(
+    session: &amp;RedfishSession&lt;Authenticated&gt;,
+    _proof: &amp;ConfigureManagerToken,
+) -&gt; Result&lt;(), RedfishError&gt; {
+    // POST .../Actions/Manager.ResetToDefaults
+    Ok(())
+}
+
+// 운영자 코드가 reset_to_defaults를 호출할 때:
+//
+//   let (session, login, configure) = session.login_operator("op", "pass")?;
+//   reset_to_defaults(&amp;session, &amp;???);
+//   ❌ ERROR: no ConfigureManagerToken available — operator can't do this</code></pre>
+<p><strong>제거된 버그 클래스:</strong> 권한 상승. 운영자 수준 로그인은 물리적으로
+<code>ConfigureManagerToken</code>을 만들 수 없습니다 — 컴파일러가 코드가 그 토큰을 참조하지 못하게 합니다.
+런타임 비용 0: 컴파일된 바이너리에는 이 토큰이 존재하지 않습니다.</p>
+<hr>
+<p><a id="section-3-typed-resource-navigation"></a></p>
+<h2 id="3절--타입이-있는-리소스-탐색-phantom-types-ch09"><a class="header" href="#3절--타입이-있는-리소스-탐색-phantom-types-ch09">3절 — 타입이 있는 리소스 탐색 (Phantom Types, ch09)</a></h2>
+<p>Redfish 리소스는 트리를 이룹니다. 계층을 타입으로 인코딩하면
+잘못된 URI를 만들 수 없습니다:</p>
+<pre class="mermaid">graph TD
+    SR[ServiceRoot] --&gt; Systems
+    SR --&gt; Chassis
+    SR --&gt; Managers
+    SR --&gt; UpdateService
+    Systems --&gt; CS[ComputerSystem]
+    CS --&gt; Processors
+    CS --&gt; Memory
+    CS --&gt; Bios
+    Chassis --&gt; Ch1[Chassis Instance]
+    Ch1 --&gt; Thermal
+    Ch1 --&gt; Power
+    Managers --&gt; Mgr[Manager Instance]
+</pre>
+
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// ──── 리소스 타입 마커 ────
+
+pub struct ServiceRoot;
+pub struct SystemsCollection;
+pub struct ComputerSystem;
+pub struct ChassisCollection;
+pub struct ChassisInstance;
+pub struct ThermalResource;
+pub struct PowerResource;
+pub struct BiosResource;
+pub struct ManagersCollection;
+pub struct ManagerInstance;
+pub struct UpdateServiceResource;
+
+// ──── 타입이 있는 리소스 경로 ────
+
+pub struct RedfishPath&lt;R&gt; {
+    uri: String,
+    _resource: PhantomData&lt;R&gt;,
+}
+
+impl RedfishPath&lt;ServiceRoot&gt; {
+    pub fn root() -&gt; Self {
+        RedfishPath {
+            uri: "/redfish/v1".to_string(),
+            _resource: PhantomData,
+        }
+    }
+
+    pub fn systems(&amp;self) -&gt; RedfishPath&lt;SystemsCollection&gt; {
+        RedfishPath {
+            uri: format!("{}/Systems", self.uri),
+            _resource: PhantomData,
+        }
+    }
+
+    pub fn chassis(&amp;self) -&gt; RedfishPath&lt;ChassisCollection&gt; {
+        RedfishPath {
+            uri: format!("{}/Chassis", self.uri),
+            _resource: PhantomData,
+        }
+    }
+
+    pub fn managers(&amp;self) -&gt; RedfishPath&lt;ManagersCollection&gt; {
+        RedfishPath {
+            uri: format!("{}/Managers", self.uri),
+            _resource: PhantomData,
+        }
+    }
+
+    pub fn update_service(&amp;self) -&gt; RedfishPath&lt;UpdateServiceResource&gt; {
+        RedfishPath {
+            uri: format!("{}/UpdateService", self.uri),
+            _resource: PhantomData,
+        }
+    }
+}
+
+impl RedfishPath&lt;SystemsCollection&gt; {
+    pub fn system(&amp;self, id: &amp;str) -&gt; RedfishPath&lt;ComputerSystem&gt; {
+        RedfishPath {
+            uri: format!("{}/{}", self.uri, id),
+            _resource: PhantomData,
+        }
+    }
+}
+
+impl RedfishPath&lt;ComputerSystem&gt; {
+    pub fn bios(&amp;self) -&gt; RedfishPath&lt;BiosResource&gt; {
+        RedfishPath {
+            uri: format!("{}/Bios", self.uri),
+            _resource: PhantomData,
+        }
+    }
+}
+
+impl RedfishPath&lt;ChassisCollection&gt; {
+    pub fn instance(&amp;self, id: &amp;str) -&gt; RedfishPath&lt;ChassisInstance&gt; {
+        RedfishPath {
+            uri: format!("{}/{}", self.uri, id),
+            _resource: PhantomData,
+        }
+    }
+}
+
+impl RedfishPath&lt;ChassisInstance&gt; {
+    pub fn thermal(&amp;self) -&gt; RedfishPath&lt;ThermalResource&gt; {
+        RedfishPath {
+            uri: format!("{}/Thermal", self.uri),
+            _resource: PhantomData,
+        }
+    }
+
+    pub fn power(&amp;self) -&gt; RedfishPath&lt;PowerResource&gt; {
+        RedfishPath {
+            uri: format!("{}/Power", self.uri),
+            _resource: PhantomData,
+        }
+    }
+}
+
+impl RedfishPath&lt;ManagersCollection&gt; {
+    pub fn manager(&amp;self, id: &amp;str) -&gt; RedfishPath&lt;ManagerInstance&gt; {
+        RedfishPath {
+            uri: format!("{}/{}", self.uri, id),
+            _resource: PhantomData,
+        }
+    }
+}
+
+impl&lt;R&gt; RedfishPath&lt;R&gt; {
+    pub fn uri(&amp;self) -&gt; &amp;str {
+        &amp;self.uri
+    }
+}
+
+// ── 사용 ──
+
+fn build_paths() {
+    let root = RedfishPath::root();
+
+    // ✅ 유효한 탐색
+    let thermal = root.chassis().instance("1").thermal();
+    assert_eq!(thermal.uri(), "/redfish/v1/Chassis/1/Thermal");
+
+    let bios = root.systems().system("1").bios();
+    assert_eq!(bios.uri(), "/redfish/v1/Systems/1/Bios");
+
+    // ❌ 컴파일 에러: ServiceRoot에 .thermal() 없음
+    // root.thermal();
+
+    // ❌ 컴파일 에러: SystemsCollection에 .bios() 없음
+    // root.systems().bios();
+
+    // ❌ 컴파일 에러: ChassisInstance에 .bios() 없음
+    // root.chassis().instance("1").bios();
+}</code></pre>
+<p><strong>제거된 버그 클래스:</strong> 잘못된 URI, 주어진 부모 아래에 없는 자식 리소스로의 탐색. 계층이 구조적으로 강제됩니다 —
+<code>Thermal</code>에는 <code>Chassis → Instance → Thermal</code>로만 도달할 수 있습니다.</p>
+<hr>
+<p><a id="section-4-typed-telemetry-reads"></a></p>
+<h2 id="4절--타입이-있는-텔레메트리-읽기-typed-commands--dimensional-analysis-ch02--ch06"><a class="header" href="#4절--타입이-있는-텔레메트리-읽기-typed-commands--dimensional-analysis-ch02--ch06">4절 — 타입이 있는 텔레메트리 읽기 (Typed Commands + Dimensional Analysis, ch02 + ch06)</a></h2>
+<p>타입이 있는 리소스 경로와 차원이 붙은 반환 타입을 결합해 컴파일러가
+각 측정값의 단위를 알게 합니다:</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// ──── 차원 타입 (ch06) ────
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Celsius(pub f64);
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Rpm(pub u32);
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Watts(pub f64);
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Volts(pub f64);
+
+// ──── 타입이 있는 Redfish GET (ch02 패턴을 REST에 적용) ────
+
+/// Redfish 리소스 타입이 파싱된 응답을 결정.
+pub trait RedfishResource {
+    type Response;
+    fn parse(json: &amp;serde_json::Value) -&gt; Result&lt;Self::Response, RedfishError&gt;;
+}
+
+// ──── 검증된 Thermal 응답 (ch07) ────
+
+#[derive(Debug)]
+pub struct ValidThermalResponse {
+    pub temperatures: Vec&lt;TemperatureReading&gt;,
+    pub fans: Vec&lt;FanReading&gt;,
+}
+
+#[derive(Debug)]
+pub struct TemperatureReading {
+    pub name: String,
+    pub reading: Celsius,           // ← 차원 타입, f64 아님
+    pub upper_critical: Celsius,
+    pub status: HealthStatus,
+}
+
+#[derive(Debug)]
+pub struct FanReading {
+    pub name: String,
+    pub reading: Rpm,               // ← 차원 타입, u32 아님
+    pub status: HealthStatus,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum HealthStatus { Ok, Warning, Critical }
+
+impl RedfishResource for ThermalResource {
+    type Response = ValidThermalResponse;
+
+    fn parse(json: &amp;serde_json::Value) -&gt; Result&lt;ValidThermalResponse, RedfishError&gt; {
+        // 한 번에 파싱·검증 — 경계 검증 (ch07)
+        let temps = json["Temperatures"]
+            .as_array()
+            .ok_or_else(|| RedfishError::ValidationError(
+                "missing Temperatures array".into(),
+            ))?
+            .iter()
+            .map(|t| {
+                Ok(TemperatureReading {
+                    name: t["Name"]
+                        .as_str()
+                        .ok_or_else(|| RedfishError::ValidationError(
+                            "missing Name".into(),
+                        ))?
+                        .to_string(),
+                    reading: Celsius(
+                        t["ReadingCelsius"]
+                            .as_f64()
+                            .ok_or_else(|| RedfishError::ValidationError(
+                                "missing ReadingCelsius".into(),
+                            ))?,
+                    ),
+                    upper_critical: Celsius(
+                        t["UpperThresholdCritical"]
+                            .as_f64()
+                            .unwrap_or(105.0), // 임계값 없을 때 안전한 기본값
+                    ),
+                    status: parse_health(
+                        t["Status"]["Health"]
+                            .as_str()
+                            .unwrap_or("OK"),
+                    ),
+                })
+            })
+            .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()?;
+
+        let fans = json["Fans"]
+            .as_array()
+            .ok_or_else(|| RedfishError::ValidationError(
+                "missing Fans array".into(),
+            ))?
+            .iter()
+            .map(|f| {
+                Ok(FanReading {
+                    name: f["Name"]
+                        .as_str()
+                        .ok_or_else(|| RedfishError::ValidationError(
+                            "missing Name".into(),
+                        ))?
+                        .to_string(),
+                    reading: Rpm(
+                        f["Reading"]
+                            .as_u64()
+                            .ok_or_else(|| RedfishError::ValidationError(
+                                "missing Reading".into(),
+                            ))? as u32,
+                    ),
+                    status: parse_health(
+                        f["Status"]["Health"]
+                            .as_str()
+                            .unwrap_or("OK"),
+                    ),
+                })
+            })
+            .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()?;
+
+        Ok(ValidThermalResponse { temperatures: temps, fans })
+    }
+}
+
+fn parse_health(s: &amp;str) -&gt; HealthStatus {
+    match s {
+        "OK" =&gt; HealthStatus::Ok,
+        "Warning" =&gt; HealthStatus::Warning,
+        _ =&gt; HealthStatus::Critical,
+    }
+}
+
+// ──── Authenticated 세션에서 타입이 있는 GET ────
+
+impl RedfishSession&lt;Authenticated&gt; {
+    pub fn get_resource&lt;R: RedfishResource&gt;(
+        &amp;self,
+        path: &amp;RedfishPath&lt;R&gt;,
+    ) -&gt; Result&lt;R::Response, RedfishError&gt; {
+        let json = self.http_get(path.uri())?;
+        R::parse(&amp;json)
+    }
+}
+
+// ── 사용 ──
+
+fn read_thermal(
+    session: &amp;RedfishSession&lt;Authenticated&gt;,
+    _proof: &amp;LoginToken,
+) -&gt; Result&lt;(), RedfishError&gt; {
+    let path = RedfishPath::root().chassis().instance("1").thermal();
+
+    // 응답 타입 추론: ValidThermalResponse
+    let thermal = session.get_resource(&amp;path)?;
+
+    for t in &amp;thermal.temperatures {
+        // t.reading은 Celsius — Celsius와만 비교 가능
+        if t.reading &gt; t.upper_critical {
+            println!("CRITICAL: {} at {:?}", t.name, t.reading);
+        }
+
+        // ❌ 컴파일 에러: Celsius와 Rpm 비교 불가
+        // if t.reading &gt; thermal.fans[0].reading { }
+
+        // ❌ 컴파일 에러: Celsius와 Watts 비교 불가
+        // if t.reading &gt; Watts(350.0) { }
+    }
+
+    Ok(())
+}</code></pre>
+<p><strong>제거된 버그 클래스:</strong></p>
+<ul>
+<li><strong>단위 혼동:</strong> <code>Celsius</code> ≠ <code>Rpm</code> ≠ <code>Watts</code> — 컴파일러가 비교를 거부합니다.</li>
+<li><strong>필드 누락 패닉:</strong> <code>parse()</code>가 경계에서 검증하고; <code>ValidThermalResponse</code>가
+모든 필드 존재를 보장합니다.</li>
+<li><strong>잘못된 응답 타입:</strong> <code>get_resource(&amp;thermal_path)</code>는 원시 JSON이 아니라 <code>ValidThermalResponse</code>를 반환합니다. 리소스 타입이 컴파일 타임에 응답 타입을 결정합니다.</li>
+</ul>
+<hr>
+<p><a id="section-5-patch-with-builder-type-state"></a></p>
+<h2 id="5절--빌더-타입-상태로-patch-ch11-trick-4"><a class="header" href="#5절--빌더-타입-상태로-patch-ch11-trick-4">5절 — 빌더 타입 상태로 PATCH (ch11, Trick 4)</a></h2>
+<p>Redfish PATCH 페이로드에는 특정 필드가 있어야 합니다. 필수 필드가 설정된 경우에만
+<code>.apply()</code>를 허용하는 빌더는 불완전하거나 빈 PATCH를 막습니다:</p>
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// ──── 필수 필드용 타입 수준 불리언 ────
+
+pub struct FieldUnset;
+pub struct FieldSet;
+
+// ──── BIOS 설정 PATCH 빌더 ────
+
+pub struct BiosPatchBuilder&lt;BootOrder, TpmState&gt; {
+    boot_order: Option&lt;Vec&lt;String&gt;&gt;,
+    tpm_enabled: Option&lt;bool&gt;,
+    _markers: PhantomData&lt;(BootOrder, TpmState)&gt;,
+}
+
+impl BiosPatchBuilder&lt;FieldUnset, FieldUnset&gt; {
+    pub fn new() -&gt; Self {
+        BiosPatchBuilder {
+            boot_order: None,
+            tpm_enabled: None,
+            _markers: PhantomData,
+        }
+    }
+}
+
+impl&lt;T&gt; BiosPatchBuilder&lt;FieldUnset, T&gt; {
+    /// 부팅 순서 설정 — BootOrder 마커를 FieldSet으로 전이.
+    pub fn boot_order(self, order: Vec&lt;String&gt;) -&gt; BiosPatchBuilder&lt;FieldSet, T&gt; {
+        BiosPatchBuilder {
+            boot_order: Some(order),
+            tpm_enabled: self.tpm_enabled,
+            _markers: PhantomData,
+        }
+    }
+}
+
+impl&lt;B&gt; BiosPatchBuilder&lt;B, FieldUnset&gt; {
+    /// TPM 상태 설정 — TpmState 마커를 FieldSet으로 전이.
+    pub fn tpm_enabled(self, enabled: bool) -&gt; BiosPatchBuilder&lt;B, FieldSet&gt; {
+        BiosPatchBuilder {
+            boot_order: self.boot_order,
+            tpm_enabled: Some(enabled),
+            _markers: PhantomData,
+        }
+    }
+}
+
+impl BiosPatchBuilder&lt;FieldSet, FieldSet&gt; {
+    /// 필수 필드가 모두 설정되었을 때만 .apply() 존재.
+    pub fn apply(
+        self,
+        session: &amp;RedfishSession&lt;Authenticated&gt;,
+        _proof: &amp;ConfigureComponentsToken,
+        system: &amp;RedfishPath&lt;ComputerSystem&gt;,
+    ) -&gt; Result&lt;(), RedfishError&gt; {
+        let body = serde_json::json!({
+            "Boot": {
+                "BootOrder": self.boot_order.unwrap(),
+            },
+            "Oem": {
+                "TpmEnabled": self.tpm_enabled.unwrap(),
+            }
+        });
+        session.http_patch(
+            &amp;format!("{}/Bios/Settings", system.uri()),
+            &amp;body,
+        )?;
+        Ok(())
+    }
+}
+
+// ── 사용 ──
+
+fn configure_bios(
+    session: &amp;RedfishSession&lt;Authenticated&gt;,
+    configure: &amp;ConfigureComponentsToken,
+) -&gt; Result&lt;(), RedfishError&gt; {
+    let system = RedfishPath::root().systems().system("1");
+
+    // ✅ 필수 필드 둘 다 설정 — .apply() 사용 가능
+    BiosPatchBuilder::new()
+        .boot_order(vec!["Pxe".into(), "Hdd".into()])
+        .tpm_enabled(true)
+        .apply(session, configure, &amp;system)?;
+
+    // ❌ 컴파일 에러: BiosPatchBuilder&lt;FieldSet, FieldUnset&gt;에 .apply() 없음
+    // BiosPatchBuilder::new()
+    //     .boot_order(vec!["Pxe".into()])
+    //     .apply(session, configure, &amp;system)?;
+
+    // ❌ 컴파일 에러: BiosPatchBuilder&lt;FieldUnset, FieldUnset&gt;에 .apply() 없음
+    // BiosPatchBuilder::new()
+    //     .apply(session, configure, &amp;system)?;
+
+    Ok(())
+}</code></pre>
+<p><strong>제거된 버그 클래스:</strong></p>
+<ul>
+<li><strong>빈 PATCH:</strong> 필수 필드를 모두 설정하지 않으면 <code>.apply()</code> 호출 불가.</li>
+<li><strong>권한 누락:</strong> <code>.apply()</code>는 <code>&amp;ConfigureComponentsToken</code> 필요.</li>
+<li><strong>잘못된 리소스:</strong> 원시 문자열이 아니라 <code>&amp;RedfishPath&lt;ComputerSystem&gt;</code>을 받음.</li>
+</ul>
+<hr>
+<p><a id="section-6-firmware-update-lifecycle"></a></p>
+<h2 id="6절--펌웨어-업데이트-수명-single-use--type-state-ch03--ch05"><a class="header" href="#6절--펌웨어-업데이트-수명-single-use--type-state-ch03--ch05">6절 — 펌웨어 업데이트 수명 (Single-Use + Type-State, ch03 + ch05)</a></h2>
+<p>Redfish <code>UpdateService</code>는 엄격한 순서를 가집니다: 이미지 푸시 → 검증 →
+적용 → 재부팅. 각 단계는 순서대로 정확히 한 번씩 일어나야 합니다.</p>
+<pre class="mermaid">stateDiagram-v2
+    [*] --&gt; Idle
+    Idle --&gt; Uploading : push_image()
+    Uploading --&gt; Uploaded : upload completes
+    Uploaded --&gt; Verified : verify() ✓
+    Uploaded --&gt; Failed : verify() ✗
+    Verified --&gt; Applying : apply() — consumes Verified
+    Applying --&gt; NeedsReboot : apply completes
+    NeedsReboot --&gt; [*] : reboot()
+    Failed --&gt; [*]
+
+    note right of Verified : apply()가 이 상태를 소비 —
+    note right of Verified : 두 번 적용 불가
+</pre>
+
+<pre><code class="language-rust ignore">use std::marker::PhantomData;
+
+// ──── 펌웨어 업데이트 상태 ────
+
+pub struct FwIdle;
+pub struct FwUploaded;
+pub struct FwVerified;
+pub struct FwApplying;
+pub struct FwNeedsReboot;
+
+pub struct FirmwareUpdate&lt;S&gt; {
+    task_uri: String,
+    image_hash: String,
+    _phase: PhantomData&lt;S&gt;,
+}
+
+impl FirmwareUpdate&lt;FwIdle&gt; {
+    pub fn push_image(
+        session: &amp;RedfishSession&lt;Authenticated&gt;,
+        _proof: &amp;ConfigureManagerToken,
+        image: &amp;[u8],
+    ) -&gt; Result&lt;FirmwareUpdate&lt;FwUploaded&gt;, RedfishError&gt; {
+        // POST /redfish/v1/UpdateService/Actions/UpdateService.SimpleUpdate
+        // 또는 /redfish/v1/UpdateService/upload로 multipart 푸시
+        let _ = image;
+        println!("Image uploaded ({} bytes)", image.len());
+        Ok(FirmwareUpdate {
+            task_uri: "/redfish/v1/TaskService/Tasks/1".to_string(),
+            image_hash: "sha256:abc123".to_string(),
+            _phase: PhantomData,
+        })
+    }
+}
+
+impl FirmwareUpdate&lt;FwUploaded&gt; {
+    /// 이미지 무결성 검증. 성공 시 FwVerified 반환.
+    pub fn verify(self) -&gt; Result&lt;FirmwareUpdate&lt;FwVerified&gt;, RedfishError&gt; {
+        // Poll task until verification complete
+        println!("Image verified: {}", self.image_hash);
+        Ok(FirmwareUpdate {
+            task_uri: self.task_uri,
+            image_hash: self.image_hash,
+            _phase: PhantomData,
+        })
+    }
+}
+
+impl FirmwareUpdate&lt;FwVerified&gt; {
+    /// 업데이트 적용. self 소비 — 두 번 적용 불가.
+    /// ch03의 단일 사용 패턴.
+    pub fn apply(self) -&gt; Result&lt;FirmwareUpdate&lt;FwNeedsReboot&gt;, RedfishError&gt; {
+        // PATCH /redfish/v1/UpdateService — ApplyTime 설정
+        println!("Firmware applied from {}", self.task_uri);
+        // self 이동 — apply() 재호출은 컴파일 에러
+        Ok(FirmwareUpdate {
+            task_uri: self.task_uri,
+            image_hash: self.image_hash,
+            _phase: PhantomData,
+        })
+    }
+}
+
+impl FirmwareUpdate&lt;FwNeedsReboot&gt; {
+    /// 새 펌웨어를 활성화하려면 재부팅.
+    pub fn reboot(
+        self,
+        session: &amp;RedfishSession&lt;Authenticated&gt;,
+        _proof: &amp;ConfigureManagerToken,
+    ) -&gt; Result&lt;(), RedfishError&gt; {
+        // POST .../Actions/Manager.Reset {"ResetType": "GracefulRestart"}
+        let _ = session;
+        println!("BMC rebooting to activate firmware");
+        Ok(())
+    }
+}
+
+// ── 사용 ──
+
+fn update_bmc_firmware(
+    session: &amp;RedfishSession&lt;Authenticated&gt;,
+    manager_proof: &amp;ConfigureManagerToken,
+    image: &amp;[u8],
+) -&gt; Result&lt;(), RedfishError&gt; {
+    // 각 단계가 다음 상태를 반환 — 이전 상태는 소비됨
+    let uploaded = FirmwareUpdate::push_image(session, manager_proof, image)?;
+    let verified = uploaded.verify()?;
+    let needs_reboot = verified.apply()?;
+    needs_reboot.reboot(session, manager_proof)?;
+
+    // ❌ 컴파일 에러: 이동된 `verified` 사용
+    // verified.apply()?;
+
+    // ❌ 컴파일 에러: FirmwareUpdate&lt;FwUploaded&gt;에 .apply() 없음
+    // uploaded.apply()?;      // 먼저 검증해야 함!
+
+    // ❌ 컴파일 에러: push_image는 &amp;ConfigureManagerToken 필요
+    // FirmwareUpdate::push_image(session, &amp;login_token, image)?;
+
+    Ok(())
+}</code></pre>
+<p><strong>제거된 버그 클래스:</strong></p>
+<ul>
+<li><strong>검증 없는 펌웨어 적용:</strong> <code>.apply()</code>는 <code>FwVerified</code>에서만 존재.</li>
+<li><strong>이중 적용:</strong> <code>apply()</code>가 <code>self</code>를 소비 — 이동된 값 재사용 불가.</li>
+<li><strong>재부팅 생략:</strong> <code>FwNeedsReboot</code>는 별도 타입; 펌웨어가 스테이징된 채로
+실수로 정상 동작을 계속할 수 없음.</li>
+<li><strong>무단 업데이트:</strong> <code>push_image()</code>는 <code>&amp;ConfigureManagerToken</code> 필요.</li>
+</ul>
+<hr>
+<p><a id="section-7-putting-it-all-together-ch17"></a></p>
+<h2 id="7절--모두-합치기"><a class="header" href="#7절--모두-합치기">7절 — 모두 합치기</a></h2>
+<p>여섉 절을 모두 조합한 전체 진단 워크플로입니다:</p>
+<pre><code class="language-rust ignore">fn full_redfish_diagnostic() -&gt; Result&lt;(), RedfishError&gt; {
+    // ── 1. 세션 수명 (1절) ──
+    let session = RedfishSession::new("bmc01.lab.local");
+    let session = session.connect()?;
+
+    // ── 2. 권한 토큰 (2절) ──
+    // 관리자 로그인 — 모든 capability 토큰 수신
+    let (session, _login, configure, manager) =
+        session.login_admin("admin", "p@ssw0rd")?;
+
+    // ── 3. 타입이 있는 탐색 (3절) ──
+    let thermal_path = RedfishPath::root()
+        .chassis()
+        .instance("1")
+        .thermal();
+
+    // ── 4. 타입이 있는 텔레메트리 읽기 (4절) ──
+    let thermal: ValidThermalResponse = session.get_resource(&amp;thermal_path)?;
+
+    for t in &amp;thermal.temperatures {
+        // Celsius는 Celsius와만 비교 — 차원 안전
+        if t.reading &gt; t.upper_critical {
+            println!("🔥 {} is critical: {:?}", t.name, t.reading);
+        }
+    }
+
+    for f in &amp;thermal.fans {
+        if f.reading &lt; Rpm(1000) {
+            println!("⚠ {} below threshold: {:?}", f.name, f.reading);
+        }
+    }
+
+    // ── 5. 타입 안전 PATCH (5절) ──
+    let system_path = RedfishPath::root().systems().system("1");
+
+    BiosPatchBuilder::new()
+        .boot_order(vec!["Pxe".into(), "Hdd".into()])
+        .tpm_enabled(true)
+        .apply(&amp;session, &amp;configure, &amp;system_path)?;
+
+    // ── 6. 펌웨어 업데이트 수명 (6절) ──
+    let firmware_image = include_bytes!("bmc_firmware.bin");
+    let uploaded = FirmwareUpdate::push_image(&amp;session, &amp;manager, firmware_image)?;
+    let verified = uploaded.verify()?;
+    let needs_reboot = verified.apply()?;
+
+    // ── 7. 깔끔한 종료 ──
+    needs_reboot.reboot(&amp;session, &amp;manager)?;
+    session.logout();
+
+    Ok(())
+}</code></pre>
+<p><a id="what-the-compiler-proves-ch17"></a></p>
+<h3 id="컴파일러가-증명하는-것"><a class="header" href="#컴파일러가-증명하는-것">컴파일러가 증명하는 것</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>버그 클래스</th><th>막는 방법</th><th>패턴 (절)</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>미인증 세션으로 요청</td><td><code>http_get()</code>은 <code>Session&lt;Authenticated&gt;</code>에만 존재</td><td>Type-state (1절)</td></tr>
+<tr><td>2</td><td>권한 상승</td><td>운영자 로그인은 <code>ConfigureManagerToken</code>을 반환하지 않음</td><td>Capability tokens (2절)</td></tr>
+<tr><td>3</td><td>잘못된 Redfish URI</td><td>탐색 메서드가 부모→자식 계층 강제</td><td>Phantom types (3절)</td></tr>
+<tr><td>4</td><td>단위 혼동(°C vs RPM vs W)</td><td><code>Celsius</code>, <code>Rpm</code>, <code>Watts</code>는 서로 다른 타입</td><td>Dimensional analysis (4절)</td></tr>
+<tr><td>5</td><td>JSON 필드 누락 → 패닉</td><td><code>ValidThermalResponse</code>가 파싱 경계에서 검증</td><td>Validated boundaries (4절)</td></tr>
+<tr><td>6</td><td>잘못된 응답 타입</td><td>리소스마다 <code>RedfishResource::Response</code>가 고정</td><td>Typed commands (4절)</td></tr>
+<tr><td>7</td><td>불완전한 PATCH 페이로드</td><td>필드가 모두 <code>FieldSet</code>일 때만 <code>.apply()</code> 존재</td><td>Builder type-state (5절)</td></tr>
+<tr><td>8</td><td>PATCH에 권한 누락</td><td><code>.apply()</code>는 <code>&amp;ConfigureComponentsToken</code> 필요</td><td>Capability tokens (5절)</td></tr>
+<tr><td>9</td><td>검증 없는 펌웨어 적용</td><td><code>.apply()</code>는 <code>FwVerified</code>에만 존재</td><td>Type-state (6절)</td></tr>
+<tr><td>10</td><td>펌웨어 이중 적용</td><td><code>apply()</code>가 <code>self</code> 소비 — 값 이동</td><td>Single-use types (6절)</td></tr>
+<tr><td>11</td><td>권한 없는 펌웨어 업데이트</td><td><code>push_image()</code>는 <code>&amp;ConfigureManagerToken</code> 필요</td><td>Capability tokens (6절)</td></tr>
+<tr><td>12</td><td>로그아웃 후 사용</td><td><code>logout()</code>이 세션 소비</td><td>Ownership (1절)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>열두 가지 보장 모두의 총 런타임 오버헤드: 0.</strong></p>
+<p>생성된 바이너리는 타입 없는 버전과 같은 HTTP 호출을 하지만 — 타입 없는 버전은
+12가지 버그 클래스가 날 수 있고, 이 버전은 날 수 없습니다.</p>
+<hr>
+<p><a id="comparison-ipmi-vs-redfish"></a></p>
+<h2 id="비교-ipmi-통합ch10-vs-redfish-통합"><a class="header" href="#비교-ipmi-통합ch10-vs-redfish-통합">비교: IPMI 통합(ch10) vs. Redfish 통합</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>차원</th><th>ch10 (IPMI)</th><th>이 장 (Redfish)</th></tr>
+</thead>
+<tbody>
+<tr><td>전송</td><td>KCS/LAN 위 원시 바이트</td><td>HTTPS 위 JSON</td></tr>
+<tr><td>탐색</td><td>평면 명령 코드(NetFn/Cmd)</td><td>계층 URI 트리</td></tr>
+<tr><td>응답 결합</td><td><code>IpmiCmd::Response</code></td><td><code>RedfishResource::Response</code></td></tr>
+<tr><td>권한 모델</td><td>단일 <code>AdminToken</code></td><td>역할 기반 다중 토큰</td></tr>
+<tr><td>페이로드 구성</td><td>바이트 배열</td><td>JSON용 빌더 타입 상태</td></tr>
+<tr><td>업데이트 수명</td><td>다루지 않음</td><td>전체 type-state 체인</td></tr>
+<tr><td>연습한 패턴 수</td><td>7</td><td>8 (빌더 타입 상태 추가)</td></tr>
+</tbody>
+</table>
+</div>
+<p>두 장은 상호 보완입니다: ch10은 바이트 수준에서 패턴이 통함을 보이고,
+이 장은 REST/JSON 수준에서 동일함을 보입니다. 타입 시스템은 전송에 관심 없습니다 —
+어느 쪽이든 정확성을 증명합니다.</p>
+<p><a id="key-takeaways-ch17"></a></p>
+<h2 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h2>
+<ol>
+<li><strong>여덟 패턴이 하나의 Redfish 클라이언트로</strong> — 세션 type-state, capability
+tokens, 팬텀 타입 URI, typed commands, dimensional analysis, validated
+boundaries, 빌더 type-state, 단일 사용 펌웨어 적용.</li>
+<li><strong>열두 가지 버그 클래스가 컴파일 에러로</strong> — 위 표 참고.</li>
+<li><strong>런타임 오버헤드 0</strong> — 모든 증명 토큰, 팬텀 타입, type-state
+마커는 컴파일되면 사라집니다. 바이너리는 손으로 짠 타입 없는 코드와 동일합니다.</li>
+<li><strong>바이트 프로토콜만큼 REST API도 이득</strong> — ch02–ch09 패턴은
+JSON-over-HTTPS(Redfish)와 bytes-over-KCS(IPMI)에 동일하게 적용됩니다.</li>
+<li><strong>권한 강제는 절차가 아니라 구조</strong> — 함수 시그니처가
+필요한 것을 선언하고 컴파일러가 강제합니다.</li>
+<li><strong>이것은 설계 템플릿</strong> — 리소스 타입 마커, capability
+tokens, 빌더를 조직의 Redfish 스키마와 역할 계층에 맞게 조정하세요.</li>
+</ol>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch10-putting-it-all-together-a-complete-diagn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch18-redfish-server-walkthrough.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch10-putting-it-all-together-a-complete-diagn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch18-redfish-server-walkthrough.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

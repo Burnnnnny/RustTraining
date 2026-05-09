@@ -1,0 +1,536 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>7. 릴리스 프로파일과 바이너리 크기 - Rust 엔지니어링 실무 — cargo build를 넘어서</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-997ff77b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-04fe246c.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 엔지니어링 실무 — cargo build를 넘어서</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="release-profiles-and-binary-size"></a></p>
+<h1 id="릴리스-프로파일과-바이너리-크기-"><a class="header" href="#릴리스-프로파일과-바이너리-크기-">릴리스 프로파일과 바이너리 크기 🟡</a></h1>
+<blockquote>
+<p><strong>이 장에서 배우는 것:</strong></p>
+<ul>
+<li>릴리스 프로파일의 구성: LTO, codegen-units, panic 전략, strip, opt-level</li>
+<li>Thin LTO, Fat LTO, 교차 언어 LTO의 트레이드오프</li>
+<li><code>cargo-bloat</code>를 사용한 바이너리 크기 분석</li>
+<li><code>cargo-udeps</code>와 <code>cargo-machete</code>를 사용한 의존성 다이어트</li>
+</ul>
+<p><strong>교차 참고:</strong> <a href="ch08-compile-time-and-developer-tools.html">컴파일 시간과 개발자 도구</a> — 최적화의 또 다른 절반 · <a href="ch03-benchmarking-measuring-what-matters.html">벤치마킹</a> — 최적화 전에 실행 시간을 측정하기 · <a href="ch06-dependency-management-and-supply-chain-s.html">의존성 관리</a> — 의존성을 줄이면 크기와 컴파일 시간 모두 줄어든다</p>
+</blockquote>
+<p>기본 <code>cargo build --release</code>도 이미 충분히 괜찮습니다. 하지만 프로덕션 배포, 특히 수천 대의 서버에 단일 바이너리 도구를 배포하는 상황에서는 “괜찮음“과 “최적화됨” 사이에 꽤 큰 차이가 있습니다. 이 장에서는 프로파일 조정 옵션과 바이너리 크기를 측정하는 도구를 다룹니다.</p>
+<p><a id="release-profile-anatomy"></a></p>
+<h3 id="릴리스-프로파일의-구성"><a class="header" href="#릴리스-프로파일의-구성">릴리스 프로파일의 구성</a></h3>
+<p>Cargo 프로파일은 <code>rustc</code>가 코드를 어떻게 컴파일할지를 제어합니다. 기본값은 최대 성능보다 폭넓은 호환성에 맞춰진 보수적인 설정입니다.</p>
+<pre><code class="language-toml"># Cargo.toml — 별도 설정이 없을 때 Cargo가 사용하는 기본값
+
+[profile.release]
+opt-level = 3        # 최적화 수준 (0=없음, 1=기본, 2=양호, 3=공격적)
+lto = false          # 링크 타임 최적화 OFF
+codegen-units = 16   # 병렬 코드 생성 단위 (컴파일은 빠르지만 최적화는 덜 됨)
+panic = "unwind"     # panic 시 스택 언와인딩 (바이너리 커짐, catch_unwind 가능)
+strip = "none"       # 심볼과 디버그 정보 유지
+overflow-checks = false  # 릴리스에서 정수 오버플로 검사 안 함
+debug = false        # 릴리스에 디버그 정보 없음
+</code></pre>
+<p><strong>프로덕션 최적화 프로파일</strong>(이 프로젝트가 이미 사용 중인 설정):</p>
+<pre><code class="language-toml">[profile.release]
+lto = true           # 크레이트 전체를 가로지르는 최적화
+codegen-units = 1    # 단일 codegen 단위 — 최적화 기회 극대화
+panic = "abort"      # 언와인딩 오버헤드 제거 — 더 작고 더 빠름
+strip = true         # 모든 심볼 제거 — 더 작은 바이너리
+</code></pre>
+<p><strong>각 설정의 영향:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>설정</th><th>기본값 → 최적화값</th><th>바이너리 크기</th><th>실행 속도</th><th>컴파일 시간</th></tr>
+</thead>
+<tbody>
+<tr><td><code>lto = false → true</code></td><td>—</td><td>-10 ~ -20%</td><td>+5 ~ +20%</td><td>2~5배 느려짐</td></tr>
+<tr><td><code>codegen-units = 16 → 1</code></td><td>—</td><td>-5 ~ -10%</td><td>+5 ~ +10%</td><td>1.5~2배 느려짐</td></tr>
+<tr><td><code>panic = "unwind" → "abort"</code></td><td>—</td><td>-5 ~ -10%</td><td>미미함</td><td>미미함</td></tr>
+<tr><td><code>strip = "none" → true</code></td><td>—</td><td>-50 ~ -70%</td><td>없음</td><td>없음</td></tr>
+<tr><td><code>opt-level = 3 → "s"</code></td><td>—</td><td>-10 ~ -30%</td><td>-5 ~ -10%</td><td>비슷함</td></tr>
+<tr><td><code>opt-level = 3 → "z"</code></td><td>—</td><td>-15 ~ -40%</td><td>-10 ~ -20%</td><td>비슷함</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>추가로 조정할 만한 프로파일 옵션:</strong></p>
+<pre><code class="language-toml">[profile.release]
+# 위 설정에 더해:
+overflow-checks = true    # 릴리스에서도 오버플로 검사를 유지 (속도보다 안전성)
+debug = "line-tables-only" # 전체 DWARF 없이도 백트레이스를 위한 최소 디버그 정보
+rpath = false             # 런타임 라이브러리 경로를 바이너리에 박아 넣지 않음
+incremental = false       # 증분 컴파일 비활성화 (더 깔끔한 빌드)
+
+# 크기 최적화 빌드용 (임베디드, WASM):
+# opt-level = "z"         # 크기에 강하게 최적화
+# strip = "symbols"       # 심볼은 제거하되 디버그 섹션은 유지
+</code></pre>
+<p><strong>크레이트별 프로파일 오버라이드</strong> — 뜨거운 경로만 최적화하고 나머지는 그대로 두기:</p>
+<pre><code class="language-toml"># 개발 빌드: 내 코드는 빠르게 다시 빌드하고, 의존성만 최적화
+[profile.dev.package."*"]
+opt-level = 2          # 개발 모드에서도 모든 의존성을 최적화
+
+# 릴리스 빌드: 특정 크레이트만 더 강하게 최적화
+[profile.release.package.serde_json]
+opt-level = 3          # JSON 파싱에 최고 수준 최적화 적용
+codegen-units = 1
+
+# 테스트 프로파일: 통합 테스트가 릴리스와 더 비슷하게 동작하도록 설정
+[profile.test]
+opt-level = 1          # 느린 테스트 타임아웃을 줄이기 위한 약한 최적화
+</code></pre>
+<p><a id="lto-in-depth-thin-vs-fat-vs-cross-language"></a></p>
+<h3 id="lto-심화--thin-fat-교차-언어"><a class="header" href="#lto-심화--thin-fat-교차-언어">LTO 심화 — Thin, Fat, 교차 언어</a></h3>
+<p>링크 타임 최적화(Link-Time Optimization)는 LLVM이 크레이트 경계를 넘어 최적화할 수 있게 해줍니다. 예를 들어 <code>serde_json</code>의 함수를 파싱 코드 안으로 인라인하거나, <code>regex</code>에서 죽은 코드를 제거할 수 있습니다. LTO가 없으면 각 크레이트는 서로 분리된 최적화 섬처럼 취급됩니다.</p>
+<pre><code class="language-toml">[profile.release]
+# 옵션 1: Fat LTO (lto = true일 때 기본 동작)
+lto = true
+# 모든 코드를 하나의 LLVM 모듈로 합침 → 최적화 극대화
+# 컴파일은 가장 느리지만 바이너리는 가장 작고 빠름
+
+# 옵션 2: Thin LTO
+lto = "thin"
+# 각 크레이트는 분리된 채로 두되 LLVM이 모듈 간 최적화를 수행
+# Fat LTO보다 컴파일이 빠르고, 최적화 수준은 거의 비슷함
+# 대부분의 프로젝트에서 가장 좋은 절충안
+
+# 옵션 3: LTO 없음
+lto = false
+# 크레이트 내부 최적화만 수행
+# 컴파일은 가장 빠르지만 바이너리는 더 큼
+
+# 옵션 4: 명시적으로 끄기
+lto = "off"
+# false와 동일
+</code></pre>
+<p><strong>Fat LTO vs Thin LTO:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>항목</th><th>Fat LTO (<code>true</code>)</th><th>Thin LTO (<code>"thin"</code>)</th></tr>
+</thead>
+<tbody>
+<tr><td>최적화 품질</td><td>최고</td><td>fat의 약 95%</td></tr>
+<tr><td>컴파일 시간</td><td>느림 (모든 코드가 단일 모듈)</td><td>보통 (모듈 병렬 처리 가능)</td></tr>
+<tr><td>메모리 사용량</td><td>높음 (모든 LLVM IR을 메모리에 유지)</td><td>더 낮음 (스트리밍 가능)</td></tr>
+<tr><td>병렬성</td><td>없음 (단일 모듈)</td><td>좋음 (모듈별 병렬 처리)</td></tr>
+<tr><td>추천 용도</td><td>최종 릴리스 빌드</td><td>CI 빌드, 개발 중 빌드</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>교차 언어 LTO</strong> — Rust와 C 경계를 넘는 최적화:</p>
+<pre><code class="language-toml">[profile.release]
+lto = true
+
+# Cargo.toml — cc 크레이트를 사용하는 경우
+[build-dependencies]
+cc = "1.0"
+</code></pre>
+<pre class="playground"><code class="language-rust">// build.rs — 교차 언어(linker-plugin) LTO 활성화
+fn main() {
+    // cc 크레이트는 환경 변수의 CFLAGS를 존중한다.
+    // 교차 언어 LTO를 위해 C 코드는 다음과 같이 컴파일한다:
+    //   -flto=thin -O2
+    cc::Build::new()
+        .file("csrc/fast_parser.c")
+        .flag("-flto=thin")
+        .opt_level(2)
+        .compile("fast_parser");
+}</code></pre>
+<pre><code class="language-bash"># 링커 플러그인 LTO 활성화 (호환되는 LLD 또는 gold 링커 필요)
+RUSTFLAGS="-Clinker-plugin-lto -Clinker=clang -Clink-arg=-fuse-ld=lld" \
+    cargo build --release
+</code></pre>
+<p>교차 언어 LTO를 사용하면 LLVM이 C 함수를 Rust 호출자 안으로 인라인하고, 반대로 Rust 함수를 C 쪽으로도 인라인할 수 있습니다. 이는 작은 C 함수를 매우 자주 호출하는 FFI 중심 코드(예: IPMI ioctl 래퍼)에서 특히 효과가 큽니다.</p>
+<p><a id="binary-size-analysis-with-cargo-bloat"></a></p>
+<h3 id="cargo-bloat로-바이너리-크기-분석하기"><a class="header" href="#cargo-bloat로-바이너리-크기-분석하기"><code>cargo-bloat</code>로 바이너리 크기 분석하기</a></h3>
+<p><a href="https://github.com/RazrFalcon/cargo-bloat"><code>cargo-bloat</code></a>는 다음 질문에 답해 줍니다. “내 바이너리에서 가장 많은 공간을 차지하는 함수와 크레이트는 무엇인가?”</p>
+<pre><code class="language-bash"># 설치
+cargo install cargo-bloat
+
+# 가장 큰 함수 보기
+cargo bloat --release -n 20
+# 출력:
+#  File  .text     Size          Crate    Name
+#  2.8%   5.1%  78.5KiB  serde_json       serde_json::de::Deserializer::parse_...
+#  2.1%   3.8%  58.2KiB  regex_syntax     regex_syntax::ast::parse::ParserI::p...
+#  1.5%   2.7%  42.1KiB  accel_diag         accel_diag::vendor::parse_smi_output
+#  ...
+
+# 크레이트별 보기 (어떤 의존성이 가장 큰가?)
+cargo bloat --release --crates
+# 출력:
+#  File  .text     Size Crate
+# 12.3%  22.1%  340KiB serde_json
+#  8.7%  15.6%  240KiB regex
+#  6.2%  11.1%  170KiB std
+#  5.1%   9.2%  141KiB accel_diag
+#  ...
+
+# 두 번의 빌드 비교하기 (최적화 전/후)
+cargo bloat --release --crates &gt; before.txt
+# ... 변경 적용 ...
+cargo bloat --release --crates &gt; after.txt
+diff before.txt after.txt
+</code></pre>
+<p><strong>흔한 바이너리 비대화 원인과 대응책:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>비대화 원인</th><th>전형적인 크기</th><th>대응책</th></tr>
+</thead>
+<tbody>
+<tr><td><code>regex</code> (전체 엔진)</td><td>200~400 KB</td><td>유니코드가 필요 없다면 <code>regex-lite</code> 사용</td></tr>
+<tr><td><code>serde_json</code> (전체 기능)</td><td>200~350 KB</td><td>성능이 중요하면 <code>simd-json</code> 또는 <code>sonic-rs</code> 고려</td></tr>
+<tr><td>제네릭 단형성화(monomorphization)</td><td>제각각</td><td>API 경계에서 <code>dyn Trait</code> 사용 고려</td></tr>
+<tr><td>포매팅 machinery (<code>Display</code>, <code>Debug</code>)</td><td>50~150 KB</td><td>큰 enum에 <code>#[derive(Debug)]</code>를 남발하면 크기가 쌓임</td></tr>
+<tr><td>panic 메시지 문자열</td><td>20~80 KB</td><td><code>panic = "abort"</code>는 언와인딩을 제거하고, <code>strip</code>은 문자열을 줄임</td></tr>
+<tr><td>사용하지 않는 feature</td><td>제각각</td><td>기본 feature 끄기: <code>serde = { version = "1", default-features = false }</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="trimming-dependencies-with-cargo-udeps"></a></p>
+<h3 id="cargo-udeps로-의존성-다이어트하기"><a class="header" href="#cargo-udeps로-의존성-다이어트하기"><code>cargo-udeps</code>로 의존성 다이어트하기</a></h3>
+<p><a href="https://github.com/est31/cargo-udeps"><code>cargo-udeps</code></a>는 <code>Cargo.toml</code>에 선언되어 있지만 코드에서 실제로는 사용하지 않는 의존성을 찾아줍니다.</p>
+<pre><code class="language-bash"># 설치 (nightly 필요)
+cargo install cargo-udeps
+
+# 사용하지 않는 의존성 찾기
+cargo +nightly udeps --workspace
+# 출력:
+# unused dependencies:
+# `diag_tool v0.1.0`
+# └── "tempfile" (dev-dependency)
+#
+# `accel_diag v0.1.0`
+# └── "once_cell"    ← 예전 LazyLock 이전에는 필요했지만 지금은 죽은 의존성
+</code></pre>
+<p>사용하지 않는 의존성은 모두 다음 문제를 일으킵니다.</p>
+<ul>
+<li>컴파일 시간을 늘린다</li>
+<li>바이너리 크기를 키운다</li>
+<li>공급망 위험을 더한다</li>
+<li>라이선스 검토 부담을 늘릴 수 있다</li>
+</ul>
+<p><strong>대안: <code>cargo-machete</code></strong> — 더 빠른 휴리스틱 기반 접근:</p>
+<pre><code class="language-bash">cargo install cargo-machete
+cargo machete
+# 더 빠르지만 오탐이 있을 수 있음 (컴파일 기반이 아니라 휴리스틱 기반)
+</code></pre>
+<p><a id="size-optimization-decision-tree"></a></p>
+<h3 id="크기-최적화-의사결정-트리"><a class="header" href="#크기-최적화-의사결정-트리">크기 최적화 의사결정 트리</a></h3>
+<pre class="mermaid">flowchart TD
+    START["바이너리가 너무 큰가?"] --&gt; STRIP{"strip = true인가?"}
+    STRIP --&gt;|"아니오"| DO_STRIP["strip = true 추가\n크기 -50 ~ -70%"]
+    STRIP --&gt;|"예"| LTO{"LTO가 켜져 있는가?"}
+    LTO --&gt;|"아니오"| DO_LTO["lto = true 추가\ncodegen-units = 1"]
+    LTO --&gt;|"예"| BLOAT["cargo-bloat 실행\n--crates"]
+    BLOAT --&gt; BIG_DEP{"큰 의존성이 있는가?"}
+    BIG_DEP --&gt;|"예"| REPLACE["더 가벼운 대안으로 교체하거나\ndefault feature 비활성화"]
+    BIG_DEP --&gt;|"아니오"| UDEPS["cargo-udeps 실행\n사용하지 않는 의존성 제거"]
+    UDEPS --&gt; OPT_LEVEL{"더 줄여야 하는가?"}
+    OPT_LEVEL --&gt;|"예"| SIZE_OPT["opt-level = 's' 또는 'z'"]
+    
+    style DO_STRIP fill:#91e5a3,color:#000
+    style DO_LTO fill:#e3f2fd,color:#000
+    style REPLACE fill:#ffd43b,color:#000
+    style SIZE_OPT fill:#ff6b6b,color:#000
+</pre>
+
+<p><a id="exercises"></a></p>
+<h3 id="-연습문제"><a class="header" href="#-연습문제">🏋️ 연습문제</a></h3>
+<p><a id="exercise-1-measure-lto-impact"></a></p>
+<h4 id="-연습문제-1-lto-영향-측정하기"><a class="header" href="#-연습문제-1-lto-영향-측정하기">🟢 연습문제 1: LTO 영향 측정하기</a></h4>
+<p>기본 릴리스 설정으로 프로젝트를 빌드한 뒤, <code>lto = true</code> + <code>codegen-units = 1</code> + <code>strip = true</code>를 적용한 설정으로 다시 빌드해 보세요. 바이너리 크기와 컴파일 시간을 비교해 보세요.</p>
+<details>
+<summary>해답</summary>
+<pre><code class="language-bash"># 기본 릴리스
+cargo build --release
+ls -lh target/release/my-binary
+time cargo build --release  # 시간 기록
+
+# 최적화 릴리스 — Cargo.toml에 추가:
+# [profile.release]
+# lto = true
+# codegen-units = 1
+# strip = true
+# panic = "abort"
+
+cargo clean
+cargo build --release
+ls -lh target/release/my-binary  # 보통 30~50% 더 작아짐
+time cargo build --release       # 보통 컴파일은 2~3배 느려짐
+</code></pre>
+</details>
+<p><a id="exercise-2-find-your-biggest-crate"></a></p>
+<h4 id="-연습문제-2-가장-큰-크레이트-찾기"><a class="header" href="#-연습문제-2-가장-큰-크레이트-찾기">🟡 연습문제 2: 가장 큰 크레이트 찾기</a></h4>
+<p>프로젝트에서 <code>cargo bloat --release --crates</code>를 실행해 보세요. 가장 큰 의존성을 찾고, 기본 feature를 끄거나 더 가벼운 대안으로 바꿔서 줄일 수 있는지 확인해 보세요.</p>
+<details>
+<summary>해답</summary>
+<pre><code class="language-bash">cargo install cargo-bloat
+cargo bloat --release --crates
+# 출력:
+#  File  .text     Size Crate
+# 12.3%  22.1%  340KiB serde_json
+#  8.7%  15.6%  240KiB regex
+
+# regex의 경우 — 유니코드가 필요 없다면 regex-lite를 시도:
+# regex-lite = "0.1"  # 전체 regex보다 대략 10배 작음
+
+# serde의 경우 — std가 필요 없다면 기본 feature 비활성화:
+# serde = { version = "1", default-features = false, features = ["derive"] }
+
+cargo bloat --release --crates  # 변경 후 다시 비교
+</code></pre>
+</details>
+<p><a id="key-takeaways"></a></p>
+<h3 id="핵심-정리"><a class="header" href="#핵심-정리">핵심 정리</a></h3>
+<ul>
+<li><code>lto = true</code> + <code>codegen-units = 1</code> + <code>strip = true</code> + <code>panic = "abort"</code> 조합은 프로덕션용 릴리스 프로파일의 기본축이다</li>
+<li>Thin LTO(<code>lto = "thin"</code>)는 Fat LTO 이점의 약 80%를 훨씬 낮은 컴파일 비용으로 제공한다</li>
+<li><code>cargo-bloat --crates</code>는 어떤 의존성이 바이너리 공간을 잡아먹는지 정확히 보여준다</li>
+<li><code>cargo-udeps</code>와 <code>cargo-machete</code>는 컴파일 시간과 바이너리 크기를 낭비하는 죽은 의존성을 찾아낸다</li>
+<li>크레이트별 프로파일 오버라이드는 전체 빌드를 느리게 하지 않고 뜨거운 크레이트만 최적화하게 해준다</li>
+</ul>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch06-dependency-management-and-supply-chain-s.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch08-compile-time-and-developer-tools.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch06-dependency-management-and-supply-chain-s.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch08-compile-time-and-developer-tools.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

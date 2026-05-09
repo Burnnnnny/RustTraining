@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>17. 레퍼런스 카드 - Rust의 타입 주도 정확성</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-d7038b1f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-020eda16.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust의 타입 주도 정확성</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="reference-card"></a></p>
+<h1 id="레퍼런스-카드"><a class="header" href="#레퍼런스-카드">레퍼런스 카드</a></h1>
+<blockquote>
+<p><strong>빠른 참고:</strong> 14개 이상의 correct-by-construction 패턴 전체를 선택 흐름도, 패턴 카탈로그, 조합 규칙, 크레이트 매핑, Curry-Howard 치트시트와 함께 정리했습니다.</p>
+<p><strong>교차 참조:</strong> 모든 장 — 이 책 전체를 위한 조회표입니다.</p>
+</blockquote>
+<p><a id="quick-reference-correct-by-construction-patterns"></a></p>
+<h2 id="빠른-참고-correct-by-construction-패턴"><a class="header" href="#빠른-참고-correct-by-construction-패턴">빠른 참고: Correct-by-Construction 패턴</a></h2>
+<p><a id="pattern-selection-guide"></a></p>
+<h3 id="패턴-선택-가이드"><a class="header" href="#패턴-선택-가이드">패턴 선택 가이드</a></h3>
+<pre><code class="language-text">놓쳤을 때 버그가 치명적인가?
+├── 예 → 타입으로 인코딩할 수 있는가?
+│         ├── 예 → CORRECT-BY-CONSTRUCTION 사용
+│         └── 아니오 → 런타임 검사 + 광범위한 테스트
+└── 아니오 → 런타임 검사로 충분
+</code></pre>
+<p><a id="pattern-catalogue"></a></p>
+<h3 id="패턴-카탈로그"><a class="header" href="#패턴-카탈로그">패턴 카탈로그</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>패턴</th><th>핵심 트레잇/타입</th><th>방지하는 것</th><th style="text-align: center">런타임 비용</th><th>장</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Typed Commands</td><td><code>trait IpmiCmd { type Response; }</code></td><td>잘못된 응답 타입</td><td style="text-align: center">없음</td><td>ch02</td></tr>
+<tr><td>2</td><td>Single-Use Types</td><td><code>struct Nonce</code> (Clone/Copy 아님)</td><td>논스/키 재사용</td><td style="text-align: center">없음</td><td>ch03</td></tr>
+<tr><td>3</td><td>Capability Tokens</td><td><code>struct AdminToken { _private: () }</code></td><td>무단 접근</td><td style="text-align: center">없음</td><td>ch04</td></tr>
+<tr><td>4</td><td>Type-State</td><td><code>Session&lt;Active&gt;</code></td><td>프로토콜 위반</td><td style="text-align: center">없음</td><td>ch05</td></tr>
+<tr><td>5</td><td>Dimensional Types</td><td><code>struct Celsius(f64)</code></td><td>단위 혼동</td><td style="text-align: center">없음</td><td>ch06</td></tr>
+<tr><td>6</td><td>Validated Boundaries</td><td><code>struct ValidFru</code> (TryFrom 경유)</td><td>검증 없는 데이터 사용</td><td style="text-align: center">한 번 파싱</td><td>ch07</td></tr>
+<tr><td>7</td><td>Capability Mixins</td><td><code>trait FanDiagMixin: HasSpi + HasI2c</code></td><td>버스 접근 누락</td><td style="text-align: center">없음</td><td>ch08</td></tr>
+<tr><td>8</td><td>Phantom Types</td><td><code>Register&lt;Width16&gt;</code></td><td>폭/방향 불일치</td><td style="text-align: center">없음</td><td>ch09</td></tr>
+<tr><td>9</td><td>Sentinel → Option</td><td><code>Option&lt;u8&gt;</code> (<code>0xFF</code> 아님)</td><td>센티널을 값으로 쓰는 버그</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>10</td><td>Sealed Traits</td><td><code>trait Cmd: private::Sealed</code></td><td>외부에서의 부적절한 impl</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>11</td><td>Non-Exhaustive Enums</td><td><code>#[non_exhaustive] enum Sku</code></td><td>조용한 match 폴백</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>12</td><td>Typestate Builder</td><td><code>DerBuilder&lt;Set, Missing&gt;</code></td><td>불완전한 생성</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>13</td><td>FromStr Validation</td><td><code>impl FromStr for DiagLevel</code></td><td>검증 없는 문자열 입력</td><td style="text-align: center">한 번 파싱</td><td>ch11</td></tr>
+<tr><td>14</td><td>Const-Generic Size</td><td><code>RegisterBank&lt;const N: usize&gt;</code></td><td>버퍼 크기 불일치</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>15</td><td>Safe <code>unsafe</code> Wrapper</td><td><code>MmioRegion::read_u32()</code></td><td>검증 없는 MMIO/FFI</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>16</td><td>Async Type-State</td><td><code>AsyncSession&lt;Active&gt;</code></td><td>비동기 프로토콜 위반</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>17</td><td>Const Assertions</td><td><code>SdrSensorId&lt;const N: u8&gt;</code></td><td>잘못된 컴파일 타임 ID</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>18</td><td>Session Types</td><td><code>Chan&lt;SendRequest&gt;</code></td><td>채널 연산 순서 위반</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>19</td><td>Pin Self-Referential</td><td><code>Pin&lt;Box&lt;StreamParser&gt;&gt;</code></td><td>구조체 내부 댕글링 포인터</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>20</td><td>RAII / Drop</td><td><code>impl Drop for Session</code></td><td>모든 종료 경로에서 리소스 누수</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>21</td><td>Error Type Hierarchy</td><td><code>#[derive(Error)] enum DiagError</code></td><td>에러 삼키기</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+<tr><td>22</td><td><code>#[must_use]</code></td><td><code>#[must_use] struct Token</code></td><td>조용히 드롭되는 값</td><td style="text-align: center">없음</td><td>ch11</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="composition-rules"></a></p>
+<h3 id="조합-규칙"><a class="header" href="#조합-규칙">조합 규칙</a></h3>
+<pre><code class="language-text">Capability Token + Type-State = 승인된 상태 전이
+Typed Command + Dimensional Type = 물리 단위가 붙은 응답
+Validated Boundary + Phantom Type = 검증된 설정 위의 타입화된 레지스터 접근
+Capability Mixin + Typed Command = 버스를 아는 타입화된 연산
+Single-Use Type + Type-State = 전이 시 소비하는 프로토콜
+Sealed Trait + Typed Command = 닫힌, 건전한 명령 집합
+Sentinel → Option + Validated Boundary = 깨끗한 parse-once 파이프라인
+Typestate Builder + Capability Token = 완전한 생성에 대한 증명
+FromStr + #[non_exhaustive] = 진화 가능하고 fail-fast한 enum 파싱
+Const-Generic Size + Validated Boundary = 크기가 정해지고 검증된 프로토콜 버퍼
+Safe unsafe Wrapper + Phantom Type = 타입화되고 안전한 MMIO 접근
+Async Type-State + Capability Token = 승인된 비동기 전이
+Session Types + Typed Command = 완전히 타입화된 요청–응답 채널
+Pin + Type-State = 이동할 수 없는 자기 참조 상태 머신
+RAII (Drop) + Type-State = 상태에 따른 정리 보장
+Error Hierarchy + Validated Boundary = 완전한 처리가 가능한 타입화된 파싱 에러
+#[must_use] + Single-Use Type = 무시하기 어렵고 재사용하기 어려운 토큰
+</code></pre>
+<p><a id="anti-patterns-to-avoid"></a></p>
+<h3 id="피해야-할-안티-패턴"><a class="header" href="#피해야-할-안티-패턴">피해야 할 안티 패턴</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>안티 패턴</th><th>왜 문제인가</th><th>올바른 대안</th></tr>
+</thead>
+<tbody>
+<tr><td><code>fn read_sensor() -&gt; f64</code></td><td>단위 없음 — °C, °F, RPM일 수 있음</td><td><code>fn read_sensor() -&gt; Celsius</code></td></tr>
+<tr><td><code>fn encrypt(nonce: &amp;[u8; 12])</code></td><td>논스 재사용 가능(빌림)</td><td><code>fn encrypt(nonce: Nonce)</code> (이동)</td></tr>
+<tr><td><code>fn admin_op(is_admin: bool)</code></td><td>호출자가 <code>true</code>로 거짓말 가능</td><td><code>fn admin_op(_: &amp;AdminToken)</code></td></tr>
+<tr><td><code>fn send(session: &amp;Session)</code></td><td>상태 보장 없음</td><td><code>fn send(session: &amp;Session&lt;Active&gt;)</code></td></tr>
+<tr><td><code>fn process(data: &amp;[u8])</code></td><td>검증되지 않음</td><td><code>fn process(data: &amp;ValidFru)</code></td></tr>
+<tr><td>일시적 키에 <code>Clone</code></td><td>단일 사용 보장 무력화</td><td>Clone 파생 금지</td></tr>
+<tr><td><code>let vendor_id: u16 = 0xFFFF</code></td><td>센티널을 내부에 유지</td><td><code>let vendor_id: Option&lt;u16&gt; = None</code></td></tr>
+<tr><td>폴백이 있는 <code>fn route(level: &amp;str)</code></td><td>오타가 조용히 기본값</td><td><code>let level: DiagLevel = s.parse()?</code></td></tr>
+<tr><td>필드 없이 <code>Builder::new().finish()</code></td><td>불완전한 객체 생성</td><td>타입 상태 빌더: <code>Set</code>일 때만 <code>finish()</code></td></tr>
+<tr><td>고정 크기 HW 버퍼에 <code>let buf: Vec&lt;u8&gt;</code></td><td>크기는 런타임에만 검사</td><td><code>RegisterBank&lt;4096&gt;</code> (const 제네릭)</td></tr>
+<tr><td>곳곳에 원시 <code>unsafe { ptr::read(...) }</code></td><td>UB 위험, 감사 불가</td><td><code>MmioRegion::read_u32()</code> 안전 래퍼</td></tr>
+<tr><td><code>async fn transition(&amp;mut self)</code></td><td>가변 빌림만으로는 상태 강제 불가</td><td><code>async fn transition(self) -&gt; NextState</code></td></tr>
+<tr><td>수동 호출 <code>fn cleanup()</code></td><td>조기 반환/패닉 시 누락</td><td><code>impl Drop</code> — 컴파일러가 호출 삽입</td></tr>
+<tr><td><code>fn op() -&gt; Result&lt;T, String&gt;</code></td><td>불투명한 에러, variant 매칭 불가</td><td><code>fn op() -&gt; Result&lt;T, DiagError&gt;</code> enum</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="mapping-to-a-diagnostics-codebase"></a></p>
+<h3 id="진단-코드베이스에-매핑하기"><a class="header" href="#진단-코드베이스에-매핑하기">진단 코드베이스에 매핑하기</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>모듈</th><th>적용 가능한 패턴</th></tr>
+</thead>
+<tbody>
+<tr><td><code>protocol_lib</code></td><td>Typed commands, type-state 세션</td></tr>
+<tr><td><code>thermal_diag</code></td><td>Capability mixins, dimensional types</td></tr>
+<tr><td><code>accel_diag</code></td><td>Validated boundaries, phantom 레지스터</td></tr>
+<tr><td><code>network_diag</code></td><td>Type-state(링크 트레이닝), capability tokens</td></tr>
+<tr><td><code>pci_topology</code></td><td>Phantom types(레지스터 폭), 검증된 설정, sentinel → Option</td></tr>
+<tr><td><code>event_handler</code></td><td>Single-use 감사 토큰, capability tokens, FromStr(Component)</td></tr>
+<tr><td><code>event_log</code></td><td>Validated boundaries(SEL 레코드 파싱)</td></tr>
+<tr><td><code>compute_diag</code></td><td>Dimensional types(온도, 주파수)</td></tr>
+<tr><td><code>memory_diag</code></td><td>Validated boundaries(SPD 데이터), dimensional types</td></tr>
+<tr><td><code>switch_diag</code></td><td>Type-state(포트 열거), phantom types</td></tr>
+<tr><td><code>config_loader</code></td><td>FromStr(DiagLevel, FaultStatus, DiagAction)</td></tr>
+<tr><td><code>log_analyzer</code></td><td>Validated boundaries(CompiledPatterns)</td></tr>
+<tr><td><code>diag_framework</code></td><td>Typestate 빌더(DerBuilder), session types(오케스트레이터↔워커)</td></tr>
+<tr><td><code>topology_lib</code></td><td>Const-generic 레지스터 뱅크, 안전한 MMIO 래퍼</td></tr>
+</tbody>
+</table>
+</div>
+<p><a id="curry-howard-cheat-sheet"></a></p>
+<h3 id="curry-howard-치트시트"><a class="header" href="#curry-howard-치트시트">Curry-Howard 치트시트</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>논리 개념</th><th>Rust 대응</th><th>예</th></tr>
+</thead>
+<tbody>
+<tr><td>명제</td><td>타입</td><td><code>AdminToken</code></td></tr>
+<tr><td>증명</td><td>그 타입의 값</td><td><code>let tok = authenticate()?;</code></td></tr>
+<tr><td>함의 (A → B)</td><td>함수 <code>fn(A) -&gt; B</code></td><td><code>fn activate(AdminToken) -&gt; Session&lt;Active&gt;</code></td></tr>
+<tr><td>논리곱 (A ∧ B)</td><td>튜플 <code>(A, B)</code> 또는 다중 인자</td><td><code>fn op(a: &amp;AdminToken, b: &amp;LinkTrained)</code></td></tr>
+<tr><td>논리합 (A ∨ B)</td><td><code>enum { A(A), B(B) }</code> 또는 <code>Result&lt;A, B&gt;</code></td><td><code>Result&lt;Session&lt;Active&gt;, Error&gt;</code></td></tr>
+<tr><td>참</td><td><code>()</code> (unit 타입)</td><td>항상 생성 가능</td></tr>
+<tr><td>거짓</td><td><code>!</code> (never 타입) 또는 <code>enum Void {}</code></td><td>절대 생성 불가</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch12-exercises.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch14-testing-type-level-guarantees.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch12-exercises.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch14-testing-type-level-guarantees.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

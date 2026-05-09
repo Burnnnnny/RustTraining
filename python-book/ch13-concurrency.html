@@ -1,0 +1,670 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>13. 동시성 - Python 개발자를 위한 Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-03a6b382.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-30249668.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Python 개발자를 위한 Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/rust-systems-training/rust-training" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p><a id="no-gil-true-parallelism"></a></p>
+<h2 id="gil이-없다-진짜-병렬성"><a class="header" href="#gil이-없다-진짜-병렬성">GIL이 없다: 진짜 병렬성</a></h2>
+<blockquote>
+<p><strong>이 장에서 배울 내용:</strong> GIL이 Python 동시성에 어떤 제약을 주는지, Rust의 <code>Send</code>/<code>Sync</code> 트레잇이 컴파일 시점 스레드 안전성을 어떻게 보장하는지,
+<code>Arc&lt;Mutex&lt;T&gt;&gt;</code>와 Python의 <code>threading.Lock</code>를 어떻게 비교할 수 있는지, 채널과 <code>queue.Queue</code>의 차이, 그리고 <code>async</code>/<code>await</code> 모델이 어떻게 다른지 살펴봅니다.</p>
+<p><strong>난이도:</strong> 🔴 고급</p>
+</blockquote>
+<p>GIL(Global Interpreter Lock)은 CPU 바운드 작업에서 Python이 안고 있는 가장 큰 제약입니다.
+Rust에는 GIL이 없으므로 스레드가 실제로 병렬 실행되며, 타입 시스템이 데이터 레이스를 컴파일 시점에 막아줍니다.</p>
+<pre class="mermaid">gantt
+    title CPU 바운드 작업: Python GIL vs Rust 스레드
+    dateFormat X
+    axisFormat %s
+    section Python (GIL)
+        스레드 1 :a1, 0, 4
+        스레드 2 :a2, 4, 8
+        스레드 3 :a3, 8, 12
+        스레드 4 :a4, 12, 16
+    section Rust (GIL 없음)
+        스레드 1 :b1, 0, 4
+        스레드 2 :b2, 0, 4
+        스레드 3 :b3, 0, 4
+        스레드 4 :b4, 0, 4
+</pre>
+
+<blockquote>
+<p><strong>핵심 통찰</strong>: Python 스레드는 CPU 작업에서 순차적으로 실행됩니다(GIL이 이를 직렬화합니다). Rust 스레드는 실제 병렬로 실행되므로, 스레드 4개면 대략 4배 가까운 속도 향상을 기대할 수 있습니다.</p>
+<p>📌 <strong>선수 지식</strong>: <code>Arc</code>, <code>Mutex</code>, move 클로저는 모두 소유권 개념 위에 서 있습니다. 이 장에 들어가기 전에 <a href="ch07-ownership-and-borrowing.html">7장 - 소유권과 대여</a>를 충분히 익혀두세요.</p>
+</blockquote>
+<h3 id="python의-gil-문제"><a class="header" href="#python의-gil-문제">Python의 GIL 문제</a></h3>
+<pre><code class="language-python"># Python — threads don't help for CPU-bound work
+import threading
+import time
+
+counter = 0
+
+def increment(n):
+    global counter
+    for _ in range(n):
+        counter += 1  # NOT thread-safe! But GIL "protects" simple operations
+
+threads = [threading.Thread(target=increment, args=(1_000_000,)) for _ in range(4)]
+start = time.perf_counter()
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+elapsed = time.perf_counter() - start
+
+print(f"Counter: {counter}")    # Might not be 4,000,000!
+print(f"Time: {elapsed:.2f}s")  # About the SAME as single-threaded (GIL)
+
+# For true parallelism, Python requires multiprocessing:
+from multiprocessing import Pool
+with Pool(4) as pool:
+    results = pool.map(cpu_work, data)  # Separate processes, pickle overhead
+</code></pre>
+<h3 id="rust--진짜-병렬성과-컴파일-시점-안전성"><a class="header" href="#rust--진짜-병렬성과-컴파일-시점-안전성">Rust — 진짜 병렬성과 컴파일 시점 안전성</a></h3>
+<pre class="playground"><code class="language-rust">use std::sync::atomic::{AtomicI64, Ordering};
+use std::sync::Arc;
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(AtomicI64::new(0));
+
+    let handles: Vec&lt;_&gt; = (0..4).map(|_| {
+        let counter = Arc::clone(&amp;counter);
+        thread::spawn(move || {
+            for _ in 0..1_000_000 {
+                counter.fetch_add(1, Ordering::Relaxed);
+            }
+        })
+    }).collect();
+
+    for h in handles {
+        h.join().unwrap();
+    }
+
+    println!("Counter: {}", counter.load(Ordering::Relaxed)); // Always 4,000,000
+    // Runs on ALL cores — true parallelism, no GIL
+}</code></pre>
+<hr>
+<p><a id="thread-safety-type-system-guarantees"></a></p>
+<h2 id="스레드-안전성-타입-시스템이-보장한다"><a class="header" href="#스레드-안전성-타입-시스템이-보장한다">스레드 안전성: 타입 시스템이 보장한다</a></h2>
+<h3 id="python--런타임에서-드러나는-문제"><a class="header" href="#python--런타임에서-드러나는-문제">Python — 런타임에서 드러나는 문제</a></h3>
+<pre><code class="language-python"># Python — data races caught at runtime (or not at all)
+import threading
+
+shared_list = []
+
+def append_items(items):
+    for item in items:
+        shared_list.append(item)  # "Thread-safe" due to GIL for append
+        # But complex operations are NOT safe:
+        # if item not in shared_list:
+        #     shared_list.append(item)  # RACE CONDITION!
+
+# Using Lock for safety:
+lock = threading.Lock()
+def safe_append(items):
+    for item in items:
+        with lock:
+            if item not in shared_list:
+                shared_list.append(item)
+# Forgetting the lock? No compiler warning. Bug discovered in production.
+</code></pre>
+<h3 id="rust--컴파일-시점-오류"><a class="header" href="#rust--컴파일-시점-오류">Rust — 컴파일 시점 오류</a></h3>
+<pre class="playground"><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    // Trying to share a Vec across threads without protection:
+    // let shared = vec![];
+    // thread::spawn(move || shared.push(1));
+    // ❌ Compile error: Vec is not Send/Sync without protection
+
+    // With Mutex (Rust's equivalent of threading.Lock):
+    let shared = Arc::new(Mutex::new(Vec::new()));
+
+    let handles: Vec&lt;_&gt; = (0..4).map(|i| {
+        let shared = Arc::clone(&amp;shared);
+        thread::spawn(move || {
+            let mut data = shared.lock().unwrap(); // Lock is REQUIRED to access
+            data.push(i);
+            // Lock is automatically released when `data` goes out of scope
+            // No "forgetting to unlock" — RAII guarantees it
+        })
+    }).collect();
+
+    for h in handles {
+        h.join().unwrap();
+    }
+
+    println!("{:?}", shared.lock().unwrap()); // [0, 1, 2, 3] (order may vary)
+}</code></pre>
+<h3 id="send와-sync-트레잇"><a class="header" href="#send와-sync-트레잇"><code>Send</code>와 <code>Sync</code> 트레잇</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust uses two marker traits to enforce thread safety:
+
+// Send — "this type can be transferred to another thread"
+// Most types are Send. Rc&lt;T&gt; is NOT (use Arc&lt;T&gt; for threads).
+
+// Sync — "this type can be referenced from multiple threads"
+// Most types are Sync. Cell&lt;T&gt;/RefCell&lt;T&gt; are NOT (use Mutex&lt;T&gt;).
+
+// The compiler checks these automatically:
+// thread::spawn(move || { ... })
+//   ↑ The closure's captures must be Send
+//   ↑ Shared references must be Sync
+//   ↑ If they're not → compile error
+
+// Python has no equivalent. Thread safety bugs are discovered at runtime.
+// Rust catches them at compile time. This is "fearless concurrency."
+<span class="boring">}</span></code></pre>
+<h3 id="동시성-프리미티브-비교"><a class="header" href="#동시성-프리미티브-비교">동시성 프리미티브 비교</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Python</th><th>Rust</th><th>용도</th></tr>
+</thead>
+<tbody>
+<tr><td><code>threading.Lock()</code></td><td><code>Mutex&lt;T&gt;</code></td><td>상호 배제</td></tr>
+<tr><td><code>threading.RLock()</code></td><td><code>Mutex&lt;T&gt;</code> (재진입 아님)</td><td>재진입 락에 가까운 용도</td></tr>
+<tr><td><code>threading.RWLock</code> (해당 없음)</td><td><code>RwLock&lt;T&gt;</code></td><td>여러 읽기 또는 하나의 쓰기</td></tr>
+<tr><td><code>threading.Event()</code></td><td><code>Condvar</code></td><td>조건 변수</td></tr>
+<tr><td><code>queue.Queue()</code></td><td><code>mpsc::channel()</code></td><td>스레드 안전 채널</td></tr>
+<tr><td><code>multiprocessing.Pool</code></td><td><code>rayon::ThreadPool</code></td><td>스레드 풀</td></tr>
+<tr><td><code>concurrent.futures</code></td><td><code>rayon</code> / <code>tokio::spawn</code></td><td>태스크 기반 병렬성</td></tr>
+<tr><td><code>threading.local()</code></td><td><code>thread_local!</code></td><td>스레드 로컬 저장소</td></tr>
+<tr><td>해당 없음</td><td><code>Atomic*</code> 타입</td><td>락 없는 카운터와 플래그</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="mutex-포이즈닝"><a class="header" href="#mutex-포이즈닝"><code>Mutex</code> 포이즈닝</a></h3>
+<p>어떤 스레드가 <code>Mutex</code>를 잡은 상태에서 <strong>panic</strong>을 일으키면 그 락은 <em>poisoned</em> 상태가 됩니다. Python에는 정확히 대응되는 개념이 없습니다. Python에서 <code>threading.Lock()</code>을 잡은 스레드가 비정상 종료되면, 락은 그냥 막힌 상태로 남습니다.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::{Arc, Mutex};
+use std::thread;
+
+let data = Arc::new(Mutex::new(vec![1, 2, 3]));
+let data2 = Arc::clone(&amp;data);
+
+let _ = thread::spawn(move || {
+    let mut guard = data2.lock().unwrap();
+    guard.push(4);
+    panic!("oops!");  // Lock is now poisoned
+}).join();
+
+// Subsequent lock attempts return Err(PoisonError)
+match data.lock() {
+    Ok(guard) =&gt; println!("Data: {guard:?}"),
+    Err(poisoned) =&gt; {
+        println!("Lock was poisoned! Recovering...");
+        let guard = poisoned.into_inner();
+        println!("Recovered: {guard:?}");  // [1, 2, 3, 4]
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="원자적-순서화ordering-짧은-메모"><a class="header" href="#원자적-순서화ordering-짧은-메모">원자적 순서화(<code>Ordering</code>) 짧은 메모</a></h3>
+<p>원자 연산의 <code>Ordering</code> 매개변수는 메모리 가시성 보장을 얼마나 강하게 줄지 결정합니다.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ordering</th><th>사용하는 시점</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Relaxed</code></td><td>연산 순서가 중요하지 않은 단순 카운터</td></tr>
+<tr><td><code>Acquire</code>/<code>Release</code></td><td>생산자-소비자 패턴: 쓰는 쪽은 <code>Release</code>, 읽는 쪽은 <code>Acquire</code></td></tr>
+<tr><td><code>SeqCst</code></td><td>애매하면 이것부터: 가장 엄격하고 가장 직관적인 순서</td></tr>
+</tbody>
+</table>
+</div>
+<p>Python의 <code>threading</code> 모듈은 GIL 뒤에 이런 세부 사항을 숨깁니다. Rust에서는 직접 선택해야 하므로, 특별한 근거가 없으면 먼저 <code>SeqCst</code>로 시작하고 프로파일링이 필요성을 보여줄 때 더 약한 순서화를 고려하세요.</p>
+<hr>
+<p><a id="asyncawait-comparison"></a></p>
+<h2 id="asyncawait-비교"><a class="header" href="#asyncawait-비교"><code>async</code>/<code>await</code> 비교</a></h2>
+<p>Python과 Rust 모두 <code>async</code>/<code>await</code> 문법을 제공하지만, 내부 동작 방식은 꽤 다릅니다.</p>
+<h3 id="python-asyncawait"><a class="header" href="#python-asyncawait">Python <code>async</code>/<code>await</code></a></h3>
+<pre><code class="language-python"># Python — asyncio for concurrent I/O
+import asyncio
+import aiohttp
+
+async def fetch_url(session, url):
+    async with session.get(url) as resp:
+        return await resp.text()
+
+async def main():
+    urls = ["https://example.com", "https://httpbin.org/get"]
+
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+
+    for url, result in zip(urls, results):
+        print(f"{url}: {len(result)} bytes")
+
+asyncio.run(main())
+
+# Python async is single-threaded (still GIL)!
+# It only helps with I/O-bound work (waiting for network/disk).
+# CPU-bound work in async still blocks the event loop.
+</code></pre>
+<h3 id="rust-asyncawait"><a class="header" href="#rust-asyncawait">Rust <code>async</code>/<code>await</code></a></h3>
+<pre class="playground"><code class="language-rust">// Rust — tokio for concurrent I/O (and CPU parallelism!)
+use reqwest;
+use tokio;
+
+async fn fetch_url(url: &amp;str) -&gt; Result&lt;String, reqwest::Error&gt; {
+    reqwest::get(url).await?.text().await
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let urls = vec!["https://example.com", "https://httpbin.org/get"];
+
+    let tasks: Vec&lt;_&gt; = urls.iter()
+        .map(|url| tokio::spawn(fetch_url(url)))  // No GIL limitation
+        .collect();                                 // Can use all CPU cores
+
+    let results = futures::future::join_all(tasks).await;
+
+    for (url, result) in urls.iter().zip(results) {
+        match result {
+            Ok(Ok(body)) =&gt; println!("{url}: {} bytes", body.len()),
+            Ok(Err(e)) =&gt; println!("{url}: error {e}"),
+            Err(e) =&gt; println!("{url}: task failed {e}"),
+        }
+    }
+
+    Ok(())
+}</code></pre>
+<h3 id="핵심-차이"><a class="header" href="#핵심-차이">핵심 차이</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>항목</th><th>Python <code>asyncio</code></th><th>Rust <code>tokio</code></th></tr>
+</thead>
+<tbody>
+<tr><td>GIL</td><td>여전히 적용됨</td><td>GIL 없음</td></tr>
+<tr><td>CPU 병렬성</td><td>❌ 단일 스레드</td><td>✅ 멀티스레드</td></tr>
+<tr><td>런타임</td><td>내장(<code>asyncio</code>)</td><td>외부 크레이트(<code>tokio</code>)</td></tr>
+<tr><td>생태계</td><td><code>aiohttp</code>, <code>asyncpg</code> 등</td><td><code>reqwest</code>, <code>sqlx</code> 등</td></tr>
+<tr><td>성능</td><td>I/O에는 충분히 좋음</td><td>I/O와 CPU 모두 뛰어남</td></tr>
+<tr><td>에러 처리</td><td>예외</td><td><code>Result&lt;T, E&gt;</code></td></tr>
+<tr><td>취소</td><td><code>task.cancel()</code></td><td>future를 drop</td></tr>
+<tr><td>컬러 문제</td><td>동기/비동기 경계가 있음</td><td>같은 문제가 존재</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="rayon으로-간단하게-병렬화하기"><a class="header" href="#rayon으로-간단하게-병렬화하기">Rayon으로 간단하게 병렬화하기</a></h3>
+<pre><code class="language-python"># Python — multiprocessing for CPU parallelism
+from multiprocessing import Pool
+
+def process_item(item):
+    return heavy_computation(item)
+
+with Pool(8) as pool:
+    results = pool.map(process_item, items)
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust — rayon for effortless CPU parallelism (one line change!)
+use rayon::prelude::*;
+
+// Sequential:
+let results: Vec&lt;_&gt; = items.iter().map(|item| heavy_computation(item)).collect();
+
+// Parallel (change .iter() to .par_iter() — that's it!):
+let results: Vec&lt;_&gt; = items.par_iter().map(|item| heavy_computation(item)).collect();
+
+// No pickle, no process overhead, no serialization.
+// Rayon automatically distributes work across cores.
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="-사례-연구-병렬-이미지-처리-파이프라인"><a class="header" href="#-사례-연구-병렬-이미지-처리-파이프라인">💼 사례 연구: 병렬 이미지 처리 파이프라인</a></h2>
+<p>한 데이터 과학 팀이 매일 밤 위성 이미지 50,000장을 처리합니다. 이 팀의 Python 파이프라인은 <code>multiprocessing.Pool</code>을 사용합니다.</p>
+<pre><code class="language-python"># Python — multiprocessing for CPU-bound image work
+import multiprocessing
+from PIL import Image
+import numpy as np
+
+def process_image(path: str) -&gt; dict:
+    img = np.array(Image.open(path))
+    # CPU-intensive: histogram equalization, edge detection, classification
+    histogram = np.histogram(img, bins=256)[0]
+    edges = detect_edges(img)       # ~200ms per image
+    label = classify(edges)          # ~100ms per image
+    return {"path": path, "label": label, "edge_count": len(edges)}
+
+# Problem: each subprocess copies the full Python interpreter
+# Memory: 50MB per worker × 16 workers = 800MB overhead
+# Startup: 2-3 seconds to fork and pickle arguments
+with multiprocessing.Pool(16) as pool:
+    results = pool.map(process_image, image_paths)  # ~4.5 hours for 50k images
+</code></pre>
+<p><strong>문제점</strong>: 프로세스를 포크하면서 800MB의 메모리 오버헤드가 생기고, 인자/결과를 <code>pickle</code>로 직렬화해야 하며, GIL 때문에 스레드를 쓸 수도 없습니다. 에러 처리도 불투명해서 워커 안에서 던져진 예외를 추적하기가 어렵습니다.</p>
+<pre class="playground"><code class="language-rust">use rayon::prelude::*;
+use image::GenericImageView;
+
+struct ImageResult {
+    path: String,
+    label: String,
+    edge_count: usize,
+}
+
+fn process_image(path: &amp;str) -&gt; Result&lt;ImageResult, image::ImageError&gt; {
+    let img = image::open(path)?;
+    let histogram = compute_histogram(&amp;img);       // ~50ms (no numpy overhead)
+    let edges = detect_edges(&amp;img);                // ~40ms (SIMD-optimized)
+    let label = classify(&amp;edges);                  // ~20ms
+    Ok(ImageResult {
+        path: path.to_string(),
+        label,
+        edge_count: edges.len(),
+    })
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let paths: Vec&lt;String&gt; = load_image_paths()?;
+
+    // Rayon automatically uses all CPU cores — no forking, no pickle, no GIL
+    let results: Vec&lt;ImageResult&gt; = paths
+        .par_iter()                                // Parallel iterator
+        .filter_map(|p| process_image(p).ok())     // Skip errors gracefully
+        .collect();                                // Collect in parallel
+
+    println!("Processed {} images", results.len());
+    Ok(())
+}
+// 50k images in ~35 minutes (vs 4.5 hours in Python)
+// Memory: ~50MB total (shared threads, no forking)</code></pre>
+<p><strong>결과</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>지표</th><th>Python (<code>multiprocessing</code>)</th><th>Rust (<code>rayon</code>)</th></tr>
+</thead>
+<tbody>
+<tr><td>시간(5만 장 이미지)</td><td>약 4.5시간</td><td>약 35분</td></tr>
+<tr><td>메모리 오버헤드</td><td>800MB(워커 16개)</td><td>약 50MB(공유)</td></tr>
+<tr><td>에러 처리</td><td>불투명한 <code>pickle</code> 오류</td><td>모든 단계에서 <code>Result&lt;T, E&gt;</code></td></tr>
+<tr><td>시작 비용</td><td>2-3초(fork + pickle)</td><td>없음(스레드)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>핵심 교훈</strong>: CPU 바운드 병렬 작업에서는 Rust의 스레드와 <code>rayon</code>이 Python의 <code>multiprocessing</code>을 대체합니다. 직렬화 오버헤드는 없고, 메모리를 공유할 수 있으며, 안전성은 컴파일 시점에 보장됩니다.</p>
+</blockquote>
+<hr>
+<h2 id="연습문제"><a class="header" href="#연습문제">연습문제</a></h2>
+<details>
+<summary><strong>🏋️ 연습문제: 스레드 안전 카운터</strong> (펼쳐서 보기)</summary>
+<p><strong>도전 과제</strong>: Python에서는 공유 카운터를 보호하기 위해 <code>threading.Lock</code>를 사용했을 것입니다. 이를 Rust로 옮겨보세요. 스레드 10개를 만들고, 각 스레드가 공유 카운터를 1000번씩 증가시킵니다. 마지막 값을 출력하세요(정답은 10000). <code>Arc&lt;Mutex&lt;u64&gt;&gt;</code>를 사용하세요.</p>
+<details>
+<summary>🔑 해답</summary>
+<pre class="playground"><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0u64));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&amp;counter);
+        handles.push(thread::spawn(move || {
+            for _ in 0..1000 {
+                let mut num = counter.lock().unwrap();
+                *num += 1;
+            }
+        }));
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Final count: {}", *counter.lock().unwrap());
+}</code></pre>
+<p><strong>핵심 정리</strong>: <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>는 Python의 <code>lock = threading.Lock()</code> + 공유 변수 조합에 해당합니다. 차이는 Rust에서는 <code>Arc</code>나 <code>Mutex</code>를 빼먹으면 아예 컴파일이 되지 않는다는 점입니다. Python은 경쟁 상태가 있는 프로그램도 그냥 실행해버리고, 조용히 잘못된 답을 내놓을 수 있습니다.</p>
+</details>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch12-closures-and-iterators.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch14-unsafe-rust-and-ffi.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch12-closures-and-iterators.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch14-unsafe-rust-and-ffi.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace-2a3cd908.js"></script>
+        <script src="mode-rust-2c9d5c9a.js"></script>
+        <script src="editor-16ca416c.js"></script>
+        <script src="theme-dawn-4493f9c8.js"></script>
+        <script src="theme-tomorrow_night-9dbe62a9.js"></script>
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
